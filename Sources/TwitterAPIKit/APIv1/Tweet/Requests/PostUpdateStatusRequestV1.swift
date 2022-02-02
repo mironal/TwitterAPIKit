@@ -1,6 +1,6 @@
 import Foundation
 
-public struct PostUpdateStatusRequestV1: TwitterAPIRequest {
+public class PostUpdateStatusRequestV1: TwitterAPIRequest {
 
     // TODO: Other parameters
 

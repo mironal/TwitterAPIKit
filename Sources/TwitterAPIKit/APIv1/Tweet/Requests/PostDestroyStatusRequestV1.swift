@@ -1,7 +1,7 @@
 import Foundation
 
 /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/post-statuses-destroy-id
-public struct PostDestroyStatusRequestV1: TwitterAPIRequest {
+public class PostDestroyStatusRequestV1: TwitterAPIRequest {
 
     public let id: String
     public let trimUser: Bool?
@@ -17,6 +17,11 @@ public struct PostDestroyStatusRequestV1: TwitterAPIRequest {
         var p = [String: Any]()
         trimUser.map { p["trim_user"] = $0 }
         return p
+    }
+
+    public init(id: String, trimUser: Bool? = nil) {
+        self.id = id
+        self.trimUser = trimUser
     }
 
 }
