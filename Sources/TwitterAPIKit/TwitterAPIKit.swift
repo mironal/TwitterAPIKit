@@ -19,7 +19,7 @@ public struct TwitterAPIEnvironment {
 
 open class TwitterAPIKit {
 
-    public var v1: TwitterAPIv1 { return self }
+    public var v1: TweetAPIv1 & TimelineAPIv1 { return self }
     public var v2: TwitterAPIv2 { return self }
 
     public let session: TwitterAPISession
