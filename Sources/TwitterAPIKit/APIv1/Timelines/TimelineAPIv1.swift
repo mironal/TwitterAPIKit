@@ -1,25 +1,26 @@
 import Foundation
 
+/// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/timelines/overview
 public protocol TimelineAPIv1 {
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/timelines/api-reference/get-statuses-home_timeline
     @discardableResult
     func getHomeTimeline(
-        _ parameters: GetTimelineParametersV1,
+        _ request: GetHomeTimelineRequestV1,
         completionHandler: @escaping (Result<(Data, HTTPURLResponse), TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/timelines/api-reference/get-statuses-mentions_timeline
     @discardableResult
     func getMentionsTimeline(
-        _ parameters: GetTimelineParametersV1,
+        _ request: GetMentionsTimelineRequestV1,
         completionHandler: @escaping (Result<(Data, HTTPURLResponse), TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/timelines/api-reference/get-statuses-user_timeline
     @discardableResult
     func getUserTimeline(
-        _ parameters: GetUserTimelineParametersV1,
+        _ request: GetUserTimelineRequestV1,
         completionHandler: @escaping (Result<(Data, HTTPURLResponse), TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
@@ -27,39 +28,24 @@ public protocol TimelineAPIv1 {
 
 extension TwitterAPIKit: TimelineAPIv1 {
     public func getHomeTimeline(
-        _ parameters: GetTimelineParametersV1,
+        _ request: GetHomeTimelineRequestV1,
         completionHandler: @escaping (Result<(Data, HTTPURLResponse), TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
-        return session.request(
-            .get,
-            path: "/1.1/statuses/home_timeline.json",
-            with: parameters,
-            completionHandler: completionHandler
-        )
+        return session.send(request, completionHandler: completionHandler)
     }
 
     public func getMentionsTimeline(
-        _ parameters: GetTimelineParametersV1,
+        _ request: GetMentionsTimelineRequestV1,
         completionHandler: @escaping (Result<(Data, HTTPURLResponse), TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
-        return session.request(
-            .get,
-            path: "/1.1/statuses/mentions_timeline.json",
-            with: parameters,
-            completionHandler: completionHandler
-        )
+        return session.send(request, completionHandler: completionHandler)
     }
 
     public func getUserTimeline(
-        _ parameters: GetUserTimelineParametersV1,
+        _ request: GetUserTimelineRequestV1,
         completionHandler: @escaping (Result<(Data, HTTPURLResponse), TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
-        return session.request(
-            .get,
-            path: "/1.1/statuses/user_timeline.json",
-            with: parameters,
-            completionHandler: completionHandler
-        )
+        return session.send(request, completionHandler: completionHandler)
     }
 
 }

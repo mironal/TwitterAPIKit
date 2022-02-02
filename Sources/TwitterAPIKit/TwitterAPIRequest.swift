@@ -1,7 +1,22 @@
 import Foundation
 
-public protocol TwitterAPIRequest {
+public enum HTTPMethod: String {
+    case get = "GET"
+    case post = "POST"
+    case delete = "DELETE"
 
-    func response(
-        completionHandler: @escaping (Result<Data, TwitterAPIKitError>, HTTPURLResponse) -> Void)
+    public var prefersQueryParameters: Bool {
+        switch self {
+        case .get, .delete:
+            return true
+        default:
+            return false
+        }
+    }
+}
+
+protocol TwitterAPIRequest {
+    var parameters: [String: Any]? { get }
+    var path: String { get }
+    var method: HTTPMethod { get }
 }

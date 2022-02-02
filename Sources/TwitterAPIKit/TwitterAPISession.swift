@@ -20,32 +20,30 @@ open class TwitterAPISession {
         self.environment = environment
     }
 
-    func request(
-        _ method: HTTPMethod,
-        path: String,
-        with parameters: TwitterAPIParameters,
+    func send(
+        _ request: TwitterAPIRequest,
         completionHandler: @escaping (Result<(Data, HTTPURLResponse), TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
-        var request = buildRequest(method, path: path, with: parameters)
+        var urlRequest = request.buildRequest(environment: environment)
 
         switch auth {
         case let .oauth(
             consumerKey: consumerKey, consumerSecret: consumerSecret, oauthToken: oauthToken,
             oauthTokenSecret: oauthTokenSecret):
             let authHeader = authorizationHeader(
-                for: method,
-                url: environment.baseURL.appendingPathComponent(path),
-                parameters: parameters.parameters ?? [:],
+                for: request.method,
+                url: environment.baseURL.appendingPathComponent(request.path),
+                parameters: request.parameters ?? [:],
                 isMediaUpload: false /* TODO*/,
                 consumerKey: consumerKey,
                 consumerSecret: consumerSecret,
                 oauthToken: oauthToken,
                 oauthTokenSecret: oauthTokenSecret
             )
-            request.setValue(authHeader, forHTTPHeaderField: "Authorization")
+            urlRequest.setValue(authHeader, forHTTPHeaderField: "Authorization")
         }
 
-        let task = session.dataTask(with: request) { data, response, error in
+        let task = session.dataTask(with: urlRequest) { data, response, error in
 
             guard let httpResposne = response as? HTTPURLResponse else {
                 return completionHandler(.failure(.nonHTTPResponse(error, data, response)))
@@ -62,14 +60,15 @@ open class TwitterAPISession {
         return task
     }
 
-    private func buildRequest(
-        _ method: HTTPMethod, path: String, with parameters: TwitterAPIParameters
-    ) -> URLRequest {
+}
+
+extension TwitterAPIRequest {
+    func buildRequest(environment: TwitterAPIEnvironment) -> URLRequest {
 
         var urlComponent = URLComponents(
             url: environment.baseURL.appendingPathComponent(path), resolvingAgainstBaseURL: true)!
 
-        if method.prefersQueryParameters, let parameters = parameters.parameters {
+        if method.prefersQueryParameters, let parameters = parameters {
             urlComponent.queryItems = parameters.map { .init(name: $0, value: "\($1)") }
         }
 
@@ -77,7 +76,7 @@ open class TwitterAPISession {
         request.httpMethod = method.rawValue
 
         if !method.prefersQueryParameters,
-            let parameters = parameters.parameters,
+            let parameters = parameters,
             let body = parameters.urlEncodedQueryString.data(using: .utf8)
         {
             request.httpBody = body
