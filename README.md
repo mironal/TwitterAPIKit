@@ -8,11 +8,16 @@ Unfortunately, I couldn't find any active Twitter API library for Swift at the m
 
 So, I decided to create one.
 
+## Policy
+
+- No dependencies
+
+
 ## TODO
 
 - [ ] Support API v1 endpoint
 - [ ] Support API v2 endpoint
 - [ ] Codable
 - [ ] Swift Concurrency
-
+- [ ] Document
 
