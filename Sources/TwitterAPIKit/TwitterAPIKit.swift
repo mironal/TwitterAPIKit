@@ -9,6 +9,14 @@ public enum TwitterAPIAuth {
     )
 }
 
+public struct TwitterAPIEnvironment {
+    let baseURL: URL
+
+    public init(url: URL = URL(string: "https://api.twitter.com")!) {
+        baseURL = url
+    }
+}
+
 open class TwitterAPIKit {
 
     public var v1: TwitterAPIv1 { return self }
@@ -20,11 +28,19 @@ open class TwitterAPIKit {
     }
 
     public init(
-        consumerKey: String, consumerSecret: String, oauthToken: String, oauthTokenSecret: String
+        consumerKey: String,
+        consumerSecret: String,
+        oauthToken: String,
+        oauthTokenSecret: String,
+        environment: TwitterAPIEnvironment = .init()
     ) {
         session = TwitterAPISession(
             auth: .oauth(
-                consumerKey: consumerKey, consumerSecret: consumerSecret, oauthToken: oauthToken,
-                oauthTokenSecret: oauthTokenSecret))
+                consumerKey: consumerKey,
+                consumerSecret: consumerSecret,
+                oauthToken: oauthToken,
+                oauthTokenSecret: oauthTokenSecret),
+            environment: environment
+        )
     }
 }
