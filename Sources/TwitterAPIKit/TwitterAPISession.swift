@@ -51,12 +51,16 @@ open class TwitterAPISession {
 
         switch auth {
         case let .oauth(
-            consumerKey: consumerKey, consumerSecret: consumerSecret, oauthToken: oauthToken,
-            oauthTokenSecret: oauthTokenSecret):
+            consumerKey: consumerKey,
+            consumerSecret: consumerSecret,
+            oauthToken: oauthToken,
+            oauthTokenSecret: oauthTokenSecret
+        ):
+
             let authHeader = authorizationHeader(
                 for: request.method,
                 url: request.requestURL(for: environment),
-                parameters: request.parameters ?? [:],
+                parameters: request.parameterForOAuth,
                 isMediaUpload: false /* TODO*/,
                 consumerKey: consumerKey,
                 consumerSecret: consumerSecret,
@@ -115,13 +119,30 @@ extension TwitterAPIRequest {
         var request = URLRequest(url: urlComponent.url!)
         request.httpMethod = method.rawValue
 
-        if !method.prefersQueryParameters,
-            let parameters = parameters,
-            let body = parameters.urlEncodedQueryString.data(using: .utf8)
-        {
-            request.httpBody = body
+        if !method.prefersQueryParameters, let parameters = parameters {
+
+            switch bodyContentType {
+            case .wwwFormUrlEncoded:
+                request.httpBody = parameters.urlEncodedQueryString.data(using: .utf8)!
+            case .json:
+                request.httpBody = try! JSONSerialization.data(
+                    withJSONObject: parameters, options: [])
+            }
+
+            request.setValue(bodyContentType.rawValue, forHTTPHeaderField: "Content-Type")
         }
         return request
+    }
+
+    var parameterForOAuth: [String: Any] {
+        guard let parameters = parameters else { return [:] }
+        switch bodyContentType {
+        case .wwwFormUrlEncoded:
+            return parameters
+        case .json:
+            // In JSON, parameter is empty
+            return [:]
+        }
     }
 }
 

@@ -3,6 +3,12 @@ import Foundation
 public protocol DirectMessageAPIv1 {
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/direct-messages/sending-and-receiving/api-reference/new-event
+    @discardableResult
+    func postDirectMessage(
+        _ request: PostDirectMessageRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask
+
     /// https://developer.twitter.com/en/docs/twitter-api/v1/direct-messages/sending-and-receiving/api-reference/delete-message-event
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/direct-messages/sending-and-receiving/api-reference/get-event
@@ -21,6 +27,13 @@ public protocol DirectMessageAPIv1 {
 }
 
 extension TwitterAPIKit: DirectMessageAPIv1 {
+
+    public func postDirectMessage(
+        _ request: PostDirectMessageRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
 
     public func getDirectMessage(
         _ request: GetDirectMessageRequestV1,
