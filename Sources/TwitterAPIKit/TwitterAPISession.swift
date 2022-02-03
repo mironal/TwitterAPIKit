@@ -3,19 +3,31 @@ import Foundation
 public enum TwitterAPIKitError: Error {
     case connectionError(Error?, Data?, URLResponse?)
 
-    case requestError(Error, Data?, HTTPURLResponse)
+    case requestError(Error, Data?, TwitterRateLimit, HTTPURLResponse)
 
-    case unacceptableStatusCode(code: Int, Data?, HTTPURLResponse)
+    case unacceptableStatusCode(code: Int, Data?, TwitterRateLimit, HTTPURLResponse)
 
     public var data: Data? {
         switch self {
         case .connectionError(_, let data, _),
-            .requestError(_, let data, _),
-            .unacceptableStatusCode(code: _, let data, _):
+            .requestError(_, let data, _, _),
+            .unacceptableStatusCode(code: _, let data, _, _):
             return data
         }
     }
+
+    public var rateLimit: TwitterRateLimit? {
+        switch self {
+        case .connectionError:
+            return nil
+        case .requestError(_, _, let rateLimit, _),
+            .unacceptableStatusCode(code: _, _, let rateLimit, _):
+            return rateLimit
+        }
+    }
 }
+
+public typealias TwitterAPISuccessReponse = (Data, TwitterRateLimit, HTTPURLResponse)
 
 open class TwitterAPISession {
 
@@ -33,7 +45,7 @@ open class TwitterAPISession {
 
     public func send(
         _ request: TwitterAPIRequest,
-        completionHandler: @escaping (Result<(Data, HTTPURLResponse), TwitterAPIKitError>) -> Void
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         var urlRequest = request.buildRequest(environment: environment)
 
@@ -55,26 +67,28 @@ open class TwitterAPISession {
         }
 
         let task = session.dataTask(with: urlRequest) { data, response, error in
-
             // May be "Error Domain=NSURLErrorDomain Code=-1009 The Internet connection appears to be offline."
             guard let httpResposne = response as? HTTPURLResponse else {
                 return completionHandler(.failure(.connectionError(error, data, response)))
             }
 
+            let rateLimit = TwitterRateLimit(header: httpResposne.allHeaderFields)
+
             if let error = error {
-                completionHandler(.failure(.requestError(error, data, httpResposne)))
+                completionHandler(.failure(.requestError(error, data, rateLimit, httpResposne)))
             }
 
             guard 200..<300 ~= httpResposne.statusCode else {
                 completionHandler(
                     .failure(
-                        .unacceptableStatusCode(code: httpResposne.statusCode, data, httpResposne)
+                        .unacceptableStatusCode(
+                            code: httpResposne.statusCode, data, rateLimit, httpResposne)
                     )
                 )
                 return
             }
 
-            completionHandler(.success((data ?? Data(), httpResposne)))
+            completionHandler(.success((data ?? Data(), rateLimit, httpResposne)))
         }
         task.resume()
 
