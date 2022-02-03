@@ -1,6 +1,6 @@
 import Foundation
 
-public class PostUpdateStatusRequestV1: TwitterAPIRequest {
+open class PostUpdateStatusRequestV1: TwitterAPIRequest {
 
     // TODO: Other parameters
 
@@ -14,7 +14,7 @@ public class PostUpdateStatusRequestV1: TwitterAPIRequest {
         return "/1.1/statuses/update.json"
     }
 
-    public var parameters: [String: Any]? {
+    open var parameters: [String: Any]? {
         var p = [String: Any]()
         p["status"] = status
         return p

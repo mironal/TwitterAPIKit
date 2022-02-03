@@ -1,6 +1,6 @@
 import Foundation
 
-public class GetTimelineRequestV1: TwitterAPIRequest {
+open class GetTimelineRequestV1: TwitterAPIRequest {
 
     public let count: Int?
     public let sinceID: String?
@@ -17,7 +17,7 @@ public class GetTimelineRequestV1: TwitterAPIRequest {
         fatalError("Not impl")
     }
 
-    public var parameters: [String: Any]? {
+    open var parameters: [String: Any]? {
         var p = [String: Any]()
         count.map { p["count"] = $0 }
         sinceID.map { p["since_id"] = $0 }

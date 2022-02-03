@@ -1,6 +1,6 @@
 import Foundation
 
-public class GetUserTimelineRequestV1: TwitterAPIRequest {
+open class GetUserTimelineRequestV1: TwitterAPIRequest {
     public enum Target {
         case userID(String)
         case screenName(String)
@@ -22,7 +22,7 @@ public class GetUserTimelineRequestV1: TwitterAPIRequest {
         return "/1.1/statuses/user_timeline.json"
     }
 
-    public var parameters: [String: Any]? {
+    open var parameters: [String: Any]? {
         var p = [String: Any]()
 
         switch target {

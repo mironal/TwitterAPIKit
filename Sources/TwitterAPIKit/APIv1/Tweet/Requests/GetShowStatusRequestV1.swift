@@ -2,7 +2,7 @@
 
 import Foundation
 
-public class GetShowStatusRequestV1: TwitterAPIRequest {
+open class GetShowStatusRequestV1: TwitterAPIRequest {
 
     public let id: String
     public let trimUser: Bool?
@@ -19,7 +19,7 @@ public class GetShowStatusRequestV1: TwitterAPIRequest {
         return "/1.1/statuses/show.json"
     }
 
-    public var parameters: [String: Any]? {
+    open var parameters: [String: Any]? {
         var p = [String: Any]()
 
         p["id"] = id

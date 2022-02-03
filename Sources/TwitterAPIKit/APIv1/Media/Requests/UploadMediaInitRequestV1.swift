@@ -1,6 +1,8 @@
 import Foundation
 
-public class UploadMediaInitRequestV1: TwitterAPIRequest {
+open class UploadMediaInitRequestV1: TwitterAPIRequest {
+
+    // TODO
 
     public var method: HTTPMethod {
         return .post
@@ -14,7 +16,7 @@ public class UploadMediaInitRequestV1: TwitterAPIRequest {
         return ""
     }
 
-    public var parameters: [String: Any]? {
+    open var parameters: [String: Any]? {
         return [:]
     }
 }
