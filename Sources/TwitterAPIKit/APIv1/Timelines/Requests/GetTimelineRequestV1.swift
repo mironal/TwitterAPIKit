@@ -9,14 +9,15 @@ public class GetTimelineRequestV1: TwitterAPIRequest {
     public let excludeReplies: Bool?
     public let includeEntities: Bool?
 
-    var method: HTTPMethod {
+    public var method: HTTPMethod {
         return .get
     }
-    var path: String {
+
+    public var path: String {
         fatalError("Not impl")
     }
 
-    var parameters: [String: Any]? {
+    public var parameters: [String: Any]? {
         var p = [String: Any]()
         count.map { p["count"] = $0 }
         sinceID.map { p["since_id"] = $0 }
@@ -45,13 +46,13 @@ public class GetTimelineRequestV1: TwitterAPIRequest {
 }
 
 public class GetHomeTimelineRequestV1: GetTimelineRequestV1 {
-    override var path: String {
+    public override var path: String {
         return "/1.1/statuses/home_timeline.json"
     }
 }
 
 public class GetMentionsTimelineRequestV1: GetTimelineRequestV1 {
-    override var path: String {
+    public override var path: String {
         return "/1.1/statuses/mentions_timeline.json"
     }
 }

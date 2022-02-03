@@ -15,7 +15,7 @@ public enum HTTPMethod: String {
     }
 }
 
-protocol TwitterAPIRequest {
+public protocol TwitterAPIRequest {
     var parameters: [String: Any]? { get }
     var path: String { get }
     var method: HTTPMethod { get }

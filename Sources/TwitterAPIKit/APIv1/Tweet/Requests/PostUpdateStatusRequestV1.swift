@@ -6,15 +6,15 @@ public class PostUpdateStatusRequestV1: TwitterAPIRequest {
 
     public let status: String
 
-    var method: HTTPMethod {
+    public var method: HTTPMethod {
         return .post
     }
 
-    var path: String {
+    public var path: String {
         return "/1.1/statuses/update.json"
     }
 
-    var parameters: [String: Any]? {
+    public var parameters: [String: Any]? {
         var p = [String: Any]()
         p["status"] = status
         return p

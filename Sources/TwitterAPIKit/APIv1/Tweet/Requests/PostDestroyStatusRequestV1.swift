@@ -6,14 +6,15 @@ public class PostDestroyStatusRequestV1: TwitterAPIRequest {
     public let id: String
     public let trimUser: Bool?
 
-    var method: HTTPMethod {
+    public var method: HTTPMethod {
         return .post
     }
-    var path: String {
+
+    public var path: String {
         return "/1.1/statuses/destroy/\(id).json"
     }
 
-    var parameters: [String: Any]? {
+    public var parameters: [String: Any]? {
         var p = [String: Any]()
         trimUser.map { p["trim_user"] = $0 }
         return p

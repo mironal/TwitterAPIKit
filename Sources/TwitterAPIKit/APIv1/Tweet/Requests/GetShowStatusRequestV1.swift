@@ -11,15 +11,15 @@ public class GetShowStatusRequestV1: TwitterAPIRequest {
     public let includeExtAltText: Bool?
     public let includeCardUri: Bool?
 
-    var method: HTTPMethod {
+    public var method: HTTPMethod {
         return .get
     }
 
-    var path: String {
+    public var path: String {
         return "/1.1/statuses/show.json"
     }
 
-    var parameters: [String: Any]? {
+    public var parameters: [String: Any]? {
         var p = [String: Any]()
 
         p["id"] = id

@@ -14,14 +14,15 @@ public class GetUserTimelineRequestV1: TwitterAPIRequest {
     public let excludeReplies: Bool?
     public let includeRTs: Bool?
 
-    var method: HTTPMethod {
+    public var method: HTTPMethod {
         return .get
     }
-    var path: String {
+
+    public var path: String {
         return "/1.1/statuses/user_timeline.json"
     }
 
-    var parameters: [String: Any]? {
+    public var parameters: [String: Any]? {
         var p = [String: Any]()
 
         switch target {

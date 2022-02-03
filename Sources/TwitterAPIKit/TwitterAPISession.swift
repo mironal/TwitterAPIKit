@@ -31,7 +31,7 @@ open class TwitterAPISession {
         self.environment = environment
     }
 
-    func send(
+    public func send(
         _ request: TwitterAPIRequest,
         completionHandler: @escaping (Result<(Data, HTTPURLResponse), TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
