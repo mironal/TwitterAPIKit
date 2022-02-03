@@ -1,9 +1,20 @@
 import Foundation
 
 public enum TwitterAPIKitError: Error {
-    case nonHTTPResponse(Error?, Data?, URLResponse?)
+    case connectionError(Error?, Data?, URLResponse?)
 
     case requestError(Error, Data?, HTTPURLResponse)
+
+    case unacceptableStatusCode(code: Int, Data?, HTTPURLResponse)
+
+    public var data: Data? {
+        switch self {
+        case .connectionError(_, let data, _),
+            .requestError(_, let data, _),
+            .unacceptableStatusCode(code: _, let data, _):
+            return data
+        }
+    }
 }
 
 open class TwitterAPISession {
@@ -45,12 +56,22 @@ open class TwitterAPISession {
 
         let task = session.dataTask(with: urlRequest) { data, response, error in
 
+            // May be "Error Domain=NSURLErrorDomain Code=-1009 The Internet connection appears to be offline."
             guard let httpResposne = response as? HTTPURLResponse else {
-                return completionHandler(.failure(.nonHTTPResponse(error, data, response)))
+                return completionHandler(.failure(.connectionError(error, data, response)))
             }
 
             if let error = error {
                 completionHandler(.failure(.requestError(error, data, httpResposne)))
+            }
+
+            guard 200..<300 ~= httpResposne.statusCode else {
+                completionHandler(
+                    .failure(
+                        .unacceptableStatusCode(code: httpResposne.statusCode, data, httpResposne)
+                    )
+                )
+                return
             }
 
             completionHandler(.success((data ?? Data(), httpResposne)))
