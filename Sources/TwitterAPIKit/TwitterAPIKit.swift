@@ -9,11 +9,21 @@ public enum TwitterAPIAuth {
     )
 }
 
-public struct TwitterAPIEnvironment {
-    let baseURL: URL
+public enum TwitterBaseURLType {
+    case api
+    case upload
+}
 
-    public init(url: URL = URL(string: "https://api.twitter.com")!) {
-        baseURL = url
+public struct TwitterAPIEnvironment {
+    let apiURL: URL
+    let uploadURL: URL
+
+    public init(
+        apiURL: URL = URL(string: "https://api.twitter.com")!,
+        uploadURL: URL = URL(string: "https://upload.twitter.com")!
+    ) {
+        self.apiURL = apiURL
+        self.uploadURL = uploadURL
     }
 }
 

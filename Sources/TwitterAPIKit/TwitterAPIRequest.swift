@@ -16,7 +16,14 @@ public enum HTTPMethod: String {
 }
 
 public protocol TwitterAPIRequest {
-    var parameters: [String: Any]? { get }
-    var path: String { get }
     var method: HTTPMethod { get }
+    var baseURLType: TwitterBaseURLType { get }
+    var path: String { get }
+    var parameters: [String: Any]? { get }
+}
+
+extension TwitterAPIRequest {
+    public var baseURLType: TwitterBaseURLType {
+        return .api
+    }
 }

@@ -43,7 +43,7 @@ open class TwitterAPISession {
             oauthTokenSecret: oauthTokenSecret):
             let authHeader = authorizationHeader(
                 for: request.method,
-                url: environment.baseURL.appendingPathComponent(request.path),
+                url: request.requestURL(for: environment),
                 parameters: request.parameters ?? [:],
                 isMediaUpload: false /* TODO*/,
                 consumerKey: consumerKey,
@@ -80,15 +80,20 @@ open class TwitterAPISession {
 
         return task
     }
-
 }
 
 extension TwitterAPIRequest {
+
+    func requestURL(for environment: TwitterAPIEnvironment) -> URL {
+        return environment.baseURL(for: baseURLType).appendingPathComponent(path)
+    }
+
     func buildRequest(environment: TwitterAPIEnvironment) -> URLRequest {
 
         var urlComponent = URLComponents(
-            url: environment.baseURL.appendingPathComponent(path), resolvingAgainstBaseURL: true)!
-
+            url: requestURL(for: environment),
+            resolvingAgainstBaseURL: true
+        )!
         if method.prefersQueryParameters, let parameters = parameters {
             urlComponent.queryItems = parameters.map { .init(name: $0, value: "\($1)") }
         }
@@ -103,5 +108,14 @@ extension TwitterAPIRequest {
             request.httpBody = body
         }
         return request
+    }
+}
+
+extension TwitterAPIEnvironment {
+    func baseURL(for type: TwitterBaseURLType) -> URL {
+        switch type {
+        case .api: return apiURL
+        case .upload: return uploadURL
+        }
     }
 }
