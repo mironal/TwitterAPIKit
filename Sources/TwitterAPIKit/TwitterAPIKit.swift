@@ -27,11 +27,6 @@ public struct TwitterAPIEnvironment {
     }
 }
 
-public enum TwitterUserIdentifier {
-    case userID(String)
-    case screenName(String)
-}
-
 open class TwitterAPIKit {
 
     public var v1: TwitterAPIv1 { return self }

@@ -20,12 +20,7 @@ open class GetFavoritesRequestV1: TwitterAPIRequest {
     open var parameters: [String: Any]? {
         var p = [String: Any]()
 
-        switch target {
-        case .userID(let string):
-            p["user_id"] = string
-        case .screenName(let string):
-            p["screen_name"] = string
-        }
+        target.apiKeyValue { p[$0] = $1 }
         count.map { p["count"] = $0 }
         sinceID.map { p["since_id"] = $0 }
         maxID.map { p["max_id"] = $0 }
