@@ -67,7 +67,6 @@ open class TwitterAPISession {
                 for: request.method,
                 url: request.requestURL(for: environment),
                 parameters: request.parameterForOAuth,
-                isMediaUpload: false,  // Delete ?
                 consumerKey: consumerKey,
                 consumerSecret: consumerSecret,
                 oauthToken: oauthToken,
@@ -205,13 +204,6 @@ extension TwitterAPIRequest {
             return [:]
         }
     }
-
-    var isUploadMedia: Bool {
-        if case .multipartFormData = bodyContentType {
-            return true
-        }
-        return false
-    }
 }
 
 extension TwitterAPIEnvironment {
@@ -228,7 +220,7 @@ extension Data {
         if let data = string.data(using: .utf8) {
             append(data)
         } else {
-            fatalError()
+            fatalError("Cannnot convert data: \(string)")
         }
     }
 }

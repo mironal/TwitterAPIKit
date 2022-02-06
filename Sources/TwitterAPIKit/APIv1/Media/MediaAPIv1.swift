@@ -23,6 +23,7 @@ public protocol MediaAPIv1 {
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
+    /// Utility method for split uploading of large files.
     @discardableResult
     func uploadMediaAppendSplitChunks(
         _ request: UploadMediaAppendRequestV1,
