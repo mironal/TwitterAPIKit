@@ -17,7 +17,16 @@ public enum HTTPMethod: String {
 
 public enum BodyContentType: String {
     case wwwFormUrlEncoded = "application/x-www-form-urlencoded"
+
+    /// In this case use MultipartFormDataPart as a parameter
+    /// example: UploadMediaAppendRequestV1.swift
+    case multipartFormData = "multipart/form-data"
     case json = "application/json"
+}
+
+public enum MultipartFormDataPart {
+    case value(name: String, value: Any)  // value is stringified with "String(describing:)"
+    case data(name: String, value: Data, filename: String, mimeType: String)
 }
 
 public protocol TwitterAPIRequest {
