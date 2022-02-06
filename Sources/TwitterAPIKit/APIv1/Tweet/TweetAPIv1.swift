@@ -29,6 +29,9 @@ public protocol TweetAPIv1 {
         _ request: GetLookupStatusesRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/get-statuses-oembed
+    // TODO↑
 }
 
 extension TwitterAPIKit: TweetAPIv1 {
