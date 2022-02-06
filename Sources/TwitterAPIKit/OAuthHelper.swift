@@ -8,7 +8,6 @@ func authorizationHeader(
     for method: HTTPMethod,
     url: URL,
     parameters: [String: Any],
-    isMediaUpload: Bool,
     consumerKey: String,
     consumerSecret: String,
     oauthToken: String?,
@@ -31,10 +30,8 @@ func authorizationHeader(
 
     let combinedParameters = authorizationParameters.merging(parameters) { $1 }
 
-    let finalParameters = isMediaUpload ? authorizationParameters : combinedParameters
-
     authorizationParameters["oauth_signature"] = oauthSignature(
-        for: method, url: url, parameters: finalParameters, consumerSecret: consumerSecret,
+        for: method, url: url, parameters: combinedParameters, consumerSecret: consumerSecret,
         oauthTokenSecret: oauthTokenSecret)
 
     let authorizationParameterComponents = authorizationParameters.urlEncodedQueryString.components(

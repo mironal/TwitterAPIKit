@@ -27,7 +27,13 @@ public enum TwitterAPIKitError: Error {
     }
 }
 
-public typealias TwitterAPISuccessReponse = (Data, TwitterRateLimit, HTTPURLResponse)
+public typealias TwitterAPISuccessReponse = (data: Data, rateLimit: TwitterRateLimit, response: HTTPURLResponse)
+public typealias TwitterAPISerializedSuccessResponse = (
+    data: Any, rateLimit: TwitterRateLimit, response: HTTPURLResponse
+)
+public typealias TwitterAPIDecodedSuccessResponse<D: Decodable> = (
+    data: D, rateLimit: TwitterRateLimit, response: HTTPURLResponse
+)
 
 open class TwitterAPISession {
 
@@ -61,7 +67,6 @@ open class TwitterAPISession {
                 for: request.method,
                 url: request.requestURL(for: environment),
                 parameters: request.parameterForOAuth,
-                isMediaUpload: false /* TODO*/,
                 consumerKey: consumerKey,
                 consumerSecret: consumerSecret,
                 oauthToken: oauthToken,
@@ -123,24 +128,79 @@ extension TwitterAPIRequest {
 
             switch bodyContentType {
             case .wwwFormUrlEncoded:
+                request.setValue(bodyContentType.rawValue, forHTTPHeaderField: "Content-Type")
                 request.httpBody = parameters.urlEncodedQueryString.data(using: .utf8)!
+            case .multipartFormData:
+
+                guard let parts = Array(parameters.values) as? [MultipartFormDataPart] else {
+                    fatalError(
+                        "Parameter must be specified in `MultipartFormDataPart` for `BodyContentType.multipartFormData`."
+                    )
+                }
+
+                let boundary = "TwitterAPIKit-\(UUID().uuidString)"
+                let contentType = "\(BodyContentType.multipartFormData.rawValue); boundary=\(boundary)"
+                request.setValue(contentType, forHTTPHeaderField: "Content-Type")
+
+                request.httpBody = multipartFormData(boundary: boundary, parts: parts)
+                request.setValue(
+                    String(request.httpBody?.count ?? 0), forHTTPHeaderField: "Content-Length")
             case .json:
+                request.setValue(bodyContentType.rawValue, forHTTPHeaderField: "Content-Type")
                 request.httpBody = try! JSONSerialization.data(
                     withJSONObject: parameters, options: [])
             }
-
-            request.setValue(bodyContentType.rawValue, forHTTPHeaderField: "Content-Type")
         }
         return request
     }
 
+    func multipartFormData(boundary: String, parts: [MultipartFormDataPart]) -> Data {
+        // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types#multipartform-data
+
+        var body = Data()
+
+        let boundaryDelimiter = "--\(boundary)"
+        let lineBreak = "\r\n"
+
+        for part in parts {
+            body.append(boundaryDelimiter)
+            body.append(lineBreak)
+
+            switch part {
+            case let .value(name: name, value: value):
+                body.append("Content-Disposition: form-data; name=\"\(name)\"")
+                body.append(lineBreak)
+                body.append(lineBreak)
+                body.append(String(describing: value))
+                body.append(lineBreak)
+
+            case let .data(name: name, value: value, filename: filename, mimeType: mimeType):
+                body.append(
+                    "Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(filename)\""
+                )
+                body.append(lineBreak)
+                if !mimeType.isEmpty {
+                    body.append("Content-Type: \(mimeType)")
+                }
+                body.append(lineBreak)
+                body.append(lineBreak)
+                body.append(value)
+                body.append(lineBreak)
+            }
+        }
+        body.append(boundaryDelimiter)
+        body.append("--")
+        body.append(lineBreak)
+
+        return body
+    }
+
     var parameterForOAuth: [String: Any] {
-        guard let parameters = parameters else { return [:] }
         switch bodyContentType {
         case .wwwFormUrlEncoded:
-            return parameters
-        case .json:
-            // In JSON, parameter is empty
+            return parameters ?? [:]
+        case .json, .multipartFormData:
+            // parameter is empty
             return [:]
         }
     }
@@ -151,6 +211,16 @@ extension TwitterAPIEnvironment {
         switch type {
         case .api: return apiURL
         case .upload: return uploadURL
+        }
+    }
+}
+
+extension Data {
+    mutating func append(_ string: String) {
+        if let data = string.data(using: .utf8) {
+            append(data)
+        } else {
+            fatalError("Cannnot convert data: \(string)")
         }
     }
 }
