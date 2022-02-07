@@ -8,12 +8,12 @@ public enum TwitterUserIdentifier {
 // MARK: - extensions
 
 extension TwitterUserIdentifier {
-    func apiKeyValue(_ block: (_ key: String, _ value: String) -> Void) {
+    func bind(param: inout [String: Any]) {
         switch self {
         case .userID(let string):
-            block("user_id", string)
+            param["user_id"] = string
         case .screenName(let string):
-            block("screen_name", string)
+            param["screen_name"] = string
         }
     }
 }
