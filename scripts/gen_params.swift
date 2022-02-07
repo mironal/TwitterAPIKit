@@ -42,7 +42,7 @@ func exec() {
         return
     }
 
-    let regex = try! NSRegularExpression(pattern: "[^ ] ([a-zA-Z]*?): ")
+    let regex = try! NSRegularExpression(pattern: "[^ ] ([a-zA-Z\\d]*?): ")
 
     let params: [String] = input.split(separator: "\n")
         .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
