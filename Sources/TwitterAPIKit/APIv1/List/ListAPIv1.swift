@@ -132,6 +132,11 @@ public protocol ListAPIv1 {
     ) -> URLSessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-members-create_all
+    @discardableResult
+    func postListMembersCreateAll(
+        _ request: PostListsMembersCreateAllRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-members-destroy
 
@@ -233,6 +238,13 @@ extension TwitterAPIKit: ListAPIv1 {
 
     public func postListMembersCreate(
         _ request: PostListsMembersCreateRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
+    public func postListMembersCreateAll(
+        _ request: PostListsMembersCreateAllRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
