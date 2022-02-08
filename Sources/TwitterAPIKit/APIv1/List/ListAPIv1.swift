@@ -1,43 +1,5 @@
 import Foundation
 
-public enum TwitterListIdentifierV1 {
-    case listID(String)
-    case slug(slug: String, owner: TwitterUserIdentifier)
-}
-
-extension TwitterListIdentifierV1 {
-    func bind(param: inout [String: Any]) {
-        switch self {
-        case .listID(let string):
-            param["list_id"] = string
-        case .slug(let slug, let owner):
-            param["slug"] = slug
-            switch owner {
-            case .userID(let string):
-                param["owner_id"] = string
-            case .screenName(let string):
-                param["owner_screen_name"] = string
-            }
-        }
-    }
-}
-
-public enum TwitterListModeV1 {
-    case `public`
-    case `private`
-}
-
-extension TwitterListModeV1 {
-    func bind(param: inout [String: Any]) {
-        switch self {
-        case .public:
-            param["mode"] = "public"
-        case .private:
-            param["mode"] = "private"
-        }
-    }
-}
-
 public protocol ListAPIv1 {
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-list
@@ -308,5 +270,43 @@ extension TwitterAPIKit: ListAPIv1 {
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
+    }
+}
+
+public enum TwitterListIdentifierV1 {
+    case listID(String)
+    case slug(slug: String, owner: TwitterUserIdentifier)
+}
+
+extension TwitterListIdentifierV1 {
+    func bind(param: inout [String: Any]) {
+        switch self {
+        case .listID(let string):
+            param["list_id"] = string
+        case .slug(let slug, let owner):
+            param["slug"] = slug
+            switch owner {
+            case .userID(let string):
+                param["owner_id"] = string
+            case .screenName(let string):
+                param["owner_screen_name"] = string
+            }
+        }
+    }
+}
+
+public enum TwitterListModeV1 {
+    case `public`
+    case `private`
+}
+
+extension TwitterListModeV1 {
+    func bind(param: inout [String: Any]) {
+        switch self {
+        case .public:
+            param["mode"] = "public"
+        case .private:
+            param["mode"] = "private"
+        }
     }
 }
