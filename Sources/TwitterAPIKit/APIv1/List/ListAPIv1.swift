@@ -4,7 +4,7 @@ public protocol ListAPIv1 {
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-list
     @discardableResult
-    func getList(
+    func getLists(
         _ request: GetListsListRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
@@ -18,7 +18,7 @@ public protocol ListAPIv1 {
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-members-show
     @discardableResult
-    func getListMembersShow(
+    func getListMember(
         _ request: GetListsMembersShowRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
@@ -32,14 +32,14 @@ public protocol ListAPIv1 {
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-ownerships
     @discardableResult
-    func getListMemberships(
+    func getListOwnerships(
         _ request: GetListsOwnershipsRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-show
     @discardableResult
-    func getListShow(
+    func getList(
         _ request: GetListsShowRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
@@ -60,7 +60,7 @@ public protocol ListAPIv1 {
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-subscribers-show
     @discardableResult
-    func getListSubscribersShow(
+    func getListSubscriber(
         _ request: GetListsSubscribersShowRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
@@ -74,63 +74,63 @@ public protocol ListAPIv1 {
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-create
     @discardableResult
-    func postListCreate(
+    func postCreateList(
         _ request: PostListsCreateRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-destroy
     @discardableResult
-    func postListDestroy(
+    func postDestroyList(
         _ request: PostListsDestroyRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-members-create
     @discardableResult
-    func postListMembersCreate(
+    func postAddListMember(
         _ request: PostListsMembersCreateRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-members-create_all
     @discardableResult
-    func postListMembersCreateAll(
+    func postAddListMembers(
         _ request: PostListsMembersCreateAllRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-members-destroy
     @discardableResult
-    func postListMembersDestroy(
+    func postRemoveListMember(
         _ request: PostListsMembersDestroyRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-members-destroy_all
     @discardableResult
-    func postListMembersDestroyAll(
+    func postRemoveListMembers(
         _ request: PostListsMembersDestroyAllRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-subscribers-create
     @discardableResult
-    func postListSubscriberCreate(
+    func postSubscribeList(
         _ request: PostListsSubscribersCreateRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-subscribers-destroy
     @discardableResult
-    func postListSubscriberDestroy(
+    func postUnsubscribeList(
         _ request: PostListsSubscribersDestroyRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-update
     @discardableResult
-    func postListUpdate(
+    func postUpdateList(
         _ request: PostListsUpdateRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
@@ -139,7 +139,7 @@ public protocol ListAPIv1 {
 
 extension TwitterAPIKit: ListAPIv1 {
 
-    public func getList(
+    public func getLists(
         _ request: GetListsListRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
@@ -153,7 +153,7 @@ extension TwitterAPIKit: ListAPIv1 {
         return session.send(request, completionHandler: completionHandler)
     }
 
-    public func getListMembersShow(
+    public func getListMember(
         _ request: GetListsMembersShowRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
@@ -167,14 +167,14 @@ extension TwitterAPIKit: ListAPIv1 {
         return session.send(request, completionHandler: completionHandler)
     }
 
-    public func getListMemberships(
+    public func getListOwnerships(
         _ request: GetListsOwnershipsRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
-    public func getListShow(
+    public func getList(
         _ request: GetListsShowRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
@@ -195,7 +195,7 @@ extension TwitterAPIKit: ListAPIv1 {
         return session.send(request, completionHandler: completionHandler)
     }
 
-    public func getListSubscribersShow(
+    public func getListSubscriber(
         _ request: GetListsSubscribersShowRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
@@ -209,63 +209,63 @@ extension TwitterAPIKit: ListAPIv1 {
         return session.send(request, completionHandler: completionHandler)
     }
 
-    public func postListCreate(
+    public func postCreateList(
         _ request: PostListsCreateRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
-    public func postListDestroy(
+    public func postDestroyList(
         _ request: PostListsDestroyRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
-    public func postListMembersCreate(
+    public func postAddListMember(
         _ request: PostListsMembersCreateRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
-    public func postListMembersCreateAll(
+    public func postAddListMembers(
         _ request: PostListsMembersCreateAllRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
-    public func postListMembersDestroy(
+    public func postRemoveListMember(
         _ request: PostListsMembersDestroyRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
-    public func postListMembersDestroyAll(
+    public func postRemoveListMembers(
         _ request: PostListsMembersDestroyAllRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
-    public func postListSubscriberCreate(
+    public func postSubscribeList(
         _ request: PostListsSubscribersCreateRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
-    public func postListSubscriberDestroy(
+    public func postUnsubscribeList(
         _ request: PostListsSubscribersDestroyRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
-    public func postListUpdate(
+    public func postUpdateList(
         _ request: PostListsUpdateRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
