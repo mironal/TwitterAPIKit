@@ -1,8 +1,8 @@
 import CommonCrypto
 import Foundation
 
-private let OAUTH_VERSION = "1.0"
-private let OAUTH_SIGNATURE_METHOD = "HMAC-SHA1"
+private let oauthVersion = "1.0"
+private let oauthSignatureMethod = "HMAC-SHA1"
 
 func authorizationHeader(
     for method: HTTPMethod,
@@ -14,8 +14,8 @@ func authorizationHeader(
     oauthTokenSecret: String?
 ) -> String {
     var authorizationParameters = [String: Any]()
-    authorizationParameters["oauth_version"] = OAUTH_VERSION
-    authorizationParameters["oauth_signature_method"] = OAUTH_SIGNATURE_METHOD
+    authorizationParameters["oauth_version"] = oauthVersion
+    authorizationParameters["oauth_signature_method"] = oauthSignatureMethod
     authorizationParameters["oauth_consumer_key"] = consumerKey
     authorizationParameters["oauth_timestamp"] = String(Int(Date().timeIntervalSince1970))
     authorizationParameters["oauth_nonce"] = UUID().uuidString

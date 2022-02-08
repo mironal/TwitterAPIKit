@@ -14,6 +14,7 @@ open class GetRetweetersRequestV1: TwitterAPIRequest {
     }
 
     public var path: String {
+
         return "/1.1/statuses/retweeters/ids.json"
     }
 

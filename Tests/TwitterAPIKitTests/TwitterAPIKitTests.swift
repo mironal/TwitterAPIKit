@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import TwitterAPIKit
 
 final class TwitterAPIKitTests: XCTestCase {
@@ -6,6 +7,6 @@ final class TwitterAPIKitTests: XCTestCase {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        XCTAssertEqual(TwitterAPIKit().text, "Hello, World!")
+        // XCTAssertEqual(TwitterAPIKit().text, "Hello, World!")
     }
 }

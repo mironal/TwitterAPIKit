@@ -5,3 +5,4 @@ public typealias TwitterAPIv1 =
     & MediaAPIv1
     & FavoriteAPIv1
     & RetweetAPIV1
+    & ListAPIv1

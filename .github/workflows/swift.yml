@@ -1,0 +1,26 @@
+name: Swift
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: BuildTools/.build
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/BuildTools/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+      - name: Lint
+        run: swift run -c release --package-path BuildTools swift-format lint -p --strict --recursive ./Sources ./Tests ./scripts
+      - name: Build
+        run: swift build -v
+      - name: Run tests
+        run: swift test -v

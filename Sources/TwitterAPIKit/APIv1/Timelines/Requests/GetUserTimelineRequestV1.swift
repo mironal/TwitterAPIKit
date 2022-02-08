@@ -20,8 +20,7 @@ open class GetUserTimelineRequestV1: TwitterAPIRequest {
 
     open var parameters: [String: Any]? {
         var p = [String: Any]()
-
-        target.apiKeyValue { p[$0] = $1 }
+        target.bind(param: &p)
         count.map { p["count"] = $0 }
         sinceID.map { p["since_id"] = $0 }
         maxID.map { p["max_id"] = $0 }
