@@ -63,7 +63,12 @@ func exec() {
             guard let name = names.first else { return nil }
             let snakeCaseName = name.preperForSpecialPattern().camelCaseToSnakeCase()
 
-            if line.hasSuffix("?") {
+            if line.contains(": Twitter") {
+                // ex: public let users: TwitterUsersIdentifier
+
+                let optional = line.hasSuffix("?") ? "?" : ""
+                return "\(name)\(optional).bind(param: &p)"
+            } else if line.hasSuffix("?") {
                 if line.hasSuffix("]?") {
                     // may be optional array. ex: [String]?
                     // In the case of Dictionary, it breaks.
@@ -73,11 +78,6 @@ func exec() {
 
                 // optional value
                 return "\(name).map { p[\"\(snakeCaseName)\"] = $0 }"
-            } else if line.contains(": Twitter") {
-                // ex: public let users: TwitterUsersIdentifier
-
-                let optional = line.hasSuffix("?") ? "?" : ""
-                return "\(name)\(optional).bind(param: &p)"
 
             } else {
                 return "p[\"\(snakeCaseName)\"] = \(name) "
