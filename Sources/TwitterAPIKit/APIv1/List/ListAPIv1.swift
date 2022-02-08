@@ -167,6 +167,11 @@ public protocol ListAPIv1 {
     ) -> URLSessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/post-lists-update
+    @discardableResult
+    func postListUpdate(
+        _ request: PostListsUpdateRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask
 
 }
 
@@ -293,6 +298,13 @@ extension TwitterAPIKit: ListAPIv1 {
 
     public func postListSubscriberDestroy(
         _ request: PostListsSubscribersDestroyRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
+    public func postListUpdate(
+        _ request: PostListsUpdateRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
