@@ -6,3 +6,4 @@ public typealias TwitterAPIv1 =
     & FavoriteAPIv1
     & RetweetAPIV1
     & ListAPIv1
+    & BlockAndMuteAPIv1
