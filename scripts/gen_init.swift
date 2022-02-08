@@ -1,6 +1,4 @@
-
 import Foundation
-
 
 /*
  public let target: TwitterUserIdentifier
@@ -30,7 +28,8 @@ func exec() {
     let pairs = input.split(separator: "\n")
         .map { line -> String in line.trimmingCharacters(in: .whitespacesAndNewlines) }
         .compactMap { line -> (name: String, type: String)? in
-            guard let match = regex.firstMatch(in: line, options: [], range: .init(location: 0, length: line.count)) else {
+            guard let match = regex.firstMatch(in: line, options: [], range: .init(location: 0, length: line.count))
+            else {
                 return nil
             }
             guard match.numberOfRanges == 3 else {
@@ -56,12 +55,12 @@ func exec() {
     }
 
     let body = """
-public init(
-    \(initArgs.joined(separator: ",\n    "))
-) {
-    \(initBody.joined(separator: "\n    "))
-}
-"""
+        public init(
+            \(initArgs.joined(separator: ",\n    "))
+        ) {
+            \(initBody.joined(separator: "\n    "))
+        }
+        """
 
     print(body)
 }

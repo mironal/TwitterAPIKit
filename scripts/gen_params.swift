@@ -16,6 +16,18 @@ extension String {
     }
 }
 
+extension String {
+    func preperForSpecialPattern() -> String {
+        // "XXs" -> "XXS", ex) IDs, RTs -> IDS, RTS
+        let pattern = "([A-Z]{2})(s)$"
+        let regex = try? NSRegularExpression(pattern: pattern, options: [])
+        guard let match = regex?.firstMatch(in: self, options: [], range: NSRange(location: 0, length: count)),
+            let range = Range(match.range, in: self)
+        else { return self }
+        return replacingCharacters(in: range, with: self[range].uppercased())
+    }
+}
+
 extension NSRegularExpression {
     func matches(in str: String, at index: Int) -> [String] {
         return matches(in: str, options: [], range: .init(location: 0, length: str.utf16.count))
@@ -49,11 +61,24 @@ func exec() {
         .compactMap { line in
             let names = regex.matches(in: line, at: 1)
             guard let name = names.first else { return nil }
-            let snakeCaseName = name.camelCaseToSnakeCase()
+            let snakeCaseName = name.preperForSpecialPattern().camelCaseToSnakeCase()
 
             if line.hasSuffix("?") {
+                if line.hasSuffix("]?") {
+                    // may be optional array. ex: [String]?
+                    // In the case of Dictionary, it breaks.
+                    // additionalOwners.map { p["additional_owners"] = $0.joined(separator: ",") }
+                    return "\(name).map { p[\"\(snakeCaseName)\"] = $0.joined(separator: \",\") }"
+                }
+
                 // optional value
                 return "\(name).map { p[\"\(snakeCaseName)\"] = $0 }"
+            } else if line.contains(": Twitter") {
+                // ex: public let users: TwitterUsersIdentifier
+
+                let optional = line.hasSuffix("?") ? "?" : ""
+                return "\(name)\(optional).bind(param: &p)"
+
             } else {
                 return "p[\"\(snakeCaseName)\"] = \(name) "
             }
@@ -62,4 +87,3 @@ func exec() {
 }
 
 exec()
-
