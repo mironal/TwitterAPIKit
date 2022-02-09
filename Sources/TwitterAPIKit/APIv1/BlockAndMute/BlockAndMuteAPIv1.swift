@@ -43,6 +43,13 @@ public protocol BlockAndMuteAPIv1 {
         _ request: PostMutesUsersCreateRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/mute-block-report-users/api-reference/post-mutes-users-destroy
+    func postUnmuteUser(
+        _ request: PostMutesUsersDestroyRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask
+
 }
 
 extension TwitterAPIKit: BlockAndMuteAPIv1 {
@@ -91,6 +98,13 @@ extension TwitterAPIKit: BlockAndMuteAPIv1 {
 
     public func postMuteUser(
         _ request: PostMutesUsersCreateRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
+    public func postUnmuteUser(
+        _ request: PostMutesUsersDestroyRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
