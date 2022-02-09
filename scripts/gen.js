@@ -72,11 +72,6 @@
             return "${url.replace("https://api.twitter.com", "")}"
         }
     
-         open var parameters: [String: Any]? {
-            var p = [String: Any]()
-    
-            return p
-        }
     }
     `
     console.log(source)
