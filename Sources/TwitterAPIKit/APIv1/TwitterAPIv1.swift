@@ -7,3 +7,4 @@ public typealias TwitterAPIv1 =
     & RetweetAPIV1
     & ListAPIv1
     & BlockAndMuteAPIv1
+    & FriendshipsAPIV1
