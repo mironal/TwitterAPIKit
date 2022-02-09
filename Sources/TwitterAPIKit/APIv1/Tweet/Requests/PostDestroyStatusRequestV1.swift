@@ -20,7 +20,7 @@ open class PostDestroyStatusRequestV1: TwitterAPIRequest {
         return p
     }
 
-    public init(id: String, trimUser: Bool? = nil) {
+    public init(id: String, trimUser: Bool? = .none) {
         self.id = id
         self.trimUser = trimUser
     }

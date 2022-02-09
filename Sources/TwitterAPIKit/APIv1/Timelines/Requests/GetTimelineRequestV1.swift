@@ -29,12 +29,12 @@ open class GetTimelineRequestV1: TwitterAPIRequest {
     }
 
     public init(
-        count: Int? = nil,
-        sinceID: String? = nil,
-        maxID: String? = nil,
-        trimUser: Bool? = nil,
-        excludeReplies: Bool? = nil,
-        includeEntities: Bool? = nil
+        count: Int? = .none,
+        sinceID: String? = .none,
+        maxID: String? = .none,
+        trimUser: Bool? = .none,
+        excludeReplies: Bool? = .none,
+        includeEntities: Bool? = .none
     ) {
         self.count = count
         self.sinceID = sinceID

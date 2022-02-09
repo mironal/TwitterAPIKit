@@ -34,8 +34,8 @@ open class UploadMediaInitRequestV1: TwitterAPIRequest {
     public init(
         totalBytes: Int,
         mediaType: String,
-        mediaCategory: String? = nil,
-        additionalOwners: [String]? = nil
+        mediaCategory: String? = .none,
+        additionalOwners: [String]? = .none
     ) {
         self.totalBytes = totalBytes
         self.mediaType = mediaType
