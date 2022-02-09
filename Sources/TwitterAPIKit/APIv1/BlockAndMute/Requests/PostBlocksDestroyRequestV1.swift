@@ -3,7 +3,7 @@ import Foundation
 /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/mute-block-report-users/api-reference/post-blocks-destroy
 open class PostBlocksDestroyRequestV1: TwitterAPIRequest {
 
-    public let user: TwitterUserIdentifier
+    public let user: TwitterUserIdentifierV1
     public let includeEntities: Bool?
     public let skipStatus: Bool?
 
@@ -24,7 +24,7 @@ open class PostBlocksDestroyRequestV1: TwitterAPIRequest {
     }
 
     public init(
-        user: TwitterUserIdentifier,
+        user: TwitterUserIdentifierV1,
         includeEntities: Bool? = .none,
         skipStatus: Bool? = .none
     ) {

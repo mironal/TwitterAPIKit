@@ -1,13 +1,13 @@
 import Foundation
 
 /*
- public let target: TwitterUserIdentifier
+ public let target: TwitterUserIdentifierV1
  public let count: Int?
 
  ↓
 
  public init(
-    target: TwitterUserIdentifier,
+    target: TwitterUserIdentifierV1,
     count: Int? = none
  ) {
     self.target = target

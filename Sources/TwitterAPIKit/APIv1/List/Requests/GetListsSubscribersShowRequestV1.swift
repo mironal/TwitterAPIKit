@@ -4,7 +4,7 @@ import Foundation
 open class GetListsSubscribersShowRequestV1: TwitterAPIRequest {
 
     public let list: TwitterListIdentifierV1
-    public let user: TwitterUserIdentifier
+    public let user: TwitterUserIdentifierV1
     public let includeEntities: Bool?
     public let skipStatus: Bool?
 
@@ -27,7 +27,7 @@ open class GetListsSubscribersShowRequestV1: TwitterAPIRequest {
 
     public init(
         list: TwitterListIdentifierV1,
-        user: TwitterUserIdentifier,
+        user: TwitterUserIdentifierV1,
         includeEntities: Bool? = .none,
         skipStatus: Bool? = .none
     ) {

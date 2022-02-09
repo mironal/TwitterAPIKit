@@ -3,7 +3,7 @@ import Foundation
 /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/get-favorites-list
 open class GetFavoritesRequestV1: TwitterAPIRequest {
 
-    public let target: TwitterUserIdentifier
+    public let target: TwitterUserIdentifierV1
     public let count: Int?
     public let sinceID: String?
     public let maxID: String?
@@ -30,7 +30,7 @@ open class GetFavoritesRequestV1: TwitterAPIRequest {
     }
 
     public init(
-        target: TwitterUserIdentifier,
+        target: TwitterUserIdentifierV1,
         count: Int? = .none,
         sinceID: String? = .none,
         maxID: String? = .none,

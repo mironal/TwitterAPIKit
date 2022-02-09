@@ -2,7 +2,7 @@ import Foundation
 
 open class GetUserTimelineRequestV1: TwitterAPIRequest {
 
-    public let target: TwitterUserIdentifier
+    public let target: TwitterUserIdentifierV1
     public let count: Int?
     public let sinceID: String?
     public let maxID: String?
@@ -31,7 +31,7 @@ open class GetUserTimelineRequestV1: TwitterAPIRequest {
     }
 
     public init(
-        target: TwitterUserIdentifier,
+        target: TwitterUserIdentifierV1,
         count: Int? = .none,
         sinceID: String? = .none,
         maxID: String? = .none,

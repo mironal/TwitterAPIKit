@@ -3,7 +3,7 @@ import Foundation
 /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-memberships
 open class GetListsMembershipsRequestV1: TwitterAPIRequest {
 
-    public let user: TwitterUserIdentifier
+    public let user: TwitterUserIdentifierV1
     public let count: Int?
     public let cursor: String?
     public let filterToOwnedLists: Bool?
@@ -27,7 +27,7 @@ open class GetListsMembershipsRequestV1: TwitterAPIRequest {
     }
 
     public init(
-        user: TwitterUserIdentifier,
+        user: TwitterUserIdentifierV1,
         count: Int? = .none,
         cursor: String? = .none,
         filterToOwnedLists: Bool? = .none

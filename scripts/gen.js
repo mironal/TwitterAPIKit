@@ -22,7 +22,7 @@
         "count": "Int",
         "cursor": "String",
         "description": "String",
-        "user": "TwitterUserIdentifier",
+        "user": "TwitterUserIdentifierV1",
         "includeEntities": "Bool",
         "includeUserEntities": "Bool",
         "trimUser": "Bool",

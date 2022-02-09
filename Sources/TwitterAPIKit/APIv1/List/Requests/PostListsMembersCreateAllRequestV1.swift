@@ -4,7 +4,7 @@ import Foundation
 open class PostListsMembersCreateAllRequestV1: TwitterAPIRequest {
 
     public let list: TwitterListIdentifierV1
-    public let users: TwitterUsersIdentifier
+    public let users: TwitterUsersIdentifierV1
 
     public var method: HTTPMethod {
         return .post
@@ -23,7 +23,7 @@ open class PostListsMembersCreateAllRequestV1: TwitterAPIRequest {
 
     public init(
         list: TwitterListIdentifierV1,
-        users: TwitterUsersIdentifier
+        users: TwitterUsersIdentifierV1
     ) {
         self.list = list
         self.users = users

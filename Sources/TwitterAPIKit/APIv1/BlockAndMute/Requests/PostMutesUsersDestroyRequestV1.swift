@@ -3,7 +3,7 @@ import Foundation
 /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/mute-block-report-users/api-reference/post-mutes-users-destroy
 open class PostMutesUsersDestroyRequestV1: TwitterAPIRequest {
 
-    public let user: TwitterUserIdentifier
+    public let user: TwitterUserIdentifierV1
 
     public var method: HTTPMethod {
         return .post
@@ -19,7 +19,7 @@ open class PostMutesUsersDestroyRequestV1: TwitterAPIRequest {
     }
 
     public init(
-        user: TwitterUserIdentifier
+        user: TwitterUserIdentifierV1
     ) {
         self.user = user
     }
