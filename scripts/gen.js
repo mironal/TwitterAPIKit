@@ -4,7 +4,8 @@
 (function () {
 
     const title = document.querySelector("h1").textContent
-    const tokens = title.replace(/([A-Z]+) /g, "$1/").split("/")
+    // POST users/report_spam-> [POST/users/report/spam]
+    const tokens = title.replace(/([A-Z]+) /g, "$1/").replace("_", "/").split("/")
 
     const method = tokens[0]
 
