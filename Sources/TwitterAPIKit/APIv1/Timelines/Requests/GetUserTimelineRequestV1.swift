@@ -32,12 +32,12 @@ open class GetUserTimelineRequestV1: TwitterAPIRequest {
 
     public init(
         target: TwitterUserIdentifier,
-        count: Int? = nil,
-        sinceID: String? = nil,
-        maxID: String? = nil,
-        trimUser: Bool? = nil,
-        excludeReplies: Bool? = nil,
-        includeRTs: Bool? = nil
+        count: Int? = .none,
+        sinceID: String? = .none,
+        maxID: String? = .none,
+        trimUser: Bool? = .none,
+        excludeReplies: Bool? = .none,
+        includeRTs: Bool? = .none
     ) {
         self.target = target
         self.count = count

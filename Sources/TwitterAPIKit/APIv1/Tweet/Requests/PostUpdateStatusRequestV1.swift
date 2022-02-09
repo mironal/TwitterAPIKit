@@ -29,7 +29,7 @@ open class PostUpdateStatusRequestV1: TwitterAPIRequest {
 
     public init(
         status: String,
-        mediaIds: [String]? = nil
+        mediaIds: [String]? = .none
     ) {
         self.status = status
         self.mediaIds = mediaIds ?? []

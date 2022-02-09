@@ -24,7 +24,7 @@ open class GetDirectMessageListRequestV1: TwitterAPIRequest {
         return p
     }
 
-    public init(count: Int? = nil, cursor: String? = nil) {
+    public init(count: Int? = .none, cursor: String? = .none) {
         self.count = count
         self.cursor = cursor
     }

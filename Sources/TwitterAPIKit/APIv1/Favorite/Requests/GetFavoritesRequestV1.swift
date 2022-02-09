@@ -31,10 +31,10 @@ open class GetFavoritesRequestV1: TwitterAPIRequest {
 
     public init(
         target: TwitterUserIdentifier,
-        count: Int? = nil,
-        sinceID: String? = nil,
-        maxID: String? = nil,
-        includeEntities: Bool? = nil
+        count: Int? = .none,
+        sinceID: String? = .none,
+        maxID: String? = .none,
+        includeEntities: Bool? = .none
     ) {
         self.target = target
         self.count = count

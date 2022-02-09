@@ -34,11 +34,11 @@ open class GetShowStatusRequestV1: TwitterAPIRequest {
 
     public init(
         id: String,
-        trimUser: Bool? = nil,
-        includeMyRetweet: Bool? = nil,
-        includeEntities: Bool? = nil,
-        includeExtAltText: Bool? = nil,
-        includeCardUri: Bool? = nil
+        trimUser: Bool? = .none,
+        includeMyRetweet: Bool? = .none,
+        includeEntities: Bool? = .none,
+        includeExtAltText: Bool? = .none,
+        includeCardUri: Bool? = .none
     ) {
         self.id = id
         self.trimUser = trimUser
