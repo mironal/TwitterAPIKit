@@ -49,6 +49,7 @@ open class TwitterAPISession {
         self.environment = environment
     }
 
+    @discardableResult
     public func send(
         _ request: TwitterAPIRequest,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
