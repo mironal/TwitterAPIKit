@@ -44,6 +44,13 @@ public protocol FriendshipsAPIV1 {
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/api-reference/get-friendships-no_retweets-ids
+    @discardableResult
+    func getFriendshipsNoRetweetsIDs(
+        _ request: GetFriendshipsNoRetweetsIDsRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask
+
 }
 
 extension TwitterAPIKit: FriendshipsAPIV1 {
@@ -85,6 +92,13 @@ extension TwitterAPIKit: FriendshipsAPIV1 {
 
     public func getFriendshipsLookup(
         _ request: GetFriendshipsLookupRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
+    public func getFriendshipsNoRetweetsIDs(
+        _ request: GetFriendshipsNoRetweetsIDsRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
