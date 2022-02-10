@@ -10,3 +10,5 @@ public typealias TwitterAPIv1 =
     & FriendshipsAPIV1
     & UserAPIv1
     & SearchAPIv1
+    & TrendAPIv1
+    & GeoAPIv1
