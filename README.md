@@ -99,7 +99,7 @@ This method is intended to be used when the library does not yet support Twitter
 
 ```swift
 
-    class YourCustomRequest: {
+    class YourCustomRequest: TwitterAPIRequest {
         // write code...
     }
 
