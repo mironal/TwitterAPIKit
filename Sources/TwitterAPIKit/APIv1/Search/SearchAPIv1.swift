@@ -23,6 +23,13 @@ public protocol SearchAPIv1 {
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/manage-account-settings/api-reference/post-saved_searches-destroy-id
+    @discardableResult
+    func postDestroySavedSearch(
+        _ request: PostSavedSearchesCreateRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask
+
 }
 
 extension TwitterAPIKit: SearchAPIv1 {
@@ -42,6 +49,13 @@ extension TwitterAPIKit: SearchAPIv1 {
     }
 
     public func postCreateSavedSearch(
+        _ request: PostSavedSearchesCreateRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
+    public func postDestroySavedSearch(
         _ request: PostSavedSearchesCreateRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
