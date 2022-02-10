@@ -33,6 +33,8 @@
     const url = document.querySelector("#resource-url").nextElementSibling.textContent
 
     const nameToTypeMap = {
+        "q": "String",
+        "page": "Int",
         "count": "Int",
         "cursor": "String",
         "description": "String",
