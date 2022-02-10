@@ -23,6 +23,12 @@ public protocol UserAPIv1 {
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/manage-account-settings/api-reference/get-users-profile_banner
+    @discardableResult
+    func getUserProfileBanner(
+        _ request: GetUsersProfileBannerRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask
 }
 
 extension TwitterAPIKit: UserAPIv1 {
@@ -48,4 +54,10 @@ extension TwitterAPIKit: UserAPIv1 {
         return session.send(request, completionHandler: completionHandler)
     }
 
+    public func getUserProfileBanner(
+        _ request: GetUsersProfileBannerRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
 }
