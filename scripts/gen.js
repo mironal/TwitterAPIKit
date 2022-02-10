@@ -52,11 +52,13 @@
         propsMap["user"] = "required"
     }
 
-    const props = Object.keys(propsMap).map(name => {
-        const type = nameToTypeMap[name] ?? "Unknown"
-        const optional = propsMap[name] === "required" ? "" : "?"
-        return `public let ${name}: ${type}${optional}`
-    })
+    const props = Object.keys(propsMap)
+        .sort((a, b) => a.length - b.length)
+        .map(name => {
+            const type = nameToTypeMap[name] ?? "Unknown"
+            const optional = propsMap[name] === "required" ? "" : "?"
+            return `public let ${name}: ${type}${optional}`
+        })
 
 
     const source = `
