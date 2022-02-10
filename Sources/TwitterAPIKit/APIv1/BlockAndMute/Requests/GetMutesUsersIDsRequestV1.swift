@@ -13,7 +13,7 @@ open class GetMutesUsersIDsRequestV1: TwitterAPIRequest {
         return "/1.1/mutes/users/ids.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         stringifyIDs.map { p["stringify_ids"] = $0 }
         cursor.map { p["cursor"] = $0 }

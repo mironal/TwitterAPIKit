@@ -29,7 +29,7 @@ open class UploadMediaAppendRequestV1: TwitterAPIRequest {
         return .multipartFormData
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
 
         let p: [String: MultipartFormDataPart] = [
             "command": .value(name: "command", value: command),

@@ -33,7 +33,7 @@ public protocol TwitterAPIRequest {
     var method: HTTPMethod { get }
     var baseURLType: TwitterBaseURLType { get }
     var path: String { get }
-    var parameters: [String: Any]? { get }
+    var parameters: [String: Any] { get }
     var bodyContentType: BodyContentType { get }
 }
 

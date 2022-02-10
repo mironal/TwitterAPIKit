@@ -13,7 +13,7 @@ open class PostListsDestroyRequestV1: TwitterAPIRequest {
         return "/1.1/lists/destroy.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         list.bind(param: &p)
         return p

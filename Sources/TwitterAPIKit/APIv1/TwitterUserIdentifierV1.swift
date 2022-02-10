@@ -1,18 +1,18 @@
 import Foundation
 
-public enum TwitterUserIdentifier {
+public enum TwitterUserIdentifierV1 {
     case userID(String)
     case screenName(String)
 }
 
-public enum TwitterUsersIdentifier {
+public enum TwitterUsersIdentifierV1 {
     case userIDs([String])
     case screenNames([String])
 }
 
 // MARK: - extensions
 
-extension TwitterUserIdentifier {
+extension TwitterUserIdentifierV1 {
     func bind(param: inout [String: Any]) {
         switch self {
         case .userID(let string):
@@ -23,7 +23,7 @@ extension TwitterUserIdentifier {
     }
 }
 
-extension TwitterUsersIdentifier {
+extension TwitterUsersIdentifierV1 {
     func bind(param: inout [String: Any]) {
         switch self {
         case .userIDs(let array):

@@ -4,7 +4,7 @@ import Foundation
 open class PostListsMembersCreateRequestV1: TwitterAPIRequest {
 
     public let list: TwitterListIdentifierV1
-    public let user: TwitterUserIdentifier
+    public let user: TwitterUserIdentifierV1
 
     public var method: HTTPMethod {
         return .post
@@ -14,7 +14,7 @@ open class PostListsMembersCreateRequestV1: TwitterAPIRequest {
         return "/1.1/lists/members/create.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         list.bind(param: &p)
         user.bind(param: &p)
@@ -22,7 +22,7 @@ open class PostListsMembersCreateRequestV1: TwitterAPIRequest {
     }
     public init(
         list: TwitterListIdentifierV1,
-        user: TwitterUserIdentifier
+        user: TwitterUserIdentifierV1
     ) {
         self.list = list
         self.user = user

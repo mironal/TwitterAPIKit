@@ -19,7 +19,7 @@ open class GetShowStatusRequestV1: TwitterAPIRequest {
         return "/1.1/statuses/show.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
 
         p["id"] = id

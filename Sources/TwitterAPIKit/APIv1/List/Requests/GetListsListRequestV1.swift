@@ -3,7 +3,7 @@ import Foundation
 /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-list
 open class GetListsListRequestV1: TwitterAPIRequest {
 
-    public let user: TwitterUserIdentifier
+    public let user: TwitterUserIdentifierV1
     public let reverse: Bool?
 
     public var method: HTTPMethod {
@@ -14,7 +14,7 @@ open class GetListsListRequestV1: TwitterAPIRequest {
         return "/1.1/lists/list.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         user.bind(param: &p)
         reverse.map { p["reverse"] = $0 }
@@ -22,7 +22,7 @@ open class GetListsListRequestV1: TwitterAPIRequest {
     }
 
     public init(
-        user: TwitterUserIdentifier,
+        user: TwitterUserIdentifierV1,
         reverse: Bool? = .none
     ) {
         self.user = user

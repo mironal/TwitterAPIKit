@@ -4,7 +4,7 @@ import Foundation
 open class PostListsMembersDestroyAllRequestV1: TwitterAPIRequest {
 
     public let list: TwitterListIdentifierV1
-    public let users: TwitterUsersIdentifier
+    public let users: TwitterUsersIdentifierV1
 
     public var method: HTTPMethod {
         return .post
@@ -14,7 +14,7 @@ open class PostListsMembersDestroyAllRequestV1: TwitterAPIRequest {
         return "/1.1/lists/members/destroy_all.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         list.bind(param: &p)
         users.bind(param: &p)
@@ -23,7 +23,7 @@ open class PostListsMembersDestroyAllRequestV1: TwitterAPIRequest {
 
     public init(
         list: TwitterListIdentifierV1,
-        users: TwitterUsersIdentifier
+        users: TwitterUsersIdentifierV1
     ) {
         self.list = list
         self.users = users

@@ -1,13 +1,13 @@
 import Foundation
 
 /*
- public let target: TwitterUserIdentifier
+ public let target: TwitterUserIdentifierV1
  public let count: Int?
 
  ↓
 
  public init(
-    target: TwitterUserIdentifier,
+    target: TwitterUserIdentifierV1,
     count: Int? = none
  ) {
     self.target = target
@@ -136,7 +136,7 @@ func body(input: String) -> String {
             }
         }
     let body = """
-            open var parameters: [String: Any]? {
+            open var parameters: [String: Any] {
                 var p = [String: Any]()
                 \(params.joined(separator: "\n    "))
                 return p

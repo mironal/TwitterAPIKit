@@ -2,7 +2,7 @@ import Foundation
 
 open class GetUserTimelineRequestV1: TwitterAPIRequest {
 
-    public let target: TwitterUserIdentifier
+    public let target: TwitterUserIdentifierV1
     public let count: Int?
     public let sinceID: String?
     public let maxID: String?
@@ -18,7 +18,7 @@ open class GetUserTimelineRequestV1: TwitterAPIRequest {
         return "/1.1/statuses/user_timeline.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         target.bind(param: &p)
         count.map { p["count"] = $0 }
@@ -31,7 +31,7 @@ open class GetUserTimelineRequestV1: TwitterAPIRequest {
     }
 
     public init(
-        target: TwitterUserIdentifier,
+        target: TwitterUserIdentifierV1,
         count: Int? = .none,
         sinceID: String? = .none,
         maxID: String? = .none,

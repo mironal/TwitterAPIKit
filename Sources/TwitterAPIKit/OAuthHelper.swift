@@ -11,14 +11,16 @@ func authorizationHeader(
     consumerKey: String,
     consumerSecret: String,
     oauthToken: String?,
-    oauthTokenSecret: String?
+    oauthTokenSecret: String?,
+    oauthTimestamp: String? = .none,
+    oauthNonce: String? = .none
 ) -> String {
     var authorizationParameters = [String: Any]()
     authorizationParameters["oauth_version"] = oauthVersion
     authorizationParameters["oauth_signature_method"] = oauthSignatureMethod
     authorizationParameters["oauth_consumer_key"] = consumerKey
-    authorizationParameters["oauth_timestamp"] = String(Int(Date().timeIntervalSince1970))
-    authorizationParameters["oauth_nonce"] = UUID().uuidString
+    authorizationParameters["oauth_timestamp"] = oauthTimestamp ?? String(Int(Date().timeIntervalSince1970))
+    authorizationParameters["oauth_nonce"] = oauthNonce ?? UUID().uuidString
 
     if let oauthToken = oauthToken {
         authorizationParameters["oauth_token"] = oauthToken

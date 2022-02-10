@@ -3,7 +3,7 @@ import Foundation
 /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/create-manage-lists/api-reference/get-lists-subscriptions
 open class GetListsSubscriptionsRequestV1: TwitterAPIRequest {
 
-    let user: TwitterUserIdentifier
+    let user: TwitterUserIdentifierV1
     let count: Int?
     let cursor: String?
 
@@ -15,7 +15,7 @@ open class GetListsSubscriptionsRequestV1: TwitterAPIRequest {
         return "/1.1/lists/subscriptions.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         user.bind(param: &p)
         count.map { p["count"] = $0 }
@@ -24,7 +24,7 @@ open class GetListsSubscriptionsRequestV1: TwitterAPIRequest {
     }
 
     public init(
-        user: TwitterUserIdentifier,
+        user: TwitterUserIdentifierV1,
         count: Int? = .none,
         cursor: String? = .none
     ) {

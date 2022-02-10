@@ -18,7 +18,7 @@ open class GetTweetRequestV2: TwitterAPIRequest {
         return "/2/tweets/\(id)"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         if !expansions.isEmpty {
             p["expansions"] = expansions.commaSeparatedString

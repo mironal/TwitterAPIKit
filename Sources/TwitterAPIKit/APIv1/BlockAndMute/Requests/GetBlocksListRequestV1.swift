@@ -15,7 +15,7 @@ open class GetBlocksListRequestV1: TwitterAPIRequest {
         return "/1.1/blocks/list.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         includeEntities.map { p["include_entities"] = $0 }
         skipStatus.map { p["skip_status"] = $0 }

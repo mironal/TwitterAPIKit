@@ -18,7 +18,7 @@ open class GetRetweetersRequestV1: TwitterAPIRequest {
         return "/1.1/statuses/retweeters/ids.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
 
         var p = [String: Any]()
 

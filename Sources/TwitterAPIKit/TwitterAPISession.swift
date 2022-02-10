@@ -49,6 +49,7 @@ open class TwitterAPISession {
         self.environment = environment
     }
 
+    @discardableResult
     public func send(
         _ request: TwitterAPIRequest,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
@@ -117,14 +118,14 @@ extension TwitterAPIRequest {
             url: requestURL(for: environment),
             resolvingAgainstBaseURL: true
         )!
-        if method.prefersQueryParameters, let parameters = parameters {
+        if method.prefersQueryParameters {
             urlComponent.queryItems = parameters.map { .init(name: $0, value: "\($1)") }
         }
 
         var request = URLRequest(url: urlComponent.url!)
         request.httpMethod = method.rawValue
 
-        if !method.prefersQueryParameters, let parameters = parameters {
+        if !method.prefersQueryParameters {
 
             switch bodyContentType {
             case .wwwFormUrlEncoded:
@@ -198,7 +199,7 @@ extension TwitterAPIRequest {
     var parameterForOAuth: [String: Any] {
         switch bodyContentType {
         case .wwwFormUrlEncoded:
-            return parameters ?? [:]
+            return parameters
         case .json, .multipartFormData:
             // parameter is empty
             return [:]
