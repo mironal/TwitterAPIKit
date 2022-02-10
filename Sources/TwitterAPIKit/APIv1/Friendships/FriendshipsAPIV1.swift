@@ -30,6 +30,13 @@ public protocol FriendshipsAPIV1 {
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/api-reference/get-friendships-incoming
+    @discardableResult
+    func getFriendshipsIncoming(
+        _ request: GetFriendshipsIncomingRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask
+
 }
 
 extension TwitterAPIKit: FriendshipsAPIV1 {
@@ -57,6 +64,13 @@ extension TwitterAPIKit: FriendshipsAPIV1 {
 
     public func getFriends(
         _ request: GetFriendsListRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
+    public func getFriendshipsIncoming(
+        _ request: GetFriendshipsIncomingRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
