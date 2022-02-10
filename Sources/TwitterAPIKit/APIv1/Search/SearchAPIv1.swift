@@ -2,8 +2,21 @@ import Foundation
 
 public protocol SearchAPIv1 {
 
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/api-reference/get-search-tweets
+    @discardableResult
+    func searchTweets(
+        _ request: GetSearchTweetsRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask
+
 }
 
 extension TwitterAPIKit: SearchAPIv1 {
 
+    public func searchTweets(
+        _ request: GetSearchTweetsRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
 }

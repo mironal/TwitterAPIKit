@@ -78,8 +78,7 @@
         })
 
 
-    const source = `
-    import Foundation
+    const source = `import Foundation
 
     /// ${location.href}
     open class ${className}: TwitterAPIRequest {
