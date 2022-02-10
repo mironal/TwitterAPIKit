@@ -16,6 +16,13 @@ public protocol TrendAPIv1 {
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/trends/trends-for-location/api-reference/get-trends-place
+    @discardableResult
+    func getTrends(
+        _ request: GetTrendsPlaceRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask
+
 }
 
 extension TwitterAPIKit: TrendAPIv1 {
@@ -29,6 +36,13 @@ extension TwitterAPIKit: TrendAPIv1 {
 
     public func getTrendsClosest(
         _ request: GetTrendsClosestRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
+    public func getTrends(
+        _ request: GetTrendsPlaceRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)

@@ -11,4 +11,10 @@ open class GetTrendsAvailableRequestV1: TwitterAPIRequest {
         return "/1.1/trends/available.json"
     }
 
+    open var parameters: [String: Any] {
+        return [:]
+    }
+
+    public init() {}
+
 }
