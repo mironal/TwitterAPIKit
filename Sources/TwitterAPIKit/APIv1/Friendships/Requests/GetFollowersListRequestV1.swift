@@ -1,19 +1,19 @@
 import Foundation
 
-/// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/api-reference/get-followers-ids
-open class GetFollowersIDsRequestV1: TwitterAPIRequest {
+/// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/api-reference/get-followers-list
+open class GetFollowersListRequestV1: TwitterAPIRequest {
 
     public let user: TwitterUserIdentifierV1
     public let count: Int?
     public let cursor: String?
-    public let stringifyIDs: Bool?
+    public let skipStatus: Bool?
+    public let includeUserEntities: Bool?
 
     public var method: HTTPMethod {
         return .get
     }
-
     public var path: String {
-        return "/1.1/followers/ids.json"
+        return "/1.1/followers/list.json"
     }
 
     open var parameters: [String: Any] {
@@ -21,7 +21,8 @@ open class GetFollowersIDsRequestV1: TwitterAPIRequest {
         user.bind(param: &p)
         count.map { p["count"] = $0 }
         cursor.map { p["cursor"] = $0 }
-        stringifyIDs.map { p["stringify_ids"] = $0 }
+        skipStatus.map { p["skip_status"] = $0 }
+        includeUserEntities.map { p["include_user_entities"] = $0 }
         return p
     }
 
@@ -29,11 +30,13 @@ open class GetFollowersIDsRequestV1: TwitterAPIRequest {
         user: TwitterUserIdentifierV1,
         count: Int? = .none,
         cursor: String? = .none,
-        stringifyIDs: Bool? = .none
+        skipStatus: Bool? = .none,
+        includeUserEntities: Bool? = .none
     ) {
         self.user = user
         self.count = count
         self.cursor = cursor
-        self.stringifyIDs = stringifyIDs
+        self.skipStatus = skipStatus
+        self.includeUserEntities = includeUserEntities
     }
 }

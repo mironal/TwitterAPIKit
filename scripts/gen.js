@@ -62,6 +62,8 @@
 
 
     const source = `
+    import Foundation
+
     /// ${location.href}
     open class ${className}: TwitterAPIRequest {
     
