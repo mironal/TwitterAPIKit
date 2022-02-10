@@ -14,7 +14,7 @@ open class PostUnFavoriteRequestV1: TwitterAPIRequest {
         return "/1.1/favorites/destroy.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         p["id"] = id
         includeEntities.map { p["include_entities"] = $0 }

@@ -18,7 +18,7 @@ open class GetLookupStatusesRequestV1: TwitterAPIRequest {
         return "/1.1/statuses/lookup.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
 
         p["id"] = id.joined(separator: ",")

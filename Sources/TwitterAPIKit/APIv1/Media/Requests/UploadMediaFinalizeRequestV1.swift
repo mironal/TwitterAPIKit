@@ -18,7 +18,7 @@ open class UploadMediaFinalizeRequestV1: TwitterAPIRequest {
         return "/1.1/media/upload.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         return [
             "command": command,
             "media_id": mediaID,

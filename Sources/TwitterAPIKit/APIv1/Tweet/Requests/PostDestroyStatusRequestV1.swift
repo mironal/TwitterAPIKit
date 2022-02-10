@@ -14,7 +14,7 @@ open class PostDestroyStatusRequestV1: TwitterAPIRequest {
         return "/1.1/statuses/destroy/\(id).json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         trimUser.map { p["trim_user"] = $0 }
         return p

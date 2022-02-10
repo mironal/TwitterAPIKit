@@ -18,7 +18,7 @@ open class GetRetweetsOfMeRequestV1: TwitterAPIRequest {
         return "/1.1/statuses/retweets_of_me.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
 
         count.map { p["count"] = $0 }

@@ -23,7 +23,7 @@ open class PostDirectMessageRequestV1: TwitterAPIRequest {
         return .json
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         return [
             "event": [
                 "type": "message_create",

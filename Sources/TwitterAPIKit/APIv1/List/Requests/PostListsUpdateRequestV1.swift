@@ -16,7 +16,7 @@ open class PostListsUpdateRequestV1: TwitterAPIRequest {
         return "/1.1/lists/update.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         list.bind(param: &p)
         name.map { p["name"] = $0 }

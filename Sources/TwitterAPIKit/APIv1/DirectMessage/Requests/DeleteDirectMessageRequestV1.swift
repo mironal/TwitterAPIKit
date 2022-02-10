@@ -13,7 +13,7 @@ open class DeleteDirectMessageRequestV1: TwitterAPIRequest {
         return "/1.1/direct_messages/events/destroy.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         return [
             "id": id
         ]

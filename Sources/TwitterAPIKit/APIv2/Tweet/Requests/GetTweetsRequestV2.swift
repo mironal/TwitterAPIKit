@@ -18,7 +18,7 @@ open class GetTweetsRequestV2: TwitterAPIRequest {
         return "/2/tweets"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         p["ids"] = ids.joined(separator: ",")
         if !expansions.isEmpty {

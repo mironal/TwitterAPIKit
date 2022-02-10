@@ -14,7 +14,7 @@ open class GetMutesUsersListRequestV1: TwitterAPIRequest {
         return "/1.1/mutes/users/list.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         cursor.map { p["cursor"] = $0 }
         includeEntities.map { p["include_entities"] = $0 }

@@ -5,7 +5,7 @@ import XCTest
 private class GetTwitterReqeust: TwitterAPIRequest {
     var method: HTTPMethod { return .get }
     var path: String { return "/get.json" }
-    var parameters: [String: Any]? {
+    var parameters: [String: Any] {
         return ["hoge": "😀"]  //= %F0%9F%98%80
     }
 }
@@ -13,7 +13,7 @@ private class GetTwitterReqeust: TwitterAPIRequest {
 private class PostTwitterReqeust: TwitterAPIRequest {
     var method: HTTPMethod { return .post }
     var path: String { return "/post.json" }
-    var parameters: [String: Any]? {
+    var parameters: [String: Any] {
         return ["hoge": "😀"]  //= %F0%9F%98%80
     }
 }

@@ -136,7 +136,7 @@ func body(input: String) -> String {
             }
         }
     let body = """
-            open var parameters: [String: Any]? {
+            open var parameters: [String: Any] {
                 var p = [String: Any]()
                 \(params.joined(separator: "\n    "))
                 return p

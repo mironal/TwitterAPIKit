@@ -15,7 +15,7 @@ open class GetDirectMessageListRequestV1: TwitterAPIRequest {
         return "/1.1/direct_messages/events/list.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
 
         count.map { p["count"] = $0 }

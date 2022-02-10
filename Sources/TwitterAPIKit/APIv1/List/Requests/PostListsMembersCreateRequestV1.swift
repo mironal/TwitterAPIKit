@@ -14,7 +14,7 @@ open class PostListsMembersCreateRequestV1: TwitterAPIRequest {
         return "/1.1/lists/members/create.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         list.bind(param: &p)
         user.bind(param: &p)

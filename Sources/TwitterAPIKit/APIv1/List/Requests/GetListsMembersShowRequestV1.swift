@@ -16,7 +16,7 @@ open class GetListsMembersShowRequestV1: TwitterAPIRequest {
         return "/1.1/lists/members/show.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         list.bind(param: &p)
         user.bind(param: &p)

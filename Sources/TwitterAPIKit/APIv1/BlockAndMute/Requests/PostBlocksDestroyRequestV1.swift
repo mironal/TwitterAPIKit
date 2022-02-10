@@ -14,7 +14,7 @@ open class PostBlocksDestroyRequestV1: TwitterAPIRequest {
         return "/1.1/blocks/destroy.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
 
         user.bind(param: &p)

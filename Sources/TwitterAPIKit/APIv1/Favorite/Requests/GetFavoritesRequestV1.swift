@@ -17,7 +17,7 @@ open class GetFavoritesRequestV1: TwitterAPIRequest {
         return "/1.1/favorites/list.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
 
         target.bind(param: &p)

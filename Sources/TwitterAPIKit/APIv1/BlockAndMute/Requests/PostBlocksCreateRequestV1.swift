@@ -14,7 +14,7 @@ open class PostBlocksCreateRequestV1: TwitterAPIRequest {
         return "/1.1/blocks/create.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         user.bind(param: &p)
         includeEntities.map { p["include_entities"] = $0 }

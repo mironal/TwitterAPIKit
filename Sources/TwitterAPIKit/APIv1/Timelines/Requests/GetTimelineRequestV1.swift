@@ -17,7 +17,7 @@ open class GetTimelineRequestV1: TwitterAPIRequest {
         fatalError("Not impl")
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         count.map { p["count"] = $0 }
         sinceID.map { p["since_id"] = $0 }

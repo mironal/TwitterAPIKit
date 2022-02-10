@@ -16,7 +16,7 @@ open class GetListsMembershipsRequestV1: TwitterAPIRequest {
         return "/1.1/lists/memberships.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         user.bind(param: &p)
         count.map { p["count"] = $0 }

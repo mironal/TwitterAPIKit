@@ -21,7 +21,7 @@ open class UploadMediaInitRequestV1: TwitterAPIRequest {
         return "/1.1/media/upload.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         p["command"] = command
         p["total_bytes"] = totalBytes

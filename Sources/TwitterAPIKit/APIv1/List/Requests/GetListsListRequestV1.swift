@@ -14,7 +14,7 @@ open class GetListsListRequestV1: TwitterAPIRequest {
         return "/1.1/lists/list.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         user.bind(param: &p)
         reverse.map { p["reverse"] = $0 }

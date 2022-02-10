@@ -15,7 +15,7 @@ open class PostListsCreateRequestV1: TwitterAPIRequest {
         return "/1.1/lists/create.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         p["name"] = name
         mode?.bind(param: &p)

@@ -18,7 +18,7 @@ open class GetUserTimelineRequestV1: TwitterAPIRequest {
         return "/1.1/statuses/user_timeline.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         target.bind(param: &p)
         count.map { p["count"] = $0 }

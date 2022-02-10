@@ -12,7 +12,7 @@ open class PostMutesUsersDestroyRequestV1: TwitterAPIRequest {
         return "/1.1/mutes/users/destroy.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         user.bind(param: &p)
         return p

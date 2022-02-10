@@ -16,7 +16,7 @@ open class PostUpdateStatusRequestV1: TwitterAPIRequest {
         return "/1.1/statuses/update.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         p["status"] = status
 

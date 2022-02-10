@@ -11,7 +11,7 @@ open class PostUsersReportSpamRequestV1: TwitterAPIRequest {
         return "/1.1/users/report_spam.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         user.bind(param: &p)
         performBlock.map { p["perform_block"] = $0 }

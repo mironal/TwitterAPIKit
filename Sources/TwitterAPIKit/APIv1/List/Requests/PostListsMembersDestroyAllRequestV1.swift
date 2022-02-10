@@ -14,7 +14,7 @@ open class PostListsMembersDestroyAllRequestV1: TwitterAPIRequest {
         return "/1.1/lists/members/destroy_all.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         list.bind(param: &p)
         users.bind(param: &p)

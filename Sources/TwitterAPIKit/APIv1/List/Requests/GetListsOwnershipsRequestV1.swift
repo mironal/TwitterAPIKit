@@ -15,7 +15,7 @@ open class GetListsOwnershipsRequestV1: TwitterAPIRequest {
         return "/1.1/lists/ownerships.json"
     }
 
-    open var parameters: [String: Any]? {
+    open var parameters: [String: Any] {
         var p = [String: Any]()
         user.bind(param: &p)
         count.map { p["count"] = $0 }
