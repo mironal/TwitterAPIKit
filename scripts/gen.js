@@ -52,7 +52,17 @@
         "follow": "Bool",
     }
 
-    const propsMap = Array(...document.querySelector("#parameters").nextElementSibling.rows).slice(1).reduce((prev, row) => {
+    function getParameterTableRows() {
+
+        const maybeTable = document.querySelector("#parameters").nextElementSibling
+        if (maybeTable instanceof HTMLTableElement) {
+            return Array(...maybeTable.rows)
+        }
+        return []
+    }
+
+
+    const propsMap = getParameterTableRows().slice(1).reduce((prev, row) => {
         const [nameElem, requiredElem] = row.children
         const required = requiredElem.textContent
         const name = nameElem.textContent.replace(/_./g,
@@ -78,8 +88,7 @@
         })
 
 
-    const source = `
-    import Foundation
+    const source = `import Foundation
 
     /// ${location.href}
     open class ${className}: TwitterAPIRequest {

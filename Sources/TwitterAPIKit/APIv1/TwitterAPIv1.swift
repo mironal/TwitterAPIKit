@@ -9,3 +9,4 @@ public typealias TwitterAPIv1 =
     & BlockAndMuteAPIv1
     & FriendshipsAPIV1
     & UserAPIv1
+    & SearchAPIv1
