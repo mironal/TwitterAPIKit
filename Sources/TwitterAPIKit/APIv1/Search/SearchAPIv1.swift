@@ -16,6 +16,13 @@ public protocol SearchAPIv1 {
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/manage-account-settings/api-reference/post-saved_searches-create
+    @discardableResult
+    func postCreateSavedSearch(
+        _ request: PostSavedSearchesCreateRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask
+
 }
 
 extension TwitterAPIKit: SearchAPIv1 {
@@ -29,6 +36,13 @@ extension TwitterAPIKit: SearchAPIv1 {
 
     public func getSavedSearches(
         _ request: GetSavedSearchesListRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
+    public func postCreateSavedSearch(
+        _ request: PostSavedSearchesCreateRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
