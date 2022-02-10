@@ -2,6 +2,20 @@
 // In Twitter's API documentation, paste it into the Chrome DevTools console and run it.
 
 (function () {
+    /**
+     *
+     * @param {{[index: string]: string}} propsMap
+     * @param {string[]} fromProps
+     * @param {string} toProp
+     */
+    function replaceProps(propsMap, fromProps, toProp) {
+        if (fromProps.every(p => !!propsMap[p])) {
+            fromProps.forEach(p => {
+                delete propsMap[p]
+            })
+            propsMap[toProp] = "required"
+        }
+    }
 
     const title = document.querySelector("h1").textContent
     // POST users/report_spam-> [POST/users/report/spam]
@@ -23,6 +37,8 @@
         "cursor": "String",
         "description": "String",
         "user": "TwitterUserIdentifierV1",
+        "sourceUser": "TwitterUserIdentifierV1",
+        "targetUser": "TwitterUserIdentifierV1",
         "includeEntities": "Bool",
         "includeUserEntities": "Bool",
         "trimUser": "Bool",
@@ -46,11 +62,10 @@
         return prev
     }, {})
 
-    if (propsMap["userID"] && propsMap["screenName"]) {
-        delete propsMap["userID"]
-        delete propsMap["screenName"]
-        propsMap["user"] = "required"
-    }
+
+    replaceProps(propsMap, ["userID", "screenName"], "user")
+    replaceProps(propsMap, ["sourceID", "sourceScreenName"], "sourceUser")
+    replaceProps(propsMap, ["targetID", "targetScreenName"], "targetUser")
 
     const props = Object.keys(propsMap)
         .sort((a, b) => a.length - b.length)
