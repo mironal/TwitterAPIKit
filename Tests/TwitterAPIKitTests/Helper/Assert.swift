@@ -1,6 +1,7 @@
 import Foundation
 import XCTest
 
+// swift-format-ignore: AlwaysUseLowerCamelCase
 func AssertEqualAnyDict(
     _ l: [String: Any], _ r: [String: Any], _ message: @autoclosure () -> String = "", file: StaticString = #filePath,
     line: UInt = #line
