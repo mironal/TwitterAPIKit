@@ -72,6 +72,7 @@
         public var method: HTTPMethod {
             return .${method.toLowerCase()}
         }
+
         public var path: String {
             return "${url.replace("https://api.twitter.com", "")}"
         }
