@@ -3,12 +3,7 @@ import Foundation
 /// https://developer.twitter.com/en/docs/twitter-api/v1/trends/locations-with-trending-topics/api-reference/get-trends-closest
 open class GetTrendsClosestRequestV1: TwitterAPIRequest {
 
-    public struct Coordinate {
-        var lat: Double
-        var long: Double
-    }
-
-    public let location: Coordinate
+    public let location: TwitterCoordinateV1
 
     public var method: HTTPMethod {
         return .get
@@ -19,14 +14,13 @@ open class GetTrendsClosestRequestV1: TwitterAPIRequest {
     }
 
     open var parameters: [String: Any] {
-        return [
-            "lat": location.lat,
-            "long": location.long,
-        ]
+        var p = [String: Any]()
+        location.bind(param: &p)
+        return p
     }
 
     public init(
-        location: Coordinate
+        location: TwitterCoordinateV1
     ) {
         self.location = location
     }

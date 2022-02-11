@@ -2,28 +2,11 @@ import Foundation
 
 /// https://developer.twitter.com/en/docs/twitter-api/v1/geo/places-near-location/api-reference/get-geo-reverse_geocode
 open class GetGeoReverseGeocodeRequestV1: TwitterAPIRequest {
-    public struct Coordinate {
-        var lat: Double
-        var long: Double
-    }
 
-    public enum Accuracy {
-        /// meter
-        case m(Int)
-        /// feet
-        case ft(Int)
-    }
-
-    public enum Granularity: String {
-        case neighborhood
-        case city
-        case admin
-        case country
-    }
-    public let location: Coordinate
-    public let accuracy: Accuracy?
+    public let location: TwitterCoordinateV1
+    public let accuracy: TwitterAccuracyV1?
     public let maxResults: Int?
-    public let granularity: Granularity?
+    public let granularity: TwitterGranularityV1?
 
     public var method: HTTPMethod {
         return .get
@@ -35,18 +18,18 @@ open class GetGeoReverseGeocodeRequestV1: TwitterAPIRequest {
 
     open var parameters: [String: Any] {
         var p = [String: Any]()
-        p["location"] = location
-        accuracy.map { p["accuracy"] = $0 }
+        location.bind(param: &p)
+        accuracy?.bind(param: &p)
         maxResults.map { p["max_results"] = $0 }
-        granularity.map { p["granularity"] = $0.rawValue }
+        granularity?.bind(param: &p)
         return p
     }
 
     public init(
-        location: Coordinate,
-        accuracy: Accuracy? = .none,
+        location: TwitterCoordinateV1,
+        accuracy: TwitterAccuracyV1? = .none,
         maxResults: Int? = .none,
-        granularity: Granularity? = .none
+        granularity: TwitterGranularityV1? = .none
     ) {
         self.location = location
         self.accuracy = accuracy

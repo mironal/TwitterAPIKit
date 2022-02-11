@@ -16,6 +16,13 @@ public protocol GeoAPIv1 {
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
 
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/geo/places-near-location/api-reference/get-geo-search
+    @discardableResult
+    func searchGeo(
+        _ request: GetGeoSearchRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask
+
 }
 
 extension TwitterAPIKit: GeoAPIv1 {
@@ -29,6 +36,13 @@ extension TwitterAPIKit: GeoAPIv1 {
 
     public func getGeoPlace(
         _ request: GetGeoPlaceIDRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
+    public func searchGeo(
+        _ request: GetGeoSearchRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
