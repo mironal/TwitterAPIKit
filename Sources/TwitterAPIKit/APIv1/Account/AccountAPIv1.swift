@@ -43,6 +43,13 @@ public protocol AccountAPIv1 {
         _ request: PostAccountUpdateProfileBannerRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/manage-account-settings/api-reference/post-account-update_profile_image
+    @discardableResult
+    func postProfileImage(
+        _ request: PostAccountUpdateProfileImageRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask
 }
 
 extension TwitterAPIKit: AccountAPIv1 {
@@ -82,6 +89,13 @@ extension TwitterAPIKit: AccountAPIv1 {
 
     public func postProfileBanner(
         _ request: PostAccountUpdateProfileBannerRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
+    public func postProfileImage(
+        _ request: PostAccountUpdateProfileImageRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
