@@ -105,6 +105,7 @@ p["hoge"] = hoge
 fooBar.map { p["foo_bar"] = $0 }
 */
 func body(input: String) -> String {
+    let primitiveTypes = [": Int", ": String", ": Bool"]
 
     let regex = try! NSRegularExpression(pattern: "[^ ] ([a-zA-Z\\d]*?): ")
 
@@ -115,7 +116,7 @@ func body(input: String) -> String {
             guard let name = names.first else { return nil }
             let snakeCaseName = name.preperForSpecialPattern().camelCaseToSnakeCase()
 
-            if line.contains(": Twitter") {
+            if !primitiveTypes.contains(where: { line.contains($0) }) {
                 // ex: public let users: TwitterUsersIdentifier
 
                 let optional = line.hasSuffix("?") ? "?" : ""
