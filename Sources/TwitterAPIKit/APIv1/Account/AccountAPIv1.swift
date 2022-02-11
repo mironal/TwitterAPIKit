@@ -22,6 +22,14 @@ public protocol AccountAPIv1 {
         _ request: PostAccountRemoveProfileBannerRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/manage-account-settings/api-reference/post-account-settings
+    @discardableResult
+    func postAccountSettings(
+        _ request: PostAccountSettingsRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask
+
 }
 
 extension TwitterAPIKit: AccountAPIv1 {
@@ -41,6 +49,13 @@ extension TwitterAPIKit: AccountAPIv1 {
 
     public func postRemoveProfileBanner(
         _ request: PostAccountRemoveProfileBannerRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> URLSessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
+    public func postAccountSettings(
+        _ request: PostAccountSettingsRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> URLSessionTask {
         return session.send(request, completionHandler: completionHandler)
