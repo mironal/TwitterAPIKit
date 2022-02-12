@@ -20,7 +20,7 @@ public enum TwitterAPIKitError: Error {
     case responseSerializeFailed(reason: ResponseSerializationFailureReason)
     public enum ResponseSerializationFailureReason {
         case jsonSerializationFailed(error: Error, data: Data, rateLimit: TwitterRateLimit)
-
         case jsonDecodeFailed(error: Error, data: Data, rateLimit: TwitterRateLimit)
+        case cannotConvert(data: Data, toTypeName: String)
     }
 }
