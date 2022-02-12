@@ -29,6 +29,19 @@ So, I decided to create one.
 
     client.v1.getShowStatus(.init(id: "status id")) { result in
 
+        // Use result utils
+        do {
+            let success = try result.serialize().get() // JSONSerialization
+            // Or let success = try result.decode(YourModel.self).get() // JSONDecoder
+            print(success.rateLimit)
+            print(success.data)
+        } catch let error {
+            print(error)
+        }
+        // ----
+
+        // Or
+
         switch result {
         case let .success((data, rateLimit, httpURLResponse)):
             print("--- Success ---")
@@ -88,14 +101,12 @@ class CapsuledListsListRequestV1: GetListsListRequestV1 {
 }
 ```
 
-
 ### Low level api
 
 This method is intended to be used when the library does not yet support Twitter's new API.
 
 - You can customize the request yourself.
 - You can use `session.send(TwitterAPIRequest,completionHandler:)` to send the request.
-
 
 ```swift
 
@@ -115,7 +126,7 @@ This method is intended to be used when the library does not yet support Twitter
         oauthToken: oauthToken,
         oauthTokenSecret: oauthTokenSecret
     )
-    
+
     let request = YourCustomRequest()
     client.session.send(request) { result in
         // ...
