@@ -21,6 +21,14 @@ public protocol AuthAPIv1 {
 
     /// Create https://developer.twitter.com/en/docs/authentication/api-reference/authenticate URL.
     func makeOAuthAuthenticateURL(_ request: GetOAuthAuthenticateRequestV1) -> URL?
+
+    /// https://developer.twitter.com/en/docs/authentication/api-reference/access_token
+    @discardableResult
+    func postOAuthAccessToken(
+        _ request: PostOAuthRequestTokenRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask
+
 }
 
 extension TwitterAPIKit: AuthAPIv1 {
@@ -57,5 +65,12 @@ extension TwitterAPIKit: AuthAPIv1 {
     public func makeOAuthAuthenticateURL(_ request: GetOAuthAuthenticateRequestV1) -> URL? {
         // ignore exception
         return try? request.buildRequest(environment: session.environment).url
+    }
+
+    public func postOAuthAccessToken(
+        _ request: PostOAuthRequestTokenRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask {
+        return session.send(request, completionHandler: completionHandler)
     }
 }
