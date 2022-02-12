@@ -7,21 +7,21 @@ public protocol MediaAPIv1 {
     func getUploadMediaStatus(
         _ request: GetUploadMediaStatusRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask
+    ) -> TwitterAPISessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload-init
     @discardableResult
     func uploadMediaInit(
         _ request: UploadMediaInitRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask
+    ) -> TwitterAPISessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload-append
     @discardableResult
     func uploadMediaAppend(
         _ request: UploadMediaAppendRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask
+    ) -> TwitterAPISessionTask
 
     /// Utility method for split uploading of large files.
     @discardableResult
@@ -30,21 +30,21 @@ public protocol MediaAPIv1 {
         maxBytes: Int,
         completionHandler: @escaping (Result<[TwitterAPISuccessReponse], TwitterAPIKitError>) ->
             Void
-    ) -> [URLSessionTask]
+    ) -> [TwitterAPISessionTask]
 
     @discardableResult
     func uploadMediaAppendSplitChunks(
         _ request: UploadMediaAppendRequestV1,
         completionHandler: @escaping (Result<[TwitterAPISuccessReponse], TwitterAPIKitError>) ->
             Void
-    ) -> [URLSessionTask]
+    ) -> [TwitterAPISessionTask]
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload-finalize
     @discardableResult
     func uploadMediaFinalize(
         _ request: UploadMediaFinalizeRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask
+    ) -> TwitterAPISessionTask
 }
 
 extension TwitterAPIKit: MediaAPIv1 {
@@ -52,7 +52,7 @@ extension TwitterAPIKit: MediaAPIv1 {
     public func getUploadMediaStatus(
         _ request: GetUploadMediaStatusRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask {
+    ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
@@ -60,7 +60,7 @@ extension TwitterAPIKit: MediaAPIv1 {
     public func uploadMediaInit(
         _ request: UploadMediaInitRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask {
+    ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
@@ -68,7 +68,7 @@ extension TwitterAPIKit: MediaAPIv1 {
     public func uploadMediaAppend(
         _ request: UploadMediaAppendRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask {
+    ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
@@ -76,7 +76,7 @@ extension TwitterAPIKit: MediaAPIv1 {
     public func uploadMediaAppendSplitChunks(
         _ request: UploadMediaAppendRequestV1,
         completionHandler: @escaping (Result<[TwitterAPISuccessReponse], TwitterAPIKitError>) -> Void
-    ) -> [URLSessionTask] {
+    ) -> [TwitterAPISessionTask] {
         return uploadMediaAppendSplitChunks(
             request, maxBytes: 5_242_880 /* 5MB */, completionHandler: completionHandler
         )
@@ -88,14 +88,14 @@ extension TwitterAPIKit: MediaAPIv1 {
         maxBytes: Int,
         completionHandler: @escaping (Result<[TwitterAPISuccessReponse], TwitterAPIKitError>) ->
             Void
-    ) -> [URLSessionTask] {
+    ) -> [TwitterAPISessionTask] {
 
         // Split media data
 
         let totalDataSize = request.media.count
         let group = DispatchGroup()
 
-        var tasks = [URLSessionTask]()
+        var tasks = [TwitterAPISessionTask]()
         var errors = [TwitterAPIKitError]()
         var responses = [TwitterAPISuccessReponse]()
 
@@ -134,7 +134,7 @@ extension TwitterAPIKit: MediaAPIv1 {
     public func uploadMediaFinalize(
         _ request: UploadMediaFinalizeRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask {
+    ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 }

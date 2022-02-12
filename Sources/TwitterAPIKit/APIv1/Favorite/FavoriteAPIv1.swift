@@ -7,21 +7,21 @@ public protocol FavoriteAPIv1 {
     func postFavorite(
         _ request: PostFavoriteRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask
+    ) -> TwitterAPISessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/post-favorites-destroy
     @discardableResult
     func postUnFavorite(
         _ request: PostUnFavoriteRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask
+    ) -> TwitterAPISessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/get-favorites-list
     @discardableResult
     func getFavorites(
         _ request: GetFavoritesRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask
+    ) -> TwitterAPISessionTask
 }
 
 extension TwitterAPIKit: FavoriteAPIv1 {
@@ -29,21 +29,21 @@ extension TwitterAPIKit: FavoriteAPIv1 {
     public func getFavorites(
         _ request: GetFavoritesRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask {
+    ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
     public func postFavorite(
         _ request: PostFavoriteRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask {
+    ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
     public func postUnFavorite(
         _ request: PostUnFavoriteRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask {
+    ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 }
