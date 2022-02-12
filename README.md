@@ -214,7 +214,7 @@ func useBearerTokenV1() {
 
 ## TODO
 
-- [ ] Support API v1 endpoint
+- [ ] Support API v1 endpoint : 70%
 - [ ] Support API v2 endpoint
 - [ ] Swift Concurrency
 - [ ] Document
