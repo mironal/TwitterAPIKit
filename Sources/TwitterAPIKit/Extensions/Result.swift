@@ -9,7 +9,7 @@ public typealias TwitterAPIDecodedSuccessResponse<D: Decodable> = (
 
 extension Result where Success == TwitterAPISuccessReponse, Failure == TwitterAPIKitError {
 
-    func serialize() throws -> Result<TwitterAPISerializedSuccessResponse, Failure> {
+    public func serialize() -> Result<TwitterAPISerializedSuccessResponse, Failure> {
         return flatMap { success in
             do {
                 let data = success.data
@@ -28,7 +28,7 @@ extension Result where Success == TwitterAPISuccessReponse, Failure == TwitterAP
         }
     }
 
-    func decode<T>(_ type: T.Type, decodar: JSONDecoder = JSONDecoder()) -> Result<
+    public func decode<T>(_ type: T.Type, decodar: JSONDecoder = JSONDecoder()) -> Result<
         TwitterAPIDecodedSuccessResponse<T>, Failure
     > {
         return flatMap { success in
