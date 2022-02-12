@@ -47,6 +47,8 @@
         "includeCardUri": "Bool",
         "includeExtAltText": "Bool",
         "includeMyRetweet": "Bool",
+        "includeRTs": "Bool",
+        "excludeReplies": "Bool",
         "trimUser": "Bool",
         "maxID": "String",
         "sinceID": "String",
