@@ -26,7 +26,7 @@ public protocol TweetAPIv1 {
     /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/get-statuses-lookup
     @discardableResult
     func getLookupStatuses(
-        _ request: GetLookupStatusesRequestV1,
+        _ request: GetStatusesLookupRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask
 
@@ -58,7 +58,7 @@ extension TwitterAPIKit: TweetAPIv1 {
     }
 
     public func getLookupStatuses(
-        _ request: GetLookupStatusesRequestV1,
+        _ request: GetStatusesLookupRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
