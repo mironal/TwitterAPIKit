@@ -36,6 +36,13 @@ public protocol AuthAPIv1 {
         completionHandler: @escaping (Result<TwitterOAuthAccessTokenV1, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask
 
+    /// https://developer.twitter.com/en/docs/authentication/api-reference/invalidate_access_token
+    @discardableResult
+    func postInvalidateAccessToken(
+        _ request: PostOAuthInvalidateTokenRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask
+
 }
 
 extension TwitterAPIKit: AuthAPIv1 {
@@ -101,5 +108,12 @@ extension TwitterAPIKit: AuthAPIv1 {
                 }
             )
         }
+    }
+
+    public func postInvalidateAccessToken(
+        _ request: PostOAuthInvalidateTokenRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask {
+        return session.send(request, completionHandler: completionHandler)
     }
 }
