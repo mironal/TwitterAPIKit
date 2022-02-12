@@ -15,6 +15,10 @@ public protocol AuthAPIv1 {
         _ request: PostOAuthRequestTokenRequestV1,
         completionHandler: @escaping (Result<TwitterOAuthTokenV1, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask
+
+    /// Create https://developer.twitter.com/en/docs/authentication/api-reference/authorize URL.
+    @discardableResult
+    func makeOAuthAuthorizeURL(_ request: GetOAuthAuthorizeRequestV1) -> URL
 }
 
 extension TwitterAPIKit: AuthAPIv1 {
@@ -41,5 +45,10 @@ extension TwitterAPIKit: AuthAPIv1 {
                 }
             )
         }
+    }
+
+    public func makeOAuthAuthorizeURL(_ request: GetOAuthAuthorizeRequestV1) -> URL {
+        // ignore exception
+        return try! request.buildRequest(environment: session.environment).url!
     }
 }
