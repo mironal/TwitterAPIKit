@@ -7,6 +7,8 @@ public enum TwitterAPIAuth {
         oauthToken: String?,
         oauthTokenSecret: String?
     )
+
+    case basic(apiKey: String, apiSecretKey: String)
 }
 
 public enum TwitterBaseURLType {
@@ -35,6 +37,10 @@ open class TwitterAPIKit {
     public let session: TwitterAPISession
     public var apiAuth: TwitterAPIAuth {
         return session.auth
+    }
+
+    public init(_ auth: TwitterAPIAuth, environment: TwitterAPIEnvironment = .init()) {
+        session = TwitterAPISession(auth: auth, environment: environment)
     }
 
     public init(
