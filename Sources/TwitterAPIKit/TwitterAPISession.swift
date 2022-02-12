@@ -48,6 +48,20 @@ open class TwitterAPISession {
                 oauthTokenSecret: oauthTokenSecret
             )
             urlRequest.setValue(authHeader, forHTTPHeaderField: "Authorization")
+        case let .basic(apiKey: apiKey, apiSecretKey: apiSecretKey):
+            let credential = "\(apiKey):\(apiSecretKey)"
+            guard let credentialData = credential.data(using: .utf8) else {
+                completionHandler(
+                    .failure(
+                        TwitterAPIKitError.requestFailed(reason: .cannotEncodeStringToData(string: credential))
+                    ))
+                return NoOpSessionTask()
+            }
+            let credentialBase64 = credentialData.base64EncodedString(options: [])
+            let basicAuth = "Basic \(credentialBase64)"
+            urlRequest.setValue(basicAuth, forHTTPHeaderField: "Authorization")
+        case let .bearer(token):
+            urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
 
         let task = session.dataTask(with: urlRequest) { data, response, error in

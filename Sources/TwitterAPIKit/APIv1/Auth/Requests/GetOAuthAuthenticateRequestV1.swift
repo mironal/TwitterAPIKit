@@ -1,0 +1,35 @@
+import Foundation
+
+/// https://developer.twitter.com/en/docs/authentication/api-reference/authenticate
+open class GetOAuthAuthenticateRequestV1: TwitterAPIRequest {
+
+    public let oauthToken: String
+    public let forceLogin: String?
+    public let screenName: String?
+
+    public var method: HTTPMethod {
+        return .get
+    }
+
+    public var path: String {
+        return "/oauth/authenticate"
+    }
+
+    open var parameters: [String: Any] {
+        var p = [String: Any]()
+        p["oauth_token"] = oauthToken
+        forceLogin.map { p["force_login"] = $0 }
+        screenName.map { p["screen_name"] = $0 }
+        return p
+    }
+
+    public init(
+        oauthToken: String,
+        forceLogin: String? = .none,
+        screenName: String? = .none
+    ) {
+        self.oauthToken = oauthToken
+        self.forceLogin = forceLogin
+        self.screenName = screenName
+    }
+}

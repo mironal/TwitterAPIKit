@@ -134,6 +134,84 @@ This method is intended to be used when the library does not yet support Twitter
 }
 ```
 
+### OAuth
+
+#### PIN based
+
+> https://developer.twitter.com/en/docs/authentication/oauth-1-0a/pin-based-oauth
+
+```swift
+// for CLI tool
+func runOAuthV1() {
+    client.v1.postOAuthRequestToken(.init(oauthCallback: "oob")) { result0 in
+        do {
+            let success = try result0.get()
+            print("Token:", success)
+
+            let url = client.v1.makeOAuthAuthorizeURL(.init(oauthToken: success.oauthToken, forceLogin: true))!
+            print("Enter this URL into your browser and enter the PIN code that will be displayed after authentication.")
+            print(url)
+
+            let pinCode = readLine()!
+
+            client.v1.postOAuthAccessToken(.init(oauthToken: success.oauthToken, oauthVerifier: pinCode)) { result1 in
+                do {
+                    let success = try result1.get()
+                    print("AccessToken:", success)
+
+                } catch let error {
+                    print("Error")
+                    print(error)
+                }
+            }
+        } catch let error {
+            print("Error")
+            print(error)
+        }
+    }
+}
+
+// Output of runOAuthV1
+
+/*
+ Token: TwitterOAuthTokenV1(oauthToken: "your-token", oauthTokenSecret: "your-secret", oauthCallbackConfirmed: Optional(true))
+ Enter this URL into your browser and enter the PIN code that will be displayed after authentication.
+ https://api.twitter.com/oauth/authorize?force_login=true&oauth_token=your-token
+ > your pin
+ AccessToken: TwitterOAuthAccessTokenV1(oauthToken: "", oauthTokenSecret: "", userID: Optional(""), screenName: Optional(""))
+*/
+```
+
+### App-only authentication and OAuth 2.0 Bearer Token
+
+> https://developer.twitter.com/en/docs/authentication/oauth-2-0/application-only
+
+```swift
+func runOAuth2V1() {
+    let client = TwitterAPIKit(
+        .basic(apiKey: "your consumer key", apiSecretKey: "your consumer secret")
+    )
+
+    client.v1.postOAuth2BearerToken(.init()) { result in
+        do {
+            let success = try result.get()
+            print("Token:", success)
+        } catch let error {
+            print("Error")
+            print(error)
+        }
+    }
+}
+
+func useBearerTokenV1() {
+    let client = TwitterAPIKit(.bearer("AAAAAAAAAAAAAAAAAAAAA"))
+    client.v1.getUserTimeline(.init(target: .screenName("twitterapi"))) { result in
+        print(result)
+    }
+}
+
+```
+
 ## TODO
 
 - [ ] Support API v1 endpoint
