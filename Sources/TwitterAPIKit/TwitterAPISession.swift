@@ -1,39 +1,6 @@
 import Foundation
 
-public enum TwitterAPIKitError: Error {
-    case connectionError(Error?, Data?, URLResponse?)
-
-    case requestError(Error, Data?, TwitterRateLimit, HTTPURLResponse)
-
-    case unacceptableStatusCode(code: Int, Data?, TwitterRateLimit, HTTPURLResponse)
-
-    public var data: Data? {
-        switch self {
-        case .connectionError(_, let data, _),
-            .requestError(_, let data, _, _),
-            .unacceptableStatusCode(code: _, let data, _, _):
-            return data
-        }
-    }
-
-    public var rateLimit: TwitterRateLimit? {
-        switch self {
-        case .connectionError:
-            return nil
-        case .requestError(_, _, let rateLimit, _),
-            .unacceptableStatusCode(code: _, _, let rateLimit, _):
-            return rateLimit
-        }
-    }
-}
-
 public typealias TwitterAPISuccessReponse = (data: Data, rateLimit: TwitterRateLimit, response: HTTPURLResponse)
-public typealias TwitterAPISerializedSuccessResponse = (
-    data: Any, rateLimit: TwitterRateLimit, response: HTTPURLResponse
-)
-public typealias TwitterAPIDecodedSuccessResponse<D: Decodable> = (
-    data: D, rateLimit: TwitterRateLimit, response: HTTPURLResponse
-)
 
 open class TwitterAPISession {
 
@@ -54,7 +21,16 @@ open class TwitterAPISession {
         _ request: TwitterAPIRequest,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
-        var urlRequest = request.buildRequest(environment: environment)
+
+        var urlRequest: URLRequest
+        do {
+            urlRequest = try request.buildRequest(environment: environment)
+        } catch let error as TwitterAPIKitError {
+            completionHandler(.failure(error))
+            return NoOpSessionTask()
+        } catch {
+            fatalError()
+        }
 
         switch auth {
         case let .oauth(
@@ -77,22 +53,24 @@ open class TwitterAPISession {
         }
 
         let task = session.dataTask(with: urlRequest) { data, response, error in
-            // May be "Error Domain=NSURLErrorDomain Code=-1009 The Internet connection appears to be offline."
+
+            if let error = error {
+                completionHandler(.failure(.responseFailed(reason: .responseError(error: error, response: response))))
+                return
+            }
+
             guard let httpResposne = response as? HTTPURLResponse else {
-                return completionHandler(.failure(.connectionError(error, data, response)))
+                return
             }
 
             let rateLimit = TwitterRateLimit(header: httpResposne.allHeaderFields)
 
-            if let error = error {
-                completionHandler(.failure(.requestError(error, data, rateLimit, httpResposne)))
-            }
-
             guard 200..<300 ~= httpResposne.statusCode else {
                 completionHandler(
                     .failure(
-                        .unacceptableStatusCode(
-                            code: httpResposne.statusCode, data, rateLimit, httpResposne)
+                        .responseFailed(
+                            reason: .unacceptableStatusCode(
+                                code: httpResposne.statusCode, data: data ?? Data(), rateLimit: rateLimit))
                     )
                 )
                 return
@@ -112,12 +90,16 @@ extension TwitterAPIRequest {
         return environment.baseURL(for: baseURLType).appendingPathComponent(path)
     }
 
-    func buildRequest(environment: TwitterAPIEnvironment) -> URLRequest {
+    func buildRequest(environment: TwitterAPIEnvironment) throws -> URLRequest {
 
-        var urlComponent = URLComponents(
-            url: requestURL(for: environment),
-            resolvingAgainstBaseURL: true
-        )!
+        guard
+            var urlComponent = URLComponents(
+                url: requestURL(for: environment),
+                resolvingAgainstBaseURL: true
+            )
+        else {
+            throw TwitterAPIKitError.requestFailed(reason: .invalidURL(url: ""))
+        }
         if method.prefersQueryParameters {
             urlComponent.queryItems = parameters.map { .init(name: $0, value: "\($1)") }
         }
@@ -130,32 +112,44 @@ extension TwitterAPIRequest {
             switch bodyContentType {
             case .wwwFormUrlEncoded:
                 request.setValue(bodyContentType.rawValue, forHTTPHeaderField: "Content-Type")
-                request.httpBody = parameters.urlEncodedQueryString.data(using: .utf8)!
+                let query = parameters.urlEncodedQueryString
+                guard let data = query.data(using: .utf8) else {
+                    throw TwitterAPIKitError.requestFailed(reason: .cannotEncodeStringToData(string: query))
+                }
+                request.httpBody = data
             case .multipartFormData:
 
                 guard let parts = Array(parameters.values) as? [MultipartFormDataPart] else {
-                    fatalError(
-                        "Parameter must be specified in `MultipartFormDataPart` for `BodyContentType.multipartFormData`."
-                    )
+                    throw TwitterAPIKitError.requestFailed(
+                        reason: .invalidParameter(
+                            parameter: parameters,
+                            cause:
+                                "Parameter must be specified in `MultipartFormDataPart` for `BodyContentType.multipartFormData`."
+                        ))
                 }
 
                 let boundary = "TwitterAPIKit-\(UUID().uuidString)"
                 let contentType = "\(BodyContentType.multipartFormData.rawValue); boundary=\(boundary)"
                 request.setValue(contentType, forHTTPHeaderField: "Content-Type")
 
-                request.httpBody = multipartFormData(boundary: boundary, parts: parts)
+                request.httpBody = try multipartFormData(boundary: boundary, parts: parts)
                 request.setValue(
                     String(request.httpBody?.count ?? 0), forHTTPHeaderField: "Content-Length")
             case .json:
                 request.setValue(bodyContentType.rawValue, forHTTPHeaderField: "Content-Type")
-                request.httpBody = try! JSONSerialization.data(
-                    withJSONObject: parameters, options: [])
+                do {
+                    request.httpBody = try JSONSerialization.data(
+                        withJSONObject: parameters, options: []
+                    )
+                } catch let error {
+                    throw TwitterAPIKitError.requestFailed(reason: .jsonSerializationFailed(error: error))
+                }
             }
         }
         return request
     }
 
-    func multipartFormData(boundary: String, parts: [MultipartFormDataPart]) -> Data {
+    func multipartFormData(boundary: String, parts: [MultipartFormDataPart]) throws -> Data {
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types#multipartform-data
 
         var body = Data()
@@ -164,34 +158,34 @@ extension TwitterAPIRequest {
         let lineBreak = "\r\n"
 
         for part in parts {
-            body.append(boundaryDelimiter)
-            body.append(lineBreak)
+            try body.appendBody(boundaryDelimiter)
+            try body.appendBody(lineBreak)
 
             switch part {
             case let .value(name: name, value: value):
-                body.append("Content-Disposition: form-data; name=\"\(name)\"")
-                body.append(lineBreak)
-                body.append(lineBreak)
-                body.append(String(describing: value))
-                body.append(lineBreak)
+                try body.appendBody("Content-Disposition: form-data; name=\"\(name)\"")
+                try body.appendBody(lineBreak)
+                try body.appendBody(lineBreak)
+                try body.appendBody(String(describing: value))
+                try body.appendBody(lineBreak)
 
             case let .data(name: name, value: value, filename: filename, mimeType: mimeType):
-                body.append(
+                try body.appendBody(
                     "Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(filename)\""
                 )
-                body.append(lineBreak)
+                try body.appendBody(lineBreak)
                 if !mimeType.isEmpty {
-                    body.append("Content-Type: \(mimeType)")
+                    try body.appendBody("Content-Type: \(mimeType)")
                 }
-                body.append(lineBreak)
-                body.append(lineBreak)
+                try body.appendBody(lineBreak)
+                try body.appendBody(lineBreak)
                 body.append(value)
-                body.append(lineBreak)
+                try body.appendBody(lineBreak)
             }
         }
-        body.append(boundaryDelimiter)
-        body.append("--")
-        body.append(lineBreak)
+        try body.appendBody(boundaryDelimiter)
+        try body.appendBody("--")
+        try body.appendBody(lineBreak)
 
         return body
     }
@@ -217,11 +211,11 @@ extension TwitterAPIEnvironment {
 }
 
 extension Data {
-    mutating func append(_ string: String) {
+    fileprivate mutating func appendBody(_ string: String) throws {
         if let data = string.data(using: .utf8) {
             append(data)
         } else {
-            fatalError("Cannnot convert data: \(string)")
+            throw TwitterAPIKitError.requestFailed(reason: .cannotEncodeStringToData(string: string))
         }
     }
 }
