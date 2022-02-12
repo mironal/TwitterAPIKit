@@ -1,7 +1,5 @@
 import Foundation
 
-public typealias TwitterAPISuccessReponse = (data: Data, rateLimit: TwitterRateLimit, response: HTTPURLResponse)
-
 open class TwitterAPISession {
 
     public let auth: TwitterAPIAuth
