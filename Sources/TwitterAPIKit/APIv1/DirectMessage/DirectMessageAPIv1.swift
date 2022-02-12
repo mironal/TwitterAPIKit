@@ -7,28 +7,28 @@ public protocol DirectMessageAPIv1 {
     func postDirectMessage(
         _ request: PostDirectMessageRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask
+    ) -> TwitterAPISessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/direct-messages/sending-and-receiving/api-reference/delete-message-event
     @discardableResult
     func deleteDirectMessage(
         _ request: DeleteDirectMessageRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask
+    ) -> TwitterAPISessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/direct-messages/sending-and-receiving/api-reference/get-event
     @discardableResult
     func getDirectMessage(
         _ request: GetDirectMessageRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask
+    ) -> TwitterAPISessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/direct-messages/sending-and-receiving/api-reference/list-events
     @discardableResult
     func getDirectMessageList(
         _ request: GetDirectMessageListRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask
+    ) -> TwitterAPISessionTask
 }
 
 extension TwitterAPIKit: DirectMessageAPIv1 {
@@ -36,28 +36,28 @@ extension TwitterAPIKit: DirectMessageAPIv1 {
     public func postDirectMessage(
         _ request: PostDirectMessageRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask {
+    ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
     public func deleteDirectMessage(
         _ request: DeleteDirectMessageRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask {
+    ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
     public func getDirectMessage(
         _ request: GetDirectMessageRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask {
+    ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
     public func getDirectMessageList(
         _ request: GetDirectMessageListRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask {
+    ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 }

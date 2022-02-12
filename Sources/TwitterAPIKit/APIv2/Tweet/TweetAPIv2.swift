@@ -6,14 +6,14 @@ public protocol TweetAPIv2 {
     func getTweets(
         _ request: GetTweetsRequestV2,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask
+    ) -> TwitterAPISessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/tweets/lookup/api-reference/get-tweets-id
     @discardableResult
     func getTweet(
         _ request: GetTweetRequestV2,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask
+    ) -> TwitterAPISessionTask
 
 }
 
@@ -21,14 +21,14 @@ extension TwitterAPIKit: TweetAPIv2 {
     public func getTweets(
         _ request: GetTweetsRequestV2,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask {
+    ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
     public func getTweet(
         _ request: GetTweetRequestV2,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask {
+    ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 }

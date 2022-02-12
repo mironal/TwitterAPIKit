@@ -7,21 +7,21 @@ public protocol GeoAPIv1 {
     func getReverseGeocode(
         _ request: GetGeoReverseGeocodeRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask
+    ) -> TwitterAPISessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/geo/place-information/api-reference/get-geo-id-place_id
     @discardableResult
     func getGeoPlace(
         _ request: GetGeoPlaceIDRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask
+    ) -> TwitterAPISessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/geo/places-near-location/api-reference/get-geo-search
     @discardableResult
     func searchGeo(
         _ request: GetGeoSearchRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask
+    ) -> TwitterAPISessionTask
 
 }
 
@@ -30,21 +30,21 @@ extension TwitterAPIKit: GeoAPIv1 {
     public func getReverseGeocode(
         _ request: GetGeoReverseGeocodeRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask {
+    ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
     public func getGeoPlace(
         _ request: GetGeoPlaceIDRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask {
+    ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 
     public func searchGeo(
         _ request: GetGeoSearchRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask {
+    ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
 }

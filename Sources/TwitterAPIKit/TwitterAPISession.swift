@@ -53,7 +53,7 @@ open class TwitterAPISession {
     public func send(
         _ request: TwitterAPIRequest,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> URLSessionTask {
+    ) -> TwitterAPISessionTask {
         var urlRequest = request.buildRequest(environment: environment)
 
         switch auth {
