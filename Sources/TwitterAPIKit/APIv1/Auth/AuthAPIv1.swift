@@ -24,9 +24,16 @@ public protocol AuthAPIv1 {
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/access_token
     @discardableResult
-    func postOAuthAccessToken(
-        _ request: PostOAuthRequestTokenRequestV1,
+    func postOAuthAccessTokenData(
+        _ request: PostOAuthAccessTokenRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask
+
+    /// https://developer.twitter.com/en/docs/authentication/api-reference/access_token
+    @discardableResult
+    func postOAuthAccessToken(
+        _ request: PostOAuthAccessTokenRequestV1,
+        completionHandler: @escaping (Result<TwitterOAuthAccessTokenV1, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask
 
 }
@@ -49,7 +56,9 @@ extension TwitterAPIKit: AuthAPIv1 {
                     guard let token = TwitterOAuthTokenV1(queryStringData: $0.data) else {
                         return .failure(
                             .responseSerializeFailed(
-                                reason: .cannotConvert(data: $0.data, toTypeName: "TwitterOAuthTokenV1")))
+                                reason: .cannotConvert(data: $0.data, toTypeName: "TwitterOAuthTokenV1")
+                            )
+                        )
                     }
                     return .success(token)
                 }
@@ -67,10 +76,30 @@ extension TwitterAPIKit: AuthAPIv1 {
         return try? request.buildRequest(environment: session.environment).url
     }
 
-    public func postOAuthAccessToken(
-        _ request: PostOAuthRequestTokenRequestV1,
+    public func postOAuthAccessTokenData(
+        _ request: PostOAuthAccessTokenRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
+    }
+
+    public func postOAuthAccessToken(
+        _ request: PostOAuthAccessTokenRequestV1,
+        completionHandler: @escaping (Result<TwitterOAuthAccessTokenV1, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask {
+        return session.send(request) { result in
+            completionHandler(
+                result.flatMap {
+                    guard let token = TwitterOAuthAccessTokenV1(queryStringData: $0.data) else {
+                        return .failure(
+                            .responseSerializeFailed(
+                                reason: .cannotConvert(data: $0.data, toTypeName: "TwitterOAuthAccessTokenV1")
+                            )
+                        )
+                    }
+                    return .success(token)
+                }
+            )
+        }
     }
 }
