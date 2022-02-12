@@ -182,6 +182,36 @@ func runOAuthV1() {
 */
 ```
 
+### App-only authentication and OAuth 2.0 Bearer Token
+
+> https://developer.twitter.com/en/docs/authentication/oauth-2-0/application-only
+
+```swift
+func runOAuth2V1() {
+    let client = TwitterAPIKit(
+        .basic(apiKey: "your consumer key", apiSecretKey: "your consumer secret")
+    )
+
+    client.v1.postOAuth2BearerToken(.init()) { result in
+        do {
+            let success = try result.get()
+            print("Token:", success)
+        } catch let error {
+            print("Error")
+            print(error)
+        }
+    }
+}
+
+func useBearerTokenV1() {
+    let client = TwitterAPIKit(.bearer("AAAAAAAAAAAAAAAAAAAAA"))
+    client.v1.getUserTimeline(.init(target: .screenName("twitterapi"))) { result in
+        print(result)
+    }
+}
+
+```
+
 ## TODO
 
 - [ ] Support API v1 endpoint
