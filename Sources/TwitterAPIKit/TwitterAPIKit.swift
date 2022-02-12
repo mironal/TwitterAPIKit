@@ -9,6 +9,8 @@ public enum TwitterAPIAuth {
     )
 
     case basic(apiKey: String, apiSecretKey: String)
+
+    case bearer(String)
 }
 
 public enum TwitterBaseURLType {

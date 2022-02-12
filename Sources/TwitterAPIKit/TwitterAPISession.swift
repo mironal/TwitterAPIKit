@@ -60,6 +60,8 @@ open class TwitterAPISession {
             let credentialBase64 = credentialData.base64EncodedString(options: [])
             let basicAuth = "Basic \(credentialBase64)"
             urlRequest.setValue(basicAuth, forHTTPHeaderField: "Authorization")
+        case let .bearer(token):
+            urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
 
         let task = session.dataTask(with: urlRequest) { data, response, error in
