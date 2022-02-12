@@ -45,9 +45,16 @@ public protocol AuthAPIv1 {
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/token
     @discardableResult
-    func postOAuth2BearerToken(
+    func postOAuth2BearerTokenData(
         _ request: PostOAuth2TokenRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask
+
+    /// https://developer.twitter.com/en/docs/authentication/api-reference/token
+    @discardableResult
+    func postOAuth2BearerToken(
+        _ request: PostOAuth2TokenRequestV1,
+        completionHandler: @escaping (Result<TwitterOAuth2BearerToken, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/invalidate_bearer_token
@@ -130,11 +137,39 @@ extension TwitterAPIKit: AuthAPIv1 {
         return session.send(request, completionHandler: completionHandler)
     }
 
-    public func postOAuth2BearerToken(
+    public func postOAuth2BearerTokenData(
         _ request: PostOAuth2TokenRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
+    }
+
+    public func postOAuth2BearerToken(
+        _ request: PostOAuth2TokenRequestV1,
+        completionHandler: @escaping (Result<TwitterOAuth2BearerToken, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask {
+        return session.send(request) { result in
+            completionHandler(
+                result.flatMap {
+                    do {
+                        guard let token = try TwitterOAuth2BearerToken(jsonData: $0.data) else {
+                            return .failure(
+                                .responseSerializeFailed(
+                                    reason: .cannotConvert(data: $0.data, toTypeName: "TwitterOAuth2BearerToken")
+                                )
+                            )
+                        }
+                        return .success(token)
+                    } catch let error {
+                        return .failure(
+                            .responseSerializeFailed(
+                                reason: .jsonSerializationFailed(error: error, data: $0.data, rateLimit: $0.rateLimit)
+                            )
+                        )
+                    }
+                }
+            )
+        }
     }
 
     public func postInvalidateOAuth2BearerToken(
