@@ -49,6 +49,13 @@ public protocol AuthAPIv1 {
         _ request: PostOAuth2TokenRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask
+
+    /// https://developer.twitter.com/en/docs/authentication/api-reference/invalidate_bearer_token
+    @discardableResult
+    func postInvalidateOAuth2BearerToken(
+        _ request: PostOAuth2InvalidateTokenRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask
 }
 
 extension TwitterAPIKit: AuthAPIv1 {
@@ -125,6 +132,13 @@ extension TwitterAPIKit: AuthAPIv1 {
 
     public func postOAuth2BearerToken(
         _ request: PostOAuth2TokenRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
+    public func postInvalidateOAuth2BearerToken(
+        _ request: PostOAuth2InvalidateTokenRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
