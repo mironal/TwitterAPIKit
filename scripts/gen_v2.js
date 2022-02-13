@@ -178,13 +178,14 @@
     function createParameterFunc(props) {
         const body = props.map(prop => {
             const isPrimitiveType = prop.type === "string" || prop.type === "integer" || prop.type === "boolean"
-
+            const isArray = prop.swiftType === "[String]" || prop.swiftType === "[Int]"
             const optional = prop.required ? "" : "?"
+            const join = isArray ? `.joined(separator: ",")` : ""
             if (isPrimitiveType) {
                 if (optional) {
-                    return `${prop.name}.map { p["${prop.rawName}"] = $0 }`
+                    return `${prop.name}.map { p["${prop.rawName}"] = $0${join} }`
                 }
-                return `p["${prop.rawName}"] = ${prop.name}`
+                return `p["${prop.rawName}"] = ${prop.name}${join}`
             } else {
                 return `${prop.name}${optional}.bind(param: &p)`
             }

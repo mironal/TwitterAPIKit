@@ -21,7 +21,7 @@ open class GetTweetsRequestV2: TwitterAPIRequest {
 
     open var parameters: [String: Any] {
         var p = [String: Any]()
-        p["ids"] = ids
+        p["ids"] = ids.joined(separator: ",")
         expansions?.bind(param: &p)
         mediaFields?.bind(param: &p)
         placeFields?.bind(param: &p)
@@ -48,5 +48,4 @@ open class GetTweetsRequestV2: TwitterAPIRequest {
         self.tweetFields = tweetFields
         self.userFields = userFields
     }
-
 }
