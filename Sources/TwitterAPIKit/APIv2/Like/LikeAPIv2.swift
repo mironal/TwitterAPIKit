@@ -16,6 +16,13 @@ public protocol LikeAPIv2 {
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask
 
+    /// https://developer.twitter.com/en/docs/twitter-api/tweets/likes/api-reference/post-users-id-likes
+    @discardableResult
+    func postLikeTweet(
+        _ request: PostUsersLikesRequestV2,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask
+
 }
 
 extension TwitterAPIKit: LikeAPIv2 {
@@ -28,6 +35,13 @@ extension TwitterAPIKit: LikeAPIv2 {
 
     public func getLikedTweets(
         _ request: GetUsersLikedTweetsRequestV2,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
+    public func postLikeTweet(
+        _ request: PostUsersLikesRequestV2,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
