@@ -16,7 +16,7 @@ import Foundation
  */
 
 func initializer(input: String) -> String {
-    let regex = try! NSRegularExpression(pattern: #"[^ ] ([a-zA-Z]+): ([a-zA-Z\d]+\??)$"#)
+    let regex = try! NSRegularExpression(pattern: #"[^ ] ([a-zA-Z]+): ([a-zA-Z\d<>\[\]]+\??)$"#)
 
     let pairs = input.split(separator: "\n")
         .map { line -> String in line.trimmingCharacters(in: .whitespacesAndNewlines) }

@@ -11,19 +11,24 @@
      */
     function createClassNameAndMethod() {
         const title = document.querySelector("h1").textContent
+        const titleTokens = title.split("/")
 
         // GET /2/tweets/:id/retweeted_by -> GET /tweets/retweeted_by -> GetTweetsRetweetedByRequestV2
-
-        const removed = title.split("/").filter(s => !s.startsWith(":") && s !== "2").join("/")
+        const removed = titleTokens.filter(s => !s.startsWith(":") && s !== "2").join("/")
         const tokens = removed.replace(/([A-Z]+) /g, "$1/").replace("_", "/").split("/")
-
-        const method = tokens[0].toLowerCase()
-
-        const className = tokens.reduce((prev, current) => {
+        let name = tokens.reduce((prev, current) => {
             const low = current.toLowerCase()
             return prev + low.charAt(0).toUpperCase() + low.slice(1);
-        }, "").replace("Id", "ID") + "RequestV2"
+        }, "").replace("Id", "ID")
 
+        // GET /2/tweets     -> GetTweetsRequestV2 
+        // GET /2/tweets/:id -> GetTweetRequestV2
+        if (name.endsWith("s") && titleTokens[titleTokens.length - 1] === ":id") {
+            name = name.slice(0, -1)
+        }
+
+        const className = name + "RequestV2"
+        const method = tokens[0].toLowerCase()
         return { className, method }
     }
 
@@ -79,7 +84,7 @@
             const required = nameElem.querySelector("small").textContent.trim().toLowerCase() == "required"
             const type = typeElem.textContent
             const rawName = nameElem.querySelector("code").textContent
-            const name = rawName.replace(/_./g,
+            const name = rawName.replace(/[_.]./g,
                 function (s) {
                     return s.charAt(1).toUpperCase();
                 }).replace("Id", "ID")
@@ -114,18 +119,18 @@
 
             if (prop.name === "expansions") {
                 if (prop.type.includes("enum (attachments.poll_ids, attachments.media_keys")) {
-                    return "TwitterTweetExpansionsV2"
+                    return "Set<TwitterTweetExpansionsV2>"
                 } else if (prop.type.includes("enum (pinned_tweet_id")) {
-                    return "TwitterUserExpansionsV2"
+                    return "Set<TwitterUserExpansionsV2>"
                 }
             }
 
             const nameToType = {
-                "media.fields": "TwitterMediaFieldsV2",
-                "place.fields": "TwitterPlaceFieldsV2",
-                "poll.fields": "TwitterPollFieldsV2",
-                "tweet.fields": "TwitterTweetFieldsV2",
-                "user.fields": "TwitterUserFieldsV2",
+                "media.fields": "Set<TwitterMediaFieldsV2>",
+                "place.fields": "Set<TwitterPlaceFieldsV2>",
+                "poll.fields": "Set<TwitterPollFieldsV2>",
+                "tweet.fields": "Set<TwitterTweetFieldsV2>",
+                "user.fields": "Set<TwitterUserFieldsV2>",
             }
 
             // TODO: 
@@ -145,7 +150,7 @@
                 "date (ISO 8601)": "Date"
             }
 
-            const type = nameToType[prop.name] ?? typeToSwiftType[prop.type]
+            const type = nameToType[prop.rawName] ?? typeToSwiftType[prop.type]
             if (!type) {
                 console.warn("Unkown type for", prop)
             }
