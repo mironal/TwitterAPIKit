@@ -9,11 +9,25 @@ public protocol RetweetAPIv2 {
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask
 
+    /// https://developer.twitter.com/en/docs/twitter-api/tweets/retweets/api-reference/post-users-id-retweets
+    @discardableResult
+    func postRetweet(
+        _ request: GetTweetsRetweetedByRequestV2,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask
+
 }
 
 extension TwitterAPIKit: RetweetAPIv2 {
 
     public func getRetweetedBy(
+        _ request: GetTweetsRetweetedByRequestV2,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
+    public func postRetweet(
         _ request: GetTweetsRetweetedByRequestV2,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
