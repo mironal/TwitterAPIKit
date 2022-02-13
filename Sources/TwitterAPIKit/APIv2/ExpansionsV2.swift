@@ -29,6 +29,12 @@ public enum TwitterTweetExpansionsV2: TwitterAPIV2RequestParameter, Hashable {
     }
 }
 
+extension Set where Element == TwitterTweetExpansionsV2 {
+    func bind(param: inout [String: Any]) {
+        param["expansions"] = commaSeparatedString
+    }
+}
+
 public enum TwitterUserExpansionsV2: TwitterAPIV2RequestParameter, Hashable {
     case pinnedTweetID
 
@@ -36,5 +42,11 @@ public enum TwitterUserExpansionsV2: TwitterAPIV2RequestParameter, Hashable {
         switch self {
         case .pinnedTweetID: return "pinned_tweet_id"
         }
+    }
+}
+
+extension Set where Element == TwitterUserExpansionsV2 {
+    func bind(param: inout [String: Any]) {
+        param["expansions"] = commaSeparatedString
     }
 }

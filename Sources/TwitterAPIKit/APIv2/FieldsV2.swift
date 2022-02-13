@@ -73,6 +73,12 @@ public enum TwitterTweetFieldsV2: TwitterAPIV2RequestParameter, Hashable {
     }
 }
 
+extension Set where Element == TwitterTweetFieldsV2 {
+    func bind(param: inout [String: Any]) {
+        param["tweet.fields"] = commaSeparatedString
+    }
+}
+
 /// user.fields
 public enum TwitterUserFieldsV2: TwitterAPIV2RequestParameter, Hashable {
     case createdAt
@@ -124,6 +130,12 @@ public enum TwitterUserFieldsV2: TwitterAPIV2RequestParameter, Hashable {
     }
 }
 
+extension Set where Element == TwitterUserFieldsV2 {
+    func bind(param: inout [String: Any]) {
+        param["user.fields"] = commaSeparatedString
+    }
+}
+
 /// place.fields
 public enum TwitterPlaceFieldsV2: TwitterAPIV2RequestParameter, Hashable {
 
@@ -158,6 +170,12 @@ public enum TwitterPlaceFieldsV2: TwitterAPIV2RequestParameter, Hashable {
     }
 }
 
+extension Set where Element == TwitterPlaceFieldsV2 {
+    func bind(param: inout [String: Any]) {
+        param["place.fields"] = commaSeparatedString
+    }
+}
+
 /// poll.fields
 public enum TwitterPollFieldsV2: TwitterAPIV2RequestParameter, Hashable {
     case durationMinutes
@@ -179,6 +197,12 @@ public enum TwitterPollFieldsV2: TwitterAPIV2RequestParameter, Hashable {
         case .votingStatus:
             return "voting_status"
         }
+    }
+}
+
+extension Set where Element == TwitterPollFieldsV2 {
+    func bind(param: inout [String: Any]) {
+        param["poll.fields"] = commaSeparatedString
     }
 }
 
@@ -214,5 +238,11 @@ public enum TwitterMediaFieldsV2: TwitterAPIV2RequestParameter, Hashable {
         case .altTex: return "alt_tex"
         case .other(let string): return string
         }
+    }
+}
+
+extension Set where Element == TwitterMediaFieldsV2 {
+    func bind(param: inout [String: Any]) {
+        param["media.fields"] = commaSeparatedString
     }
 }

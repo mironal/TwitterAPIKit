@@ -4,6 +4,7 @@ import Foundation
 
 public typealias TwitterAPIv2 =
     TweetAPIv2
+    & TimelineAPIv2
 
 public protocol TwitterAPIV2RequestParameter {
     var stringValue: String { get }
@@ -11,6 +12,6 @@ public protocol TwitterAPIV2RequestParameter {
 
 extension Set where Element: TwitterAPIV2RequestParameter {
     var commaSeparatedString: String {
-        return map { $0.stringValue }.joined(separator: ",")
+        return map { $0.stringValue }.sorted().joined(separator: ",")
     }
 }
