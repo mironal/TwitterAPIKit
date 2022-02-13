@@ -1,6 +1,6 @@
 
 /**
- * @typedef {{type: string, name: string, rawName: string, required: boolean, kind: "path" | "query" | "json"}} Prop
+ * @typedef {{type: string, name: string, rawName: string, required: boolean, kind: "path" | "query" | "json", swiftType?: string}} Prop
  */
 // In Twitter's API documentation, paste it into the Chrome DevTools console and run it.
 
@@ -32,7 +32,6 @@
         return { className, method }
     }
 
-    const classNameAndMethod = createClassNameAndMethod()
 
     function createURL() {
         const url = Array(...document.querySelectorAll("h3")).find(elem => elem.innerText === "Endpoint URL").nextElementSibling.textContent
@@ -50,7 +49,6 @@
             return s
         }).join("/")
     }
-    const url = createURL()
 
     /**
      * // Path parameters or Query parameters
@@ -73,43 +71,10 @@
 
 
     /**
-     * @param {HTMLTableRowElement[]} rows 
-     * @param {"path" | "query" | "json"} kind
-     * @return {Prop[]}
-     */
-    function pickupProps(rows, kind) {
-        return rows.slice(1).reduce((prev, row) => {
-
-            const [nameElem, typeElem] = row.children
-            const required = nameElem.querySelector("small").textContent.trim().toLowerCase() == "required"
-            const type = typeElem.textContent
-            const rawName = nameElem.querySelector("code").textContent
-            const name = rawName.replace(/[_.]./g,
-                function (s) {
-                    return s.charAt(1).toUpperCase();
-                }).replace("Id", "ID")
-
-            prev.push({
-                name,
-                rawName,
-                type,
-                required,
-                kind
-            })
-            return prev
-        }, [])
-    }
-
-
-    const pathPropsMap = pickupProps(getParameterTableRows("Path parameters"), "path")
-    const queryPropsMap = pickupProps(getParameterTableRows("Query parameters"), "query")
-    const jsonPropsMap = pickupProps(getParameterTableRows("JSON body parameters"), "json")
-
-    /**
      * 
      * @param {Prop} prop 
      */
-    function swiftPropertyString(prop) {
+    function bindSwiftType(prop) {
 
         function toType() {
 
@@ -141,30 +106,126 @@
     "type": "enum (retweets, replies)",
     "required": false,
     "kind": "query"
-}
+    }
             */
 
             const typeToSwiftType = {
                 "integer": "Int",
                 "string": "String",
-                "date (ISO 8601)": "Date"
+                "date (ISO 8601)": "Date",
+                "boolean": "Bool"
             }
 
-            const type = nameToType[prop.rawName] ?? typeToSwiftType[prop.type]
-            if (!type) {
-                console.warn("Unkown type for", prop)
-            }
-
-
-            return type ?? "Unkonwn"
+            return nameToType[prop.rawName] ?? typeToSwiftType[prop.type]
+        }
+        const type = toType()
+        if (type) {
+            prop.swiftType = type
+        } else {
+            console.warn("Unkown type for", prop)
         }
 
-        const type = toType()
+        return prop
+    }
+
+    /**
+     * @param {HTMLTableRowElement[]} rows 
+     * @param {"path" | "query" | "json"} kind
+     * @return {Prop[]}
+     */
+    function pickupProps(rows, kind) {
+        return rows.slice(1).reduce((prev, row) => {
+
+            const [nameElem, typeElem] = row.children
+            const required = nameElem.querySelector("small").textContent.trim().toLowerCase() == "required"
+            const type = typeElem.textContent
+            const rawName = nameElem.querySelector("code").textContent
+            const name = rawName.replace(/[_.]./g,
+                function (s) {
+                    return s.charAt(1).toUpperCase();
+                }).replace("Id", "ID")
+
+            const prop = {
+                name,
+                rawName,
+                type,
+                required,
+                kind
+            }
+            bindSwiftType(prop)
+
+            prev.push(prop)
+            return prev
+        }, [])
+    }
+
+    /**
+     * 
+     * @param {Prop} prop 
+     */
+    function swiftPropertyString(prop) {
+        const type = prop.swiftType ?? "Unknown"
         const optional = prop.required ? "" : "?"
         const string = `public let ${prop.name}: ${type}${optional}`
 
         return string
     }
+
+    /**
+  * 
+  * @param {Prop[]} props 
+  */
+    function createParameterFunc(props) {
+        const body = props.map(prop => {
+            const isPrimitiveType = prop.type === "string" || prop.type === "integer" || prop.type === "boolean"
+
+            const optional = prop.required ? "" : "?"
+            if (isPrimitiveType) {
+                if (optional) {
+                    return `${prop.name}.map { p["${prop.rawName}"] = $0 }`
+                }
+                return `p["${prop.rawName}"] = ${prop.name}`
+            } else {
+                return `${prop.name}${optional}.bind(param: &p)`
+            }
+        })
+        return `open var parameters: [String: Any] {
+            var p = [String: Any]()
+            ${body.join("\n            ")}
+            return p
+        }`
+    }
+
+    /**
+     * 
+     * @param {Prop[]} props 
+     * @returns 
+     */
+    function createInitFunc(props) {
+
+        const initParams = props.map(p => {
+            const optional = p.required ? "" : "?"
+            const defaultArg = p.required ? "" : " = .none"
+            return `${p.name}: ${p.swiftType ?? "Unkown"}${optional}${defaultArg}`
+        })
+
+        const initBody = props.map(p => {
+            return `self.${p.name} = ${p.name}`
+        })
+
+        return `public init(
+            ${initParams.join(",\n            ")}
+        ) {
+            ${initBody.join("\n            ")}
+        }`
+    }
+
+    const classNameAndMethod = createClassNameAndMethod()
+    const url = createURL()
+
+    const pathPropsMap = pickupProps(getParameterTableRows("Path parameters"), "path")
+    const queryPropsMap = pickupProps(getParameterTableRows("Query parameters"), "query")
+    const jsonPropsMap = pickupProps(getParameterTableRows("JSON body parameters"), "json")
 
     const props = [
         ...pathPropsMap.map(swiftPropertyString),
@@ -178,6 +239,9 @@
         return .json
     }
 `
+    const parameterFunc = createParameterFunc([...queryPropsMap, ...jsonPropsMap])
+
+    const initFunc = createInitFunc([...pathPropsMap, ...queryPropsMap, ...jsonPropsMap])
 
     const source = `import Foundation
 
@@ -194,7 +258,9 @@ open class ${classNameAndMethod.className}: TwitterAPIRequest {
         return "${url.replace("https://api.twitter.com", "")}"
     }
     ${bodyContentType}
+    ${parameterFunc}
 
+    ${initFunc}
 }
 `
     console.log(source)
