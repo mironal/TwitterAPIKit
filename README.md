@@ -93,7 +93,7 @@ class CustomListsListRequestV1: GetListsListRequestV1 {
 
 It is also possible to create an encapsulated custom request class.
 
-```
+```swift
 class CapsuledListsListRequestV1: GetListsListRequestV1 {
     init() {
         super.init(user: .userID("100"), reverse: true)
@@ -218,3 +218,17 @@ func useBearerTokenV1() {
 - [ ] Support API v2 endpoint
 - [ ] Swift Concurrency
 - [ ] Document
+
+## Known Issues
+
+When requesting `GET /2/users/:id/tweets` (Twitter API v2) using OAuth 1.0a User Context, the following error occurs when specifying `end_time` or `start_time`, but the cause has not been investigated yet.
+
+
+```json
+{
+  "title": "Unauthorized",
+  "type": "about:blank",
+  "status": 401,
+  "detail": "Unauthorized"
+}
+```
