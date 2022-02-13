@@ -12,7 +12,7 @@ public protocol RetweetAPIv2 {
     /// https://developer.twitter.com/en/docs/twitter-api/tweets/retweets/api-reference/post-users-id-retweets
     @discardableResult
     func postRetweet(
-        _ request: GetTweetsRetweetedByRequestV2,
+        _ request: PostUsersRetweetsRequestV2,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask
 
@@ -34,7 +34,7 @@ extension TwitterAPIKit: RetweetAPIv2 {
     }
 
     public func postRetweet(
-        _ request: GetTweetsRetweetedByRequestV2,
+        _ request: PostUsersRetweetsRequestV2,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
