@@ -18,7 +18,14 @@ public protocol LikeAPIv2 {
 
     /// https://developer.twitter.com/en/docs/twitter-api/tweets/likes/api-reference/post-users-id-likes
     @discardableResult
-    func postLikeTweet(
+    func postLike(
+        _ request: PostUsersLikesRequestV2,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/tweets/likes/api-reference/delete-users-id-likes-tweet_id
+    @discardableResult
+    func deleteLike(
         _ request: PostUsersLikesRequestV2,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask
@@ -40,7 +47,14 @@ extension TwitterAPIKit: LikeAPIv2 {
         return session.send(request, completionHandler: completionHandler)
     }
 
-    public func postLikeTweet(
+    public func postLike(
+        _ request: PostUsersLikesRequestV2,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
+    public func deleteLike(
         _ request: PostUsersLikesRequestV2,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
