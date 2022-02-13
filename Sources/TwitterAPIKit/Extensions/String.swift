@@ -2,9 +2,8 @@ import Foundation
 
 extension String {
     var urlEncodedString: String {
-        var allowedCharacterSet: CharacterSet = .urlQueryAllowed
-        allowedCharacterSet.remove(charactersIn: "\n:#/?@!$&'()*+,;=")
-        allowedCharacterSet.insert(charactersIn: "[]")
-        return self.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet)!
+        let allowedCharacterSet = NSMutableCharacterSet.alphanumeric()
+        allowedCharacterSet.addCharacters(in: "-._~")
+        return addingPercentEncoding(withAllowedCharacters: allowedCharacterSet as CharacterSet)!
     }
 }
