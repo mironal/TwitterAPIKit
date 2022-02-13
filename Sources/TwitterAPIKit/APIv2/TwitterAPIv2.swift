@@ -5,6 +5,8 @@ import Foundation
 public typealias TwitterAPIv2 =
     TweetAPIv2
     & TimelineAPIv2
+    & RetweetAPIv2
+    & LikeAPIv2
 
 public protocol TwitterAPIV2RequestParameter {
     var stringValue: String { get }
