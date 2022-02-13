@@ -11,6 +11,6 @@ public protocol TwitterAPIV2RequestParameter {
 
 extension Set where Element: TwitterAPIV2RequestParameter {
     var commaSeparatedString: String {
-        return map { $0.stringValue }.joined(separator: ",")
+        return map { $0.stringValue }.sorted().joined(separator: ",")
     }
 }
