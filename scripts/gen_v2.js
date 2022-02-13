@@ -176,6 +176,11 @@
   * @param {Prop[]} props 
   */
     function createParameterFunc(props) {
+        if (props.length === 0) {
+            return `open var parameters: [String: Any] {
+            return [:]
+    }`
+        }
         const body = props.map(prop => {
             const isPrimitiveType = prop.type === "string" || prop.type === "integer" || prop.type === "boolean"
             const isArray = prop.swiftType === "[String]" || prop.swiftType === "[Int]"
