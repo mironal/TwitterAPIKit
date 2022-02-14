@@ -71,7 +71,7 @@ public protocol MediaAPIv1 {
     )
 }
 
-extension TwitterAPIKit: MediaAPIv1 {
+extension TwitterAPIKit.TwitterAPIImpl: MediaAPIv1 {
 
     public func getUploadMediaStatus(
         _ request: GetUploadMediaStatusRequestV1,
@@ -179,9 +179,10 @@ extension TwitterAPIKit: MediaAPIv1 {
 
             guard let self = self else { return }
 
-            let initResult: (data: UploadMediaInitResponse, rateLimit: TwitterRateLimit, response: HTTPURLResponse)
+            let initResult:
+                (data: TwitterAPIKit.UploadMediaInitResponse, rateLimit: TwitterRateLimit, response: HTTPURLResponse)
             do {
-                initResult = try result.decode(UploadMediaInitResponse.self).get()
+                initResult = try result.decode(TwitterAPIKit.UploadMediaInitResponse.self).get()
             } catch let error as TwitterAPIKitError {
                 completionHandler(.failure(error))
                 return
@@ -207,9 +208,12 @@ extension TwitterAPIKit: MediaAPIv1 {
                     guard let self = self else { return }
 
                     var finalizeResult:
-                        (data: UploadMediaFinalizeResponse, rateLimit: TwitterRateLimit, response: HTTPURLResponse)
+                        (
+                            data: TwitterAPIKit.UploadMediaFinalizeResponse, rateLimit: TwitterRateLimit,
+                            response: HTTPURLResponse
+                        )
                     do {
-                        finalizeResult = try result.decode(UploadMediaFinalizeResponse.self).get()
+                        finalizeResult = try result.decode(TwitterAPIKit.UploadMediaFinalizeResponse.self).get()
                     } catch let error as TwitterAPIKitError {
                         completionHandler(.failure(error))
                         return
@@ -236,7 +240,7 @@ extension TwitterAPIKit: MediaAPIv1 {
         mediaID: String,
         initialWaitSec: Int,
         completionHandler: @escaping (
-            Result<UploadMediaStatusResponse, TwitterAPIKitError>
+            Result<TwitterAPIKit.UploadMediaStatusResponse, TwitterAPIKitError>
         ) -> Void
     ) {
 
@@ -249,7 +253,7 @@ extension TwitterAPIKit: MediaAPIv1 {
     public func waitMediaProcessing(
         mediaID: String,
         completionHandler: @escaping (
-            Result<UploadMediaStatusResponse, TwitterAPIKitError>
+            Result<TwitterAPIKit.UploadMediaStatusResponse, TwitterAPIKitError>
         ) -> Void
     ) {
 
@@ -257,7 +261,7 @@ extension TwitterAPIKit: MediaAPIv1 {
             guard let self = self else { return }
 
             do {
-                let success = try result.decode(UploadMediaStatusResponse.self).get()
+                let success = try result.decode(TwitterAPIKit.UploadMediaStatusResponse.self).get()
 
                 switch success.data.state {
                 case let .pending(checkAfterSecs: sec),

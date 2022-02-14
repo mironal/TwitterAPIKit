@@ -39,8 +39,12 @@ open class TwitterAPIKit {
         return decoder
     }()
 
-    public var v1: TwitterAPIv1 { return self }
-    public var v2: TwitterAPIv2 { return self }
+    public var v1: TwitterAPIv1 { return api }
+    public var v2: TwitterAPIv2 { return api }
+
+    private lazy var api: TwitterAPIImpl = {
+        return TwitterAPIImpl(session: session)
+    }()
 
     public let session: TwitterAPISession
     public var apiAuth: TwitterAPIAuth {
@@ -66,5 +70,15 @@ open class TwitterAPIKit {
                 oauthTokenSecret: oauthTokenSecret),
             environment: environment
         )
+    }
+}
+
+extension TwitterAPIKit {
+
+    class TwitterAPIImpl {
+        let session: TwitterAPISession
+        init(session: TwitterAPISession) {
+            self.session = session
+        }
     }
 }

@@ -137,7 +137,7 @@ public protocol ListAPIv1 {
 
 }
 
-extension TwitterAPIKit: ListAPIv1 {
+extension TwitterAPIKit.TwitterAPIImpl: ListAPIv1 {
 
     public func getLists(
         _ request: GetListsListRequestV1,
