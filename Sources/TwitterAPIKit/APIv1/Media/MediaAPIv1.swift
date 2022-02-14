@@ -45,6 +45,30 @@ public protocol MediaAPIv1 {
         _ request: UploadMediaFinalizeRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask
+
+    /// Upload media utility method.
+    /// INIT -> APPEND x n -> FINALIZE -> STATUS x n (If needed)
+    func uploadMedia(
+        _ parameters: UploadMediaParameters,
+        completionHandler: @escaping (
+            Result<String /* MediaID */, TwitterAPIKitError>
+        ) -> Void
+    )
+
+    func waitMediaProcessing(
+        mediaID: String,
+        initialWaitSec: Int,
+        completionHandler: @escaping (
+            Result<UploadMediaStatusResponse, TwitterAPIKitError>
+        ) -> Void
+    )
+
+    func waitMediaProcessing(
+        mediaID: String,
+        completionHandler: @escaping (
+            Result<UploadMediaStatusResponse, TwitterAPIKitError>
+        ) -> Void
+    )
 }
 
 extension TwitterAPIKit: MediaAPIv1 {
@@ -136,5 +160,128 @@ extension TwitterAPIKit: MediaAPIv1 {
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
+    }
+
+    public func uploadMedia(
+        _ parameters: UploadMediaParameters,
+        completionHandler: @escaping (
+            Result<String /* MediaID */, TwitterAPIKitError>
+        ) -> Void
+    ) {
+        uploadMediaInit(
+            .init(
+                totalBytes: parameters.media.count,
+                mediaType: parameters.mediaType,
+                mediaCategory: parameters.mediaCategory,
+                additionalOwners: parameters.additionalOwners
+            )
+        ) { [weak self] result in
+
+            guard let self = self else { return }
+
+            let initResult: (data: UploadMediaInitResponse, rateLimit: TwitterRateLimit, response: HTTPURLResponse)
+            do {
+                initResult = try result.decode(UploadMediaInitResponse.self).get()
+            } catch let error as TwitterAPIKitError {
+                completionHandler(.failure(error))
+                return
+            } catch let error {
+                completionHandler(.failure(.unkonwn(error: error)))
+                return
+            }
+
+            let mediaID = initResult.data.mediaID
+
+            self.uploadMediaAppendSplitChunks(
+                .init(
+                    mediaID: mediaID,
+                    filename: parameters.filename,
+                    mimeType: parameters.mediaType,
+                    media: parameters.media,
+                    segmentIndex: 0
+                )
+            ) { [weak self] _ in
+
+                guard let self = self else { return }
+                _ = self.uploadMediaFinalize(.init(mediaID: mediaID)) { [weak self] result in
+                    guard let self = self else { return }
+
+                    var finalizeResult:
+                        (data: UploadMediaFinalizeResponse, rateLimit: TwitterRateLimit, response: HTTPURLResponse)
+                    do {
+                        finalizeResult = try result.decode(UploadMediaFinalizeResponse.self).get()
+                    } catch let error as TwitterAPIKitError {
+                        completionHandler(.failure(error))
+                        return
+                    } catch {
+                        completionHandler(.failure(.unkonwn(error: error)))
+                        return
+                    }
+
+                    guard let processingInfo = finalizeResult.data.processingInfo else {
+                        completionHandler(.success(mediaID))
+                        return
+                    }
+
+                    self.waitMediaProcessing(mediaID: mediaID, initialWaitSec: processingInfo.checkAfterSecs ?? 0) {
+                        result in
+                        completionHandler(result.map { $0.mediaID })
+                    }
+                }
+            }
+        }
+    }
+
+    public func waitMediaProcessing(
+        mediaID: String,
+        initialWaitSec: Int,
+        completionHandler: @escaping (
+            Result<UploadMediaStatusResponse, TwitterAPIKitError>
+        ) -> Void
+    ) {
+
+        DispatchQueue.global(qos: .default).asyncAfter(deadline: .now() + .seconds(initialWaitSec)) { [weak self] in
+            guard let self = self else { return }
+            self.waitMediaProcessing(mediaID: mediaID, completionHandler: completionHandler)
+        }
+    }
+
+    public func waitMediaProcessing(
+        mediaID: String,
+        completionHandler: @escaping (
+            Result<UploadMediaStatusResponse, TwitterAPIKitError>
+        ) -> Void
+    ) {
+
+        _ = getUploadMediaStatus(.init(mediaID: mediaID)) { [weak self] result in
+            guard let self = self else { return }
+
+            do {
+                let success = try result.decode(UploadMediaStatusResponse.self).get()
+
+                switch success.data.state {
+                case let .pending(checkAfterSecs: sec),
+                    let .inProgress(checkAfterSecs: sec, progressPercent: _):
+
+                    self.waitMediaProcessing(
+                        mediaID: mediaID, initialWaitSec: sec, completionHandler: completionHandler)
+
+                case .succeeded:
+                    completionHandler(.success(success.data))
+                case let .failed(error: error):
+                    completionHandler(.failure(.uploadMediaFailed(reason: .processingFailed(error: error))))
+                case .unknown:
+                    completionHandler(
+                        .failure(.unkonwn(error: NSError(domain: "TwitterAPIKit", code: 0, userInfo: [:]))))
+                }
+            } catch let error as TwitterAPIKitError {
+                completionHandler(.failure(error))
+                return
+
+            } catch let error {
+                completionHandler(.failure(.unkonwn(error: error)))
+                return
+            }
+        }
     }
 }

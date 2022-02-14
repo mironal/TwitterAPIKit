@@ -23,6 +23,13 @@ public enum TwitterAPIKitError: Error {
         case jsonDecodeFailed(error: Error, data: Data, rateLimit: TwitterRateLimit)
         case cannotConvert(data: Data, toTypeName: String)
     }
+
+    case uploadMediaFailed(reason: UploadMediaFailureReason)
+    public enum UploadMediaFailureReason {
+        case processingFailed(error: UploadMediaError)
+    }
+
+    case unkonwn(error: Error)
 }
 
 extension TwitterAPIKitError: LocalizedError {
