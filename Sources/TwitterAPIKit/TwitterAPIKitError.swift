@@ -24,3 +24,21 @@ public enum TwitterAPIKitError: Error {
         case cannotConvert(data: Data, toTypeName: String)
     }
 }
+
+extension TwitterAPIKitError {
+
+    var requestFailureReason: RequestFailureReason? {
+        guard case .requestFailed(reason: let reason) = self else { return nil }
+        return reason
+    }
+
+    var responseFailureReason: ResponseFailureReason? {
+        guard case .responseFailed(let reason) = self else { return nil }
+        return reason
+    }
+
+    var responseSerializationFailureReason: ResponseSerializationFailureReason? {
+        guard case .responseSerializeFailed(let reason) = self else { return nil }
+        return reason
+    }
+}
