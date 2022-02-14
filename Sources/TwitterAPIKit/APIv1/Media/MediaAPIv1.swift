@@ -49,7 +49,7 @@ public protocol MediaAPIv1 {
     /// Upload media utility method.
     /// INIT -> APPEND x n -> FINALIZE -> STATUS x n (If needed)
     func uploadMedia(
-        _ parameters: UploadMediaParameters,
+        _ parameters: UploadMediaRequestParameters,
         completionHandler: @escaping (
             Result<String /* MediaID */, TwitterAPIKitError>
         ) -> Void
@@ -59,14 +59,14 @@ public protocol MediaAPIv1 {
         mediaID: String,
         initialWaitSec: Int,
         completionHandler: @escaping (
-            Result<UploadMediaStatusResponse, TwitterAPIKitError>
+            Result<TwitterAPIKit.UploadMediaStatusResponse, TwitterAPIKitError>
         ) -> Void
     )
 
     func waitMediaProcessing(
         mediaID: String,
         completionHandler: @escaping (
-            Result<UploadMediaStatusResponse, TwitterAPIKitError>
+            Result<TwitterAPIKit.UploadMediaStatusResponse, TwitterAPIKitError>
         ) -> Void
     )
 }
@@ -163,7 +163,7 @@ extension TwitterAPIKit: MediaAPIv1 {
     }
 
     public func uploadMedia(
-        _ parameters: UploadMediaParameters,
+        _ parameters: UploadMediaRequestParameters,
         completionHandler: @escaping (
             Result<String /* MediaID */, TwitterAPIKitError>
         ) -> Void
