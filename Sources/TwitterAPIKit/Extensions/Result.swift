@@ -21,7 +21,7 @@ extension Result where Success == TwitterAPISuccessReponse, Failure == TwitterAP
         }
     }
 
-    public func decode<T>(_ type: T.Type, decodar: JSONDecoder = JSONDecoder()) -> Result<
+    public func decode<T>(_ type: T.Type, decodar: JSONDecoder = TwitterAPIKit.defaultJSONDecoder) -> Result<
         TwitterAPIDecodedSuccessResponse<T>, Failure
     > {
         return flatMap { success in

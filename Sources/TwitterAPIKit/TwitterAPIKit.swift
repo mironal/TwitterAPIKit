@@ -33,6 +33,12 @@ public struct TwitterAPIEnvironment {
 
 open class TwitterAPIKit {
 
+    public static var defaultJSONDecoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }()
+
     public var v1: TwitterAPIv1 { return self }
     public var v2: TwitterAPIv2 { return self }
 
