@@ -82,7 +82,12 @@ open class TwitterAPISession {
                     .failure(
                         .responseFailed(
                             reason: .unacceptableStatusCode(
-                                code: httpResposne.statusCode, data: data ?? Data(), rateLimit: rateLimit))
+                                code: httpResposne.statusCode,
+                                data: data ?? Data(),
+                                rateLimit: rateLimit,
+                                response: httpResposne
+                            )
+                        )
                     )
                 )
                 return

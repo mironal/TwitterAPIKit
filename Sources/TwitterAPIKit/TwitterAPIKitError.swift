@@ -14,7 +14,7 @@ public enum TwitterAPIKitError: Error {
     case responseFailed(reason: ResponseFailureReason)
     public enum ResponseFailureReason {
         case responseError(error: Error, response: URLResponse?)
-        case unacceptableStatusCode(code: Int, data: Data, rateLimit: TwitterRateLimit)
+        case unacceptableStatusCode(code: Int, data: Data, rateLimit: TwitterRateLimit, response: HTTPURLResponse)
     }
 
     case responseSerializeFailed(reason: ResponseSerializationFailureReason)
