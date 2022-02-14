@@ -27,17 +27,17 @@ public enum TwitterAPIKitError: Error {
 
 extension TwitterAPIKitError {
 
-    var requestFailureReason: RequestFailureReason? {
+    public var requestFailureReason: RequestFailureReason? {
         guard case .requestFailed(reason: let reason) = self else { return nil }
         return reason
     }
 
-    var responseFailureReason: ResponseFailureReason? {
+    public var responseFailureReason: ResponseFailureReason? {
         guard case .responseFailed(let reason) = self else { return nil }
         return reason
     }
 
-    var responseSerializationFailureReason: ResponseSerializationFailureReason? {
+    public var responseSerializationFailureReason: ResponseSerializationFailureReason? {
         guard case .responseSerializeFailed(let reason) = self else { return nil }
         return reason
     }
