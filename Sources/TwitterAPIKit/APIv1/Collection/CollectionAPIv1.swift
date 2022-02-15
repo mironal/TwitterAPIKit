@@ -15,6 +15,13 @@ public protocol CollectionAPIv1 {
         _ request: GetCollectionsListRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/curate-a-collection/api-reference/get-collections-show
+    @discardableResult
+    func getCollection(
+        _ request: GetCollectionsShowRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV1: CollectionAPIv1 {
@@ -32,4 +39,11 @@ extension TwitterAPIKit.TwitterAPIImplV1: CollectionAPIv1 {
     ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
     }
+    func getCollection(
+        _ request: GetCollectionsShowRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
 }
