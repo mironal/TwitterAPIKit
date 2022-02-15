@@ -64,6 +64,13 @@ public protocol CollectionAPIv1 {
         _ request: PostCollectionsEntriesRemoveRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/curate-a-collection/api-reference/post-collections-update
+    @discardableResult
+    func postCollectionUpdate(
+        _ request: PostCollectionsUpdateRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV1: CollectionAPIv1 {
@@ -126,6 +133,13 @@ extension TwitterAPIKit.TwitterAPIImplV1: CollectionAPIv1 {
 
     func postCollectionRemoveEntry(
         _ request: PostCollectionsEntriesRemoveRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
+    func postCollectionUpdate(
+        _ request: PostCollectionsUpdateRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
