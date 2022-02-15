@@ -5,6 +5,7 @@ public typealias TwitterAPIv1 =
     & ApplicationAPIv1
     & AuthAPIv1
     & BlockAndMuteAPIv1
+    & CollectionAPIv1
     & DirectMessageAPIv1
     & FavoriteAPIv1
     & FriendshipsAPIV1
@@ -24,6 +25,7 @@ public protocol TwitterAPIResourceV1 {
     var application: ApplicationAPIv1 { get }
     var auth: AuthAPIv1 { get }
     var blockAndMute: BlockAndMuteAPIv1 { get }
+    var collection: CollectionAPIv1 { get }
     var directMessage: DirectMessageAPIv1 { get }
     var favorite: FavoriteAPIv1 { get }
     var friendships: FriendshipsAPIV1 { get }
@@ -45,6 +47,7 @@ extension TwitterAPIKit.TwitterAPIImplV1: TwitterAPIResourceV1 {
     var application: ApplicationAPIv1 { return self }
     var auth: AuthAPIv1 { return self }
     var blockAndMute: BlockAndMuteAPIv1 { return self }
+    var collection: CollectionAPIv1 { return self }
     var directMessage: DirectMessageAPIv1 { return self }
     var favorite: FavoriteAPIv1 { return self }
     var friendships: FriendshipsAPIV1 { return self }
