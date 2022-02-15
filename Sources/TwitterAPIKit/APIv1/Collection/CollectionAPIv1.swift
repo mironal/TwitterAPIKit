@@ -8,12 +8,26 @@ public protocol CollectionAPIv1 {
         _ request: GetCollectionsEntriesRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/curate-a-collection/api-reference/get-collections-list
+    @discardableResult
+    func getCollections(
+        _ request: GetCollectionsListRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV1: CollectionAPIv1 {
 
     func getCollectionEntries(
         _ request: GetCollectionsEntriesRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
+    func getCollections(
+        _ request: GetCollectionsListRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
