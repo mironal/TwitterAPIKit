@@ -38,7 +38,7 @@ public protocol RetweetAPIV1 {
     ) -> TwitterAPISessionTask
 }
 
-extension TwitterAPIKit: RetweetAPIV1 {
+extension TwitterAPIKit.TwitterAPIImplV1: RetweetAPIV1 {
     public func postRetweet(
         _ request: PostRetweetRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void

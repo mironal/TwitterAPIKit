@@ -31,7 +31,7 @@ public protocol UserAPIv1 {
     ) -> TwitterAPISessionTask
 }
 
-extension TwitterAPIKit: UserAPIv1 {
+extension TwitterAPIKit.TwitterAPIImplV1: UserAPIv1 {
 
     public func getUsers(
         _ request: GetUsersLookupRequestV1,

@@ -88,7 +88,7 @@ public protocol FriendshipsAPIV1 {
 
 }
 
-extension TwitterAPIKit: FriendshipsAPIV1 {
+extension TwitterAPIKit.TwitterAPIImplV1: FriendshipsAPIV1 {
 
     public func getFollowerIDs(
         _ request: GetFollowersIDsRequestV1,

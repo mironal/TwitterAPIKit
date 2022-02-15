@@ -32,7 +32,7 @@ public protocol LikeAPIv2 {
 
 }
 
-extension TwitterAPIKit: LikeAPIv2 {
+extension TwitterAPIKit.TwitterAPIImplV2: LikeAPIv2 {
     public func getLikingUsers(
         _ request: GetTweetsLikingUsersRequestV2,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void

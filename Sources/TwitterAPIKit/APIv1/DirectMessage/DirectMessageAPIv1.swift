@@ -31,7 +31,7 @@ public protocol DirectMessageAPIv1 {
     ) -> TwitterAPISessionTask
 }
 
-extension TwitterAPIKit: DirectMessageAPIv1 {
+extension TwitterAPIKit.TwitterAPIImplV1: DirectMessageAPIv1 {
 
     public func postDirectMessage(
         _ request: PostDirectMessageRequestV1,

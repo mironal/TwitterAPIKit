@@ -1,6 +1,5 @@
+import TwitterAPIKit
 import XCTest
-
-@testable import TwitterAPIKit
 
 final class TwitterAPIKitTests: XCTestCase {
     func testExample() throws {

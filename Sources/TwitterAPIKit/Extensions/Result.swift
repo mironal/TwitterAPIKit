@@ -42,4 +42,40 @@ extension Result where Success == TwitterAPISuccessReponse, Failure == TwitterAP
             }
         }
     }
+
+    /// for debug result
+    public var prettyString: String {
+        switch self {
+        case .failure(let error):
+            return "Failure => \(error.localizedDescription)"
+        case .success(let resp):
+
+            let str: String
+
+            // make pretty
+            if let json = try? JSONSerialization.jsonObject(with: resp.data, options: []),
+                let jsonData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
+            {
+                str = String(data: jsonData, encoding: .utf8) ?? ""
+            } else {
+                str = String(data: resp.data, encoding: .utf8) ?? "Invalid data"
+            }
+
+            let url = resp.response.url?.absoluteString ?? "NULL URL"
+            return "Success => \(url)\n\(resp.rateLimit)\n\(str.unescapingUnicodeCharacters.unescapeSlash)"
+        }
+    }
+}
+
+extension String {
+
+    fileprivate var unescapeSlash: String {
+        return replacingOccurrences(of: #"\/"#, with: #"/"#)
+    }
+
+    fileprivate var unescapingUnicodeCharacters: String {
+        let mutableString = NSMutableString(string: self)
+        CFStringTransform(mutableString, nil, "Any-Hex/Java" as NSString, true)
+        return mutableString as String
+    }
 }

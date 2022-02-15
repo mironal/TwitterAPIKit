@@ -12,6 +12,42 @@ So, I decided to create one.
 
 - No dependencies
 
+## API Structures
+
+You can limit the scope of available APIs depending on your application.
+This is useful if your app only supports v1, or if you want to limit access to the API.
+Currently, scoping according to Twitter's App permissions is not yet implemented.
+
+```swift
+
+// The most common usage.
+let client = TwitterAPIKit(/* auth */)
+
+client.v1.someV1API()
+client.v2.someV2API()
+
+// V1 only client
+let v1Client = client.v1
+v1Client.someV1API()
+
+// V2 only client
+let v2Client = client.v2
+v2Client.someV2API()
+
+// DM only client
+let dmClient = client.v1.directMessage
+dmClient.someDM_APIs()
+
+// Each API can be accessed flatly or by individual resource.
+
+// Flat.
+let client.v1.allV1_APIs()
+
+// Individual resources.
+let client.v1.tweet.someTweetAPIs()
+let client.v1.directMessage.someDM_APIs()
+```
+
 ## Example
 
 ```swift
@@ -28,6 +64,9 @@ So, I decided to create one.
     )
 
     client.v1.getShowStatus(.init(id: "status id")) { result in
+
+        // !! A `prettyString` is provided for debugging purposes. !!
+        print(result.prettyString)
 
         // Use result utils
         do {
@@ -222,7 +261,6 @@ func useBearerTokenV1() {
 ## Known Issues
 
 When requesting `GET /2/users/:id/tweets` (Twitter API v2) using OAuth 1.0a User Context, the following error occurs when specifying `end_time` or `start_time`, but the cause has not been investigated yet.
-
 
 ```json
 {

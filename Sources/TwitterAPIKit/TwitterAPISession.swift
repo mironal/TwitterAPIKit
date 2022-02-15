@@ -2,12 +2,12 @@ import Foundation
 
 open class TwitterAPISession {
 
-    public let auth: TwitterAPIAuth
+    public let auth: TwitterAuthenticationMethod
     public let session: URLSession
     public let environment: TwitterAPIEnvironment
 
     public init(
-        auth: TwitterAPIAuth, session: URLSession = .shared, environment: TwitterAPIEnvironment
+        auth: TwitterAuthenticationMethod, session: URLSession = .shared, environment: TwitterAPIEnvironment
     ) {
         self.auth = auth
         self.session = session

@@ -52,7 +52,7 @@ public protocol AccountAPIv1 {
     ) -> TwitterAPISessionTask
 }
 
-extension TwitterAPIKit: AccountAPIv1 {
+extension TwitterAPIKit.TwitterAPIImplV1: AccountAPIv1 {
     public func getAccountSetting(
         _ request: GetAccountSettingsRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void

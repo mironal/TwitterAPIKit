@@ -1,6 +1,6 @@
 import Foundation
 
-public enum TwitterAPIAuth {
+public enum TwitterAuthenticationMethod {
     case oauth(
         consumerKey: String,
         consumerSecret: String,
@@ -39,32 +39,51 @@ open class TwitterAPIKit {
         return decoder
     }()
 
-    public var v1: TwitterAPIv1 { return self }
-    public var v2: TwitterAPIv2 { return self }
+    public let v1: TwitterAPIv1
+    public let v2: TwitterAPIv2
 
     public let session: TwitterAPISession
-    public var apiAuth: TwitterAPIAuth {
+    public var apiAuth: TwitterAuthenticationMethod {
         return session.auth
     }
 
-    public init(_ auth: TwitterAPIAuth, environment: TwitterAPIEnvironment = .init()) {
+    public init(_ auth: TwitterAuthenticationMethod, environment: TwitterAPIEnvironment = .init()) {
         session = TwitterAPISession(auth: auth, environment: environment)
+        v1 = TwitterAPIImplV1(session: session)
+        v2 = TwitterAPIImplV2(session: session)
     }
 
-    public init(
+    convenience public init(
         consumerKey: String,
         consumerSecret: String,
         oauthToken: String,
-        oauthTokenSecret: String,
-        environment: TwitterAPIEnvironment = .init()
+        oauthTokenSecret: String
     ) {
-        session = TwitterAPISession(
-            auth: .oauth(
+        self.init(
+            .oauth(
                 consumerKey: consumerKey,
                 consumerSecret: consumerSecret,
                 oauthToken: oauthToken,
-                oauthTokenSecret: oauthTokenSecret),
-            environment: environment
+                oauthTokenSecret: oauthTokenSecret
+            ),
+            environment: .init()
         )
+    }
+}
+
+extension TwitterAPIKit {
+
+    class TwitterAPIImplV1 {
+        let session: TwitterAPISession
+        init(session: TwitterAPISession) {
+            self.session = session
+        }
+    }
+
+    class TwitterAPIImplV2 {
+        let session: TwitterAPISession
+        init(session: TwitterAPISession) {
+            self.session = session
+        }
     }
 }

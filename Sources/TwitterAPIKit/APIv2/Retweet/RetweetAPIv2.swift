@@ -24,7 +24,7 @@ public protocol RetweetAPIv2 {
     ) -> TwitterAPISessionTask
 }
 
-extension TwitterAPIKit: RetweetAPIv2 {
+extension TwitterAPIKit.TwitterAPIImplV2: RetweetAPIv2 {
 
     public func getRetweetedBy(
         _ request: GetTweetsRetweetedByRequestV2,
