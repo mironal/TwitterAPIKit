@@ -2,6 +2,7 @@ public typealias TwitterAPIv1 =
     TwitterAPIResourceV1
     // sorted
     & AccountAPIv1
+    & ApplicationAPIv1
     & AuthAPIv1
     & BlockAndMuteAPIv1
     & DirectMessageAPIv1
@@ -20,6 +21,7 @@ public typealias TwitterAPIv1 =
 
 public protocol TwitterAPIResourceV1 {
     var account: AccountAPIv1 { get }
+    var application: ApplicationAPIv1 { get }
     var auth: AuthAPIv1 { get }
     var blockAndMute: BlockAndMuteAPIv1 { get }
     var directMessage: DirectMessageAPIv1 { get }
@@ -35,10 +37,12 @@ public protocol TwitterAPIResourceV1 {
     var trend: TrendAPIv1 { get }
     var user: UserAPIv1 { get }
     var tweet: TweetAPIv1 { get }
+
 }
 
 extension TwitterAPIKit.TwitterAPIImplV1: TwitterAPIResourceV1 {
     var account: AccountAPIv1 { return self }
+    var application: ApplicationAPIv1 { return self }
     var auth: AuthAPIv1 { return self }
     var blockAndMute: BlockAndMuteAPIv1 { return self }
     var directMessage: DirectMessageAPIv1 { return self }
