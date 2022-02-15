@@ -50,6 +50,13 @@ public protocol CollectionAPIv1 {
         _ request: PostCollectionsEntriesCurateRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/curate-a-collection/api-reference/post-collections-entries-move
+    @discardableResult
+    func postCollectionMoveEntry(
+        _ request: PostCollectionsEntriesMoveRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV1: CollectionAPIv1 {
@@ -98,6 +105,13 @@ extension TwitterAPIKit.TwitterAPIImplV1: CollectionAPIv1 {
 
     func postCollectionCurate(
         _ request: PostCollectionsEntriesCurateRequestV1,
+        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> TwitterAPISessionTask {
+        return session.send(request, completionHandler: completionHandler)
+    }
+
+    func postCollectionMoveEntry(
+        _ request: PostCollectionsEntriesMoveRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
         return session.send(request, completionHandler: completionHandler)
