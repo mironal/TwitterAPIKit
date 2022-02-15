@@ -56,8 +56,8 @@
         "skipStatus": "Bool",
         "query": "String",
         "follow": "Bool",
-        "tweet_id": "String",
-        "relative_to": "String",
+        "tweetID": "String",
+        "relativeTo": "String",
     }
 
     function getParameterTableRows() {
