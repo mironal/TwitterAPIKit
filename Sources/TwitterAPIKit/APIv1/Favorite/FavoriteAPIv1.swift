@@ -24,7 +24,7 @@ public protocol FavoriteAPIv1 {
     ) -> TwitterAPISessionTask
 }
 
-extension TwitterAPIKit.TwitterAPIImpl: FavoriteAPIv1 {
+extension TwitterAPIKit.TwitterAPIImplV1: FavoriteAPIv1 {
 
     public func getFavorites(
         _ request: GetFavoritesRequestV1,

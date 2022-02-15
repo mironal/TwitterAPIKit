@@ -17,7 +17,7 @@ public protocol TweetAPIv2 {
 
 }
 
-extension TwitterAPIKit.TwitterAPIImpl: TweetAPIv2 {
+extension TwitterAPIKit.TwitterAPIImplV2: TweetAPIv2 {
     public func getTweets(
         _ request: GetTweetsRequestV2,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void

@@ -26,7 +26,7 @@ public protocol TimelineAPIv1 {
 
 }
 
-extension TwitterAPIKit.TwitterAPIImpl: TimelineAPIv1 {
+extension TwitterAPIKit.TwitterAPIImplV1: TimelineAPIv1 {
     public func getHomeTimeline(
         _ request: GetStatusesHomeTimelineRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void

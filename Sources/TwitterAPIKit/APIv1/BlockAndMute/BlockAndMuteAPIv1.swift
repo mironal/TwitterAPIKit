@@ -67,7 +67,7 @@ public protocol BlockAndMuteAPIv1 {
 
 }
 
-extension TwitterAPIKit.TwitterAPIImpl: BlockAndMuteAPIv1 {
+extension TwitterAPIKit.TwitterAPIImplV1: BlockAndMuteAPIv1 {
 
     public func getBlockIDs(
         _ request: GetBlocksIDsRequestV1,

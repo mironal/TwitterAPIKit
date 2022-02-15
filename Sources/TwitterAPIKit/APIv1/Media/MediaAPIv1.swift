@@ -71,7 +71,7 @@ public protocol MediaAPIv1 {
     )
 }
 
-extension TwitterAPIKit.TwitterAPIImpl: MediaAPIv1 {
+extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
 
     public func getUploadMediaStatus(
         _ request: GetUploadMediaStatusRequestV1,

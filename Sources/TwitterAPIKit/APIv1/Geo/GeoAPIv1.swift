@@ -25,7 +25,7 @@ public protocol GeoAPIv1 {
 
 }
 
-extension TwitterAPIKit.TwitterAPIImpl: GeoAPIv1 {
+extension TwitterAPIKit.TwitterAPIImplV1: GeoAPIv1 {
 
     public func getReverseGeocode(
         _ request: GetGeoReverseGeocodeRequestV1,

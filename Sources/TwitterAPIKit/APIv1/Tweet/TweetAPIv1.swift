@@ -34,7 +34,7 @@ public protocol TweetAPIv1 {
     // TODO↑
 }
 
-extension TwitterAPIKit.TwitterAPIImpl: TweetAPIv1 {
+extension TwitterAPIKit.TwitterAPIImplV1: TweetAPIv1 {
 
     public func postUpdateStatus(
         _ request: PostStatusesUpdateRequestV1,

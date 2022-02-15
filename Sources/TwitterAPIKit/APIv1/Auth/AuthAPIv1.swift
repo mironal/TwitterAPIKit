@@ -69,7 +69,7 @@ public protocol AuthAPIv1 {
     ) -> TwitterAPISessionTask
 }
 
-extension TwitterAPIKit.TwitterAPIImpl: AuthAPIv1 {
+extension TwitterAPIKit.TwitterAPIImplV1: AuthAPIv1 {
     public func postOAuthRequestTokenData(
         _ request: PostOAuthRequestTokenRequestV1,
         completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void

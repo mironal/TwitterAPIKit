@@ -32,7 +32,7 @@ public protocol SearchAPIv1 {
 
 }
 
-extension TwitterAPIKit.TwitterAPIImpl: SearchAPIv1 {
+extension TwitterAPIKit.TwitterAPIImplV1: SearchAPIv1 {
 
     public func searchTweets(
         _ request: GetSearchTweetsRequestV1,
