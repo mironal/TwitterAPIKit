@@ -8,6 +8,7 @@ public typealias TwitterAPIv1 =
     & FavoriteAPIv1
     & FriendshipsAPIV1
     & GeoAPIv1
+    & HelpAPIv1
     & ListAPIv1
     & MediaAPIv1
     & RetweetAPIV1
@@ -25,6 +26,7 @@ public protocol TwitterAPIResourceV1 {
     var favorite: FavoriteAPIv1 { get }
     var friendships: FriendshipsAPIV1 { get }
     var geo: GeoAPIv1 { get }
+    var help: HelpAPIv1 { get }
     var list: ListAPIv1 { get }
     var media: MediaAPIv1 { get }
     var retweet: RetweetAPIV1 { get }
@@ -43,6 +45,7 @@ extension TwitterAPIKit.TwitterAPIImplV1: TwitterAPIResourceV1 {
     var favorite: FavoriteAPIv1 { return self }
     var friendships: FriendshipsAPIV1 { return self }
     var geo: GeoAPIv1 { return self }
+    var help: HelpAPIv1 { return self }
     var list: ListAPIv1 { return self }
     var media: MediaAPIv1 { return self }
     var retweet: RetweetAPIV1 { return self }
