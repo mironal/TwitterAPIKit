@@ -19,7 +19,12 @@ class TwitterAPISessionDelegate: NSObject, URLSessionDataDelegate {
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        tasks[task.taskIdentifier]?.complete(error: error)
-        tasks.removeValue(forKey: task.taskIdentifier)
+
+        guard let task = tasks[task.taskIdentifier] else { return }
+
+        task.complete(error: error)
+        task.didComplete { [weak self] in
+            self?.tasks[task.taskIdentifier] = nil
+        }
     }
 }

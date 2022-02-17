@@ -12,16 +12,19 @@ public typealias TwitterAPIDecodedSuccessResponse<D: Decodable> = (
 
 public protocol TwitterAPISessionResponse: TwitterAPISessionTask {
 
+    @discardableResult
     func responseData(
         queue: DispatchQueue,
         _ block: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> Self
 
+    @discardableResult
     func responseObject(
         queue: DispatchQueue,
         _ block: @escaping (Result<TwitterAPISerializedSuccessResponse, TwitterAPIKitError>) -> Void
     ) -> Self
 
+    @discardableResult
     func responseDecodable<T: Decodable>(
         type: T.Type,
         queue: DispatchQueue,
@@ -124,6 +127,7 @@ public class TwitterAPISessionDelegatedResponse: TwitterAPISessionResponse {
 
     private let taskQueue: DispatchQueue
     private var dataChunk: Data = Data()
+    let group = DispatchGroup()
 
     public init(task: URLSessionTask) {
         self.task = task
@@ -141,6 +145,10 @@ public class TwitterAPISessionDelegatedResponse: TwitterAPISessionResponse {
         self.error = error
         self.completed = true
         taskQueue.resume()
+    }
+
+    func didComplete(_ block: @escaping () -> Void) {
+        group.notify(queue: taskQueue, execute: block)
     }
 
     private func parseResponse() -> Result<TwitterAPISuccessReponse, TwitterAPIKitError> {
@@ -173,13 +181,15 @@ public class TwitterAPISessionDelegatedResponse: TwitterAPISessionResponse {
     public func responseData(
         queue: DispatchQueue, _ block: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> Self {
+        group.enter()
         taskQueue.async { [weak self] in
             guard let self = self else { return }
 
             let result = self.parseResponse()
 
-            queue.async {
+            queue.async { [weak self] in
                 block(result)
+                self?.group.leave()
             }
         }
         return self
@@ -189,11 +199,13 @@ public class TwitterAPISessionDelegatedResponse: TwitterAPISessionResponse {
         queue: DispatchQueue,
         _ block: @escaping (Result<TwitterAPISerializedSuccessResponse, TwitterAPIKitError>) -> Void
     ) -> Self {
+        group.enter()
         taskQueue.async { [weak self] in
             guard let self = self else { return }
             let result = self.parseResponse().serialize()
-            queue.async {
+            queue.async { [weak self] in
                 block(result)
+                self?.group.leave()
             }
         }
         return self
@@ -203,12 +215,13 @@ public class TwitterAPISessionDelegatedResponse: TwitterAPISessionResponse {
         type: T.Type, queue: DispatchQueue,
         _ block: @escaping (Result<TwitterAPIDecodedSuccessResponse<T>, TwitterAPIKitError>) -> Void
     ) -> Self where T: Decodable {
-
+        group.enter()
         taskQueue.async { [weak self] in
             guard let self = self else { return }
             let result = self.parseResponse().decode(type)
-            queue.async {
+            queue.async { [weak self] in
                 block(result)
+                self?.group.leave()
             }
         }
         return self
