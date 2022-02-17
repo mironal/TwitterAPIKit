@@ -5,6 +5,7 @@ open class TwitterAPISession {
     public let auth: TwitterAuthenticationMethod
     public let session: URLSession
     public let environment: TwitterAPIEnvironment
+    let sessionDelegate = TwitterAPISessionDelegate()
 
     public init(
         auth: TwitterAuthenticationMethod,
@@ -12,8 +13,53 @@ open class TwitterAPISession {
         environment: TwitterAPIEnvironment
     ) {
         self.auth = auth
-        self.session = URLSession(configuration: configuration, delegate: nil, delegateQueue: nil)
+        self.session = URLSession(configuration: configuration, delegate: sessionDelegate, delegateQueue: nil)
         self.environment = environment
+    }
+
+    public func send(_ request: TwitterAPIRequest) -> TwitterAPISessionResponse {
+
+        var urlRequest: URLRequest
+        do {
+            urlRequest = try request.buildRequest(environment: environment)
+        } catch let error {
+            return TwitterAPIFailedResponse(error)
+        }
+
+        switch auth {
+        case let .oauth(
+            consumerKey: consumerKey,
+            consumerSecret: consumerSecret,
+            oauthToken: oauthToken,
+            oauthTokenSecret: oauthTokenSecret
+        ):
+
+            let authHeader = authorizationHeader(
+                for: request.method,
+                url: request.requestURL(for: environment),
+                parameters: request.parameterForOAuth,
+                consumerKey: consumerKey,
+                consumerSecret: consumerSecret,
+                oauthToken: oauthToken,
+                oauthTokenSecret: oauthTokenSecret
+            )
+            urlRequest.setValue(authHeader, forHTTPHeaderField: "Authorization")
+        case let .basic(apiKey: apiKey, apiSecretKey: apiSecretKey):
+            let credential = "\(apiKey):\(apiSecretKey)"
+            guard let credentialData = credential.data(using: .utf8) else {
+                return TwitterAPIFailedResponse(
+                    error: .requestFailed(reason: .cannotEncodeStringToData(string: credential))
+                )
+            }
+            let credentialBase64 = credentialData.base64EncodedString(options: [])
+            let basicAuth = "Basic \(credentialBase64)"
+            urlRequest.setValue(basicAuth, forHTTPHeaderField: "Authorization")
+        case let .bearer(token):
+            urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+
+        let task = session.dataTask(with: urlRequest)
+        return sessionDelegate.appendAndResume(task: task)
     }
 
     @discardableResult

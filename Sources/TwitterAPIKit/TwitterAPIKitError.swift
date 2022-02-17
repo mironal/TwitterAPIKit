@@ -82,7 +82,7 @@ extension TwitterAPIKitError.RequestFailureReason {
 extension TwitterAPIKitError.ResponseFailureReason {
     public var localizedDescription: String {
         switch self {
-        case  let.invalidResponse(error: error, response: response):
+        case let .invalidResponse(error: error, response: response):
             if let error = error {
                 return "Response is invalid: \(error.localizedDescription)"
             } else if let response = response {
