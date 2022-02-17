@@ -5,9 +5,8 @@ public protocol AuthAPIv1 {
     /// https://developer.twitter.com/en/docs/authentication/api-reference/request_token
     @discardableResult
     func postOAuthRequestTokenData(
-        _ request: PostOAuthRequestTokenRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask
+        _ request: PostOAuthRequestTokenRequestV1
+    ) -> TwitterAPISessionResponse
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/request_token
     @discardableResult
@@ -25,9 +24,8 @@ public protocol AuthAPIv1 {
     /// https://developer.twitter.com/en/docs/authentication/api-reference/access_token
     @discardableResult
     func postOAuthAccessTokenData(
-        _ request: PostOAuthAccessTokenRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask
+        _ request: PostOAuthAccessTokenRequestV1
+    ) -> TwitterAPISessionResponse
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/access_token
     @discardableResult
@@ -39,16 +37,14 @@ public protocol AuthAPIv1 {
     /// https://developer.twitter.com/en/docs/authentication/api-reference/invalidate_access_token
     @discardableResult
     func postInvalidateAccessToken(
-        _ request: PostOAuthInvalidateTokenRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask
+        _ request: PostOAuthInvalidateTokenRequestV1
+    ) -> TwitterAPISessionResponse
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/token
     @discardableResult
     func postOAuth2BearerTokenData(
-        _ request: PostOAuth2TokenRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask
+        _ request: PostOAuth2TokenRequestV1
+    ) -> TwitterAPISessionResponse
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/token
     @discardableResult
@@ -64,17 +60,15 @@ public protocol AuthAPIv1 {
     /// https://twittercommunity.com/t/invalidate-bearer-client-application-not-permitted/162761
     @discardableResult
     func postInvalidateOAuth2BearerToken(
-        _ request: PostOAuth2InvalidateTokenRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask
+        _ request: PostOAuth2InvalidateTokenRequestV1
+    ) -> TwitterAPISessionResponse
 }
 
 extension TwitterAPIKit.TwitterAPIImplV1: AuthAPIv1 {
     public func postOAuthRequestTokenData(
-        _ request: PostOAuthRequestTokenRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask {
-        return session.send(request, completionHandler: completionHandler)
+        _ request: PostOAuthRequestTokenRequestV1
+    ) -> TwitterAPISessionResponse {
+        return session.send(request)
     }
 
     public func postOAuthRequestToken(
@@ -108,10 +102,9 @@ extension TwitterAPIKit.TwitterAPIImplV1: AuthAPIv1 {
     }
 
     public func postOAuthAccessTokenData(
-        _ request: PostOAuthAccessTokenRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask {
-        return session.send(request, completionHandler: completionHandler)
+        _ request: PostOAuthAccessTokenRequestV1
+    ) -> TwitterAPISessionResponse {
+        return session.send(request)
     }
 
     public func postOAuthAccessToken(
@@ -135,17 +128,15 @@ extension TwitterAPIKit.TwitterAPIImplV1: AuthAPIv1 {
     }
 
     public func postInvalidateAccessToken(
-        _ request: PostOAuthInvalidateTokenRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask {
-        return session.send(request, completionHandler: completionHandler)
+        _ request: PostOAuthInvalidateTokenRequestV1
+    ) -> TwitterAPISessionResponse {
+        return session.send(request)
     }
 
     public func postOAuth2BearerTokenData(
-        _ request: PostOAuth2TokenRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask {
-        return session.send(request, completionHandler: completionHandler)
+        _ request: PostOAuth2TokenRequestV1
+    ) -> TwitterAPISessionResponse {
+        return session.send(request)
     }
 
     public func postOAuth2BearerToken(
@@ -177,9 +168,8 @@ extension TwitterAPIKit.TwitterAPIImplV1: AuthAPIv1 {
     }
 
     public func postInvalidateOAuth2BearerToken(
-        _ request: PostOAuth2InvalidateTokenRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask {
-        return session.send(request, completionHandler: completionHandler)
+        _ request: PostOAuth2InvalidateTokenRequestV1
+    ) -> TwitterAPISessionResponse {
+        return session.send(request)
     }
 }

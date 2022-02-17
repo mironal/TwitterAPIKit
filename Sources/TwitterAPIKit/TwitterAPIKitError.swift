@@ -30,6 +30,13 @@ public enum TwitterAPIKitError: Error {
     }
 
     case unkonwn(error: Error)
+
+    public init(error: Error) {
+        if let error = error as? TwitterAPIKitError {
+            self = error
+        }
+        self = .unkonwn(error: error)
+    }
 }
 
 extension TwitterAPIKitError {
