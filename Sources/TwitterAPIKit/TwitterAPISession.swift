@@ -69,7 +69,7 @@ open class TwitterAPISession {
         let task = session.dataTask(with: urlRequest) { data, response, error in
 
             if let error = error {
-                completionHandler(.failure(.responseFailed(reason: .responseError(error: error, response: response))))
+                completionHandler(.failure(.responseFailed(reason: .invalidResponse(error: error, response: response))))
                 return
             }
 
