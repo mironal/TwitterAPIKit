@@ -7,10 +7,12 @@ open class TwitterAPISession {
     public let environment: TwitterAPIEnvironment
 
     public init(
-        auth: TwitterAuthenticationMethod, session: URLSession = .shared, environment: TwitterAPIEnvironment
+        auth: TwitterAuthenticationMethod,
+        configuration: URLSessionConfiguration,
+        environment: TwitterAPIEnvironment
     ) {
         self.auth = auth
-        self.session = session
+        self.session = URLSession(configuration: configuration, delegate: nil, delegateQueue: nil)
         self.environment = environment
     }
 

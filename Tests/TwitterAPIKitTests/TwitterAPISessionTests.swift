@@ -29,7 +29,7 @@ class TwitterAPISessionTests: XCTestCase {
 
             return TwitterAPISession(
                 auth: .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
-                session: urlSession,
+                configuration: config,
                 environment: .init(
                     apiURL: URL(string: "https://api.example.com")!,
                     uploadURL: URL(string: "https://upload.example.com")!)

@@ -47,8 +47,16 @@ open class TwitterAPIKit {
         return session.auth
     }
 
-    public init(_ auth: TwitterAuthenticationMethod, environment: TwitterAPIEnvironment = .init()) {
-        session = TwitterAPISession(auth: auth, environment: environment)
+    public init(
+        _ auth: TwitterAuthenticationMethod,
+        configuration: URLSessionConfiguration = .default,
+        environment: TwitterAPIEnvironment = .init()
+    ) {
+        session = TwitterAPISession(
+            auth: auth,
+            configuration: configuration,
+            environment: environment
+        )
         v1 = TwitterAPIImplV1(session: session)
         v2 = TwitterAPIImplV2(session: session)
     }
