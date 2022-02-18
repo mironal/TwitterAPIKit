@@ -8,32 +8,36 @@ import Foundation
         // Currently, queue cannot be passed.
 
         public var responseData: Result<TwitterAPISuccessReponse, TwitterAPIKitError> {
-            return try await withTaskCancellationHandler(
-                operation: {
-                    return try await withUnsafeThrowingContinuation { c in
-                        responseData { result in
-                            c.resume(returning: result)
+            get async throws {
+                return try await withTaskCancellationHandler(
+                    operation: {
+                        return try await withUnsafeThrowingContinuation { c in
+                            responseData { result in
+                                c.resume(returning: result)
+                            }
                         }
-                    }
 
-                },
-                onCancel: {
-                    cancel()
-                })
+                    },
+                    onCancel: {
+                        cancel()
+                    })
+            }
         }
 
         public var responseObject: Result<TwitterAPISerializedSuccessResponse, TwitterAPIKitError> {
-            return try await withTaskCancellationHandler(
-                operation: {
-                    return try await withUnsafeThrowingContinuation { c in
-                        responseObject { result in
-                            c.resume(returning: result)
+            get async throws {
+                return try await withTaskCancellationHandler(
+                    operation: {
+                        return try await withUnsafeThrowingContinuation { c in
+                            responseObject { result in
+                                c.resume(returning: result)
+                            }
                         }
-                    }
-                },
-                onCancel: {
-                    cancel()
-                })
+                    },
+                    onCancel: {
+                        cancel()
+                    })
+            }
         }
 
         public func responseDecodable<T: Decodable>(type: T.Type) async throws -> Result<
@@ -52,5 +56,4 @@ import Foundation
                 })
         }
     }
-
 #endif
