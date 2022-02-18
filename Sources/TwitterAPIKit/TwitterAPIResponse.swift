@@ -32,6 +32,30 @@ public protocol TwitterAPISessionResponse: TwitterAPISessionTask {
     ) -> Self
 }
 
+extension TwitterAPISessionResponse {
+    @discardableResult
+    func responseData(
+        _ block: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
+    ) -> Self {
+        return responseData(queue: .main, block)
+    }
+
+    @discardableResult
+    func responseObject(
+        _ block: @escaping (Result<TwitterAPISerializedSuccessResponse, TwitterAPIKitError>) -> Void
+    ) -> Self {
+        return responseObject(queue: .main, block)
+    }
+
+    @discardableResult
+    func responseDecodable<T: Decodable>(
+        type: T.Type,
+        _ block: @escaping (Result<TwitterAPIDecodedSuccessResponse<T>, TwitterAPIKitError>) -> Void
+    ) -> Self {
+        return responseDecodable(type: type, queue: .main, block)
+    }
+}
+
 public struct TwitterAPIFailedResponse: TwitterAPISessionResponse {
 
     public let error: TwitterAPIKitError
