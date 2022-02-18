@@ -34,21 +34,21 @@ public protocol TwitterAPISessionResponse: TwitterAPISessionTask {
 
 extension TwitterAPISessionResponse {
     @discardableResult
-    func responseData(
+    public func responseData(
         _ block: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
     ) -> Self {
         return responseData(queue: .main, block)
     }
 
     @discardableResult
-    func responseObject(
+    public func responseObject(
         _ block: @escaping (Result<TwitterAPISerializedSuccessResponse, TwitterAPIKitError>) -> Void
     ) -> Self {
         return responseObject(queue: .main, block)
     }
 
     @discardableResult
-    func responseDecodable<T: Decodable>(
+    public func responseDecodable<T: Decodable>(
         type: T.Type,
         _ block: @escaping (Result<TwitterAPIDecodedSuccessResponse<T>, TwitterAPIKitError>) -> Void
     ) -> Self {
