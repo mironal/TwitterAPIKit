@@ -29,7 +29,7 @@ class TwitterAPISessionTests: XCTestCase {
 
             return TwitterAPISession(
                 auth: .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
-                session: urlSession,
+                configuration: config,
                 environment: .init(
                     apiURL: URL(string: "https://api.example.com")!,
                     uploadURL: URL(string: "https://upload.example.com")!)
@@ -53,7 +53,7 @@ class TwitterAPISessionTests: XCTestCase {
         }
 
         let exp = expectation(description: "")
-        session.send(GetTwitterReqeust()) { _ in
+        session.send(GetTwitterReqeust()).responseData(queue: .main) { _ in
             exp.fulfill()
         }
         wait(for: [exp], timeout: 10)
@@ -70,7 +70,7 @@ class TwitterAPISessionTests: XCTestCase {
         }
 
         let exp = expectation(description: "")
-        session.send(PostTwitterReqeust()) { _ in
+        session.send(PostTwitterReqeust()).responseData(queue: .main) { _ in
             exp.fulfill()
         }
         wait(for: [exp], timeout: 10)

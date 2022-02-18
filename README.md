@@ -63,15 +63,25 @@ let client.v1.directMessage.someDM_APIs()
         oauthTokenSecret: oauthTokenSecret
     )
 
-    client.v1.getShowStatus(.init(id: "status id")) { result in
+    client.v1.getShowStatus(.init(id: "status id"))
+         // Already serialized using "JSONSerialization.jsonObject(with:, options:)".
+        .responseObject() { result in }
+        .responseObject(queue: .global(qos: .default)) { result in  }
+
+        // Already decoded using JSONDecoder.
+        .responseDecodable(type: Entity.self, queue: .global(qos: .default)) { result in }
+        .responseDecodable(type: Entity.self) { result in }
+
+        // Unprocessed data
+        .responseData() { result in /* Run in .main queue */ }
+        .responseData((queue: .global(qos: .default)) { result in /* Run in .global(qos: .default) queue  */ }
 
         // !! A `prettyString` is provided for debugging purposes. !!
         print(result.prettyString)
 
         // Use result utils
         do {
-            let success = try result.serialize().get() // JSONSerialization
-            // Or let success = try result.decode(YourModel.self).get() // JSONDecoder
+            let success = try result.get()
             print(success.rateLimit)
             print(success.data)
         } catch let error {
@@ -85,13 +95,6 @@ let client.v1.directMessage.someDM_APIs()
         case let .success((data, rateLimit, httpURLResponse)):
             print("--- Success ---")
             print("Rate Limit", rateLimit)
-
-            // parse json
-            let obj = JSONSerialization.jsonObject(with: data, options: [])
-
-            // Or decode
-            let decoder = JSONDecoder()
-            let product = try decoder.decode(YourModel.self, from: data)
 
         case .failure(let error): // TwitterAPIKitError
             print("--- Error ---")

@@ -5,29 +5,25 @@ open class TwitterAPISession {
     public let auth: TwitterAuthenticationMethod
     public let session: URLSession
     public let environment: TwitterAPIEnvironment
+    let sessionDelegate = TwitterAPISessionDelegate()
 
     public init(
-        auth: TwitterAuthenticationMethod, session: URLSession = .shared, environment: TwitterAPIEnvironment
+        auth: TwitterAuthenticationMethod,
+        configuration: URLSessionConfiguration,
+        environment: TwitterAPIEnvironment
     ) {
         self.auth = auth
-        self.session = session
+        self.session = URLSession(configuration: configuration, delegate: sessionDelegate, delegateQueue: nil)
         self.environment = environment
     }
 
-    @discardableResult
-    public func send(
-        _ request: TwitterAPIRequest,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask {
+    public func send(_ request: TwitterAPIRequest) -> TwitterAPISessionResponse {
 
         var urlRequest: URLRequest
         do {
             urlRequest = try request.buildRequest(environment: environment)
-        } catch let error as TwitterAPIKitError {
-            completionHandler(.failure(error))
-            return NoOpSessionTask()
-        } catch {
-            fatalError()
+        } catch let error {
+            return TwitterAPIFailedResponse(error)
         }
 
         switch auth {
@@ -51,11 +47,9 @@ open class TwitterAPISession {
         case let .basic(apiKey: apiKey, apiSecretKey: apiSecretKey):
             let credential = "\(apiKey):\(apiSecretKey)"
             guard let credentialData = credential.data(using: .utf8) else {
-                completionHandler(
-                    .failure(
-                        TwitterAPIKitError.requestFailed(reason: .cannotEncodeStringToData(string: credential))
-                    ))
-                return NoOpSessionTask()
+                return TwitterAPIFailedResponse(
+                    error: .requestFailed(reason: .cannotEncodeStringToData(string: credential))
+                )
             }
             let credentialBase64 = credentialData.base64EncodedString(options: [])
             let basicAuth = "Basic \(credentialBase64)"
@@ -64,39 +58,8 @@ open class TwitterAPISession {
             urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
 
-        let task = session.dataTask(with: urlRequest) { data, response, error in
-
-            if let error = error {
-                completionHandler(.failure(.responseFailed(reason: .responseError(error: error, response: response))))
-                return
-            }
-
-            guard let httpResposne = response as? HTTPURLResponse else {
-                return
-            }
-
-            let rateLimit = TwitterRateLimit(header: httpResposne.allHeaderFields)
-
-            guard 200..<300 ~= httpResposne.statusCode else {
-                completionHandler(
-                    .failure(
-                        .responseFailed(
-                            reason: .unacceptableStatusCode(
-                                statusCode: httpResposne.statusCode,
-                                error: TwitterAPIErrorResponse(data: data ?? Data()),
-                                rateLimit: rateLimit
-                            )
-                        )
-                    )
-                )
-                return
-            }
-
-            completionHandler(.success((data ?? Data(), rateLimit, httpResposne)))
-        }
-        task.resume()
-
-        return task
+        let task = session.dataTask(with: urlRequest)
+        return sessionDelegate.appendAndResume(task: task)
     }
 }
 

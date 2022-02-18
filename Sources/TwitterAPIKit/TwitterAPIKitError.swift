@@ -13,7 +13,7 @@ public enum TwitterAPIKitError: Error {
 
     case responseFailed(reason: ResponseFailureReason)
     public enum ResponseFailureReason {
-        case responseError(error: Error, response: URLResponse?)
+        case invalidResponse(error: Error?, response: URLResponse?)
         case unacceptableStatusCode(statusCode: Int, error: TwitterAPIErrorResponse, rateLimit: TwitterRateLimit)
     }
 
@@ -30,6 +30,13 @@ public enum TwitterAPIKitError: Error {
     }
 
     case unkonwn(error: Error)
+
+    public init(error: Error) {
+        if let error = error as? TwitterAPIKitError {
+            self = error
+        }
+        self = .unkonwn(error: error)
+    }
 }
 
 extension TwitterAPIKitError {
@@ -82,8 +89,13 @@ extension TwitterAPIKitError.RequestFailureReason {
 extension TwitterAPIKitError.ResponseFailureReason {
     public var localizedDescription: String {
         switch self {
-        case .responseError(let error, response: _):
-            return error.localizedDescription
+        case let .invalidResponse(error: error, response: response):
+            if let error = error {
+                return "Response is invalid: \(error.localizedDescription)"
+            } else if let response = response {
+                return "Response is invalid: \(response)"
+            }
+            return "Response is invalid"
         case let .unacceptableStatusCode(statusCode, error: error, rateLimit: _):
             return "Response status code was unacceptable: \(statusCode) with message: \(error.message)."
         }

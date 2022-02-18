@@ -5,72 +5,62 @@ public protocol RetweetAPIV1 {
     /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/post-statuses-retweet-id
     @discardableResult
     func postRetweet(
-        _ request: PostRetweetRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask
+        _ request: PostRetweetRequestV1
+    ) -> TwitterAPISessionResponse
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/post-statuses-unretweet-id
     @discardableResult
     func postUnRetweet(
-        _ request: PostUnRetweetRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask
+        _ request: PostUnRetweetRequestV1
+    ) -> TwitterAPISessionResponse
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/get-statuses-retweets-id
     @discardableResult
     func getRetweets(
-        _ request: GetRetweetsRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask
+        _ request: GetRetweetsRequestV1
+    ) -> TwitterAPISessionResponse
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/get-statuses-retweets_of_me
     @discardableResult
     func getRetweetsOfMe(
-        _ request: GetRetweetsOfMeRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask
+        _ request: GetRetweetsOfMeRequestV1
+    ) -> TwitterAPISessionResponse
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/get-statuses-retweeters-ids
     @discardableResult
     func getRetweeters(
-        _ request: GetRetweetersRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask
+        _ request: GetRetweetersRequestV1
+    ) -> TwitterAPISessionResponse
 }
 
 extension TwitterAPIKit.TwitterAPIImplV1: RetweetAPIV1 {
     public func postRetweet(
-        _ request: PostRetweetRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask {
-        return session.send(request, completionHandler: completionHandler)
+        _ request: PostRetweetRequestV1
+    ) -> TwitterAPISessionResponse {
+        return session.send(request)
     }
 
     public func postUnRetweet(
-        _ request: PostUnRetweetRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask {
-        return session.send(request, completionHandler: completionHandler)
+        _ request: PostUnRetweetRequestV1
+    ) -> TwitterAPISessionResponse {
+        return session.send(request)
     }
 
     public func getRetweets(
-        _ request: GetRetweetsRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask {
-        return session.send(request, completionHandler: completionHandler)
+        _ request: GetRetweetsRequestV1
+    ) -> TwitterAPISessionResponse {
+        return session.send(request)
     }
 
     public func getRetweetsOfMe(
-        _ request: GetRetweetsOfMeRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask {
-        return session.send(request, completionHandler: completionHandler)
+        _ request: GetRetweetsOfMeRequestV1
+    ) -> TwitterAPISessionResponse {
+        return session.send(request)
     }
 
     public func getRetweeters(
-        _ request: GetRetweetersRequestV1,
-        completionHandler: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask {
-        return session.send(request, completionHandler: completionHandler)
+        _ request: GetRetweetersRequestV1
+    ) -> TwitterAPISessionResponse {
+        return session.send(request)
     }
 }
