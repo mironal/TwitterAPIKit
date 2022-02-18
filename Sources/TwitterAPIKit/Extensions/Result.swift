@@ -2,7 +2,7 @@ import Foundation
 
 extension Result where Success == TwitterAPISuccessReponse, Failure == TwitterAPIKitError {
 
-    public func serialize() -> Result<TwitterAPISerializedSuccessResponse, Failure> {
+    func serialize() -> Result<TwitterAPISerializedSuccessResponse, Failure> {
         return flatMap { success in
             do {
                 let data = success.data
@@ -21,7 +21,7 @@ extension Result where Success == TwitterAPISuccessReponse, Failure == TwitterAP
         }
     }
 
-    public func decode<T>(_ type: T.Type, decodar: JSONDecoder = TwitterAPIKit.defaultJSONDecoder) -> Result<
+    func decode<T>(_ type: T.Type, decodar: JSONDecoder = TwitterAPIKit.defaultJSONDecoder) -> Result<
         TwitterAPIDecodedSuccessResponse<T>, Failure
     > {
         return flatMap { success in
@@ -59,6 +59,28 @@ extension Result where Success == TwitterAPISuccessReponse, Failure == TwitterAP
                 str = String(data: jsonData, encoding: .utf8) ?? ""
             } else {
                 str = String(data: resp.data, encoding: .utf8) ?? "Invalid data"
+            }
+
+            let url = resp.response.url?.absoluteString ?? "NULL URL"
+            return "Success => \(url)\n\(resp.rateLimit)\n\(str.unescapingUnicodeCharacters.unescapeSlash)"
+        }
+    }
+}
+
+extension Result where Success == TwitterAPISerializedSuccessResponse, Failure == TwitterAPIKitError {
+
+    public var prettyString: String {
+        switch self {
+        case .failure(let error):
+            return "Failure => \(error.localizedDescription)"
+        case .success(let resp):
+            let str: String
+
+            // make pretty
+            if let jsonData = try? JSONSerialization.data(withJSONObject: resp.data, options: .prettyPrinted) {
+                str = String(data: jsonData, encoding: .utf8) ?? ""
+            } else {
+                str = String(describing: resp.data)
             }
 
             let url = resp.response.url?.absoluteString ?? "NULL URL"
