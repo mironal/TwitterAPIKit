@@ -75,7 +75,7 @@ extension TwitterAPIKit.TwitterAPIImplV1: AuthAPIv1 {
         _ request: PostOAuthRequestTokenRequestV1,
         completionHandler: @escaping (Result<TwitterOAuthTokenV1, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
-        return session.send(request) { result in
+        return session.send(request).responseData(queue: .processQueue) { result in
             completionHandler(
                 result.flatMap {
                     guard let token = TwitterOAuthTokenV1(queryStringData: $0.data) else {
@@ -111,7 +111,7 @@ extension TwitterAPIKit.TwitterAPIImplV1: AuthAPIv1 {
         _ request: PostOAuthAccessTokenRequestV1,
         completionHandler: @escaping (Result<TwitterOAuthAccessTokenV1, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
-        return session.send(request) { result in
+        return session.send(request).responseData(queue: .processQueue) { result in
             completionHandler(
                 result.flatMap {
                     guard let token = TwitterOAuthAccessTokenV1(queryStringData: $0.data) else {
@@ -143,7 +143,7 @@ extension TwitterAPIKit.TwitterAPIImplV1: AuthAPIv1 {
         _ request: PostOAuth2TokenRequestV1,
         completionHandler: @escaping (Result<TwitterOAuth2BearerToken, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
-        return session.send(request) { result in
+        return session.send(request).responseData(queue: .processQueue) { result in
             completionHandler(
                 result.flatMap {
                     do {
