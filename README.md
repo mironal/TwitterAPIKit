@@ -254,6 +254,16 @@ func useBearerTokenV1() {
 
 ```
 
+### Swift Concurrency (experimental)
+
+```swift
+Task {
+    let result = try await client.v1.timeline.getHomeTimeline(.init()).responseData // or responseObject or response responseDecodable(type: Hoge.self)
+
+    print(result.prettyString)
+}
+```
+
 ## TODO
 
 - [ ] Support API v1 endpoint : 70%
