@@ -1,3 +1,5 @@
+// swift-format-ignore-file
+
 import Foundation
 
 #if compiler(>=5.5.2) && canImport(_Concurrency)
