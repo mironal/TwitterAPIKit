@@ -6,7 +6,6 @@ open class TwitterAPISession {
     public let session: URLSession
     public let environment: TwitterAPIEnvironment
     let sessionDelegate = TwitterAPISessionDelegate()
-
     public init(
         auth: TwitterAuthenticationMethod,
         configuration: URLSessionConfiguration,
@@ -15,6 +14,10 @@ open class TwitterAPISession {
         self.auth = auth
         self.session = URLSession(configuration: configuration, delegate: sessionDelegate, delegateQueue: nil)
         self.environment = environment
+    }
+
+    deinit {
+        session.invalidateAndCancel()
     }
 
     public func send(_ request: TwitterAPIRequest) -> TwitterAPISessionTask {
