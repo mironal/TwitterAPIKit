@@ -372,7 +372,11 @@ extension Array where Element: TwitterAPISessionSpecializedTask_ {
         var responses = [TwitterAPIResponse<Element.Success>]()
 
         self.forEach { task in
-            task.responseObject(queue: .processQueue) { responses.append($0) }
+            group.enter()
+            task.responseObject(queue: .processQueue) {
+                responses.append($0)
+                group.leave()
+            }
         }
 
         group.notify(queue: queue) {
