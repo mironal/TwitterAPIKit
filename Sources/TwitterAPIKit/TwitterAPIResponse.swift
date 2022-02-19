@@ -32,10 +32,14 @@ extension TwitterAPIResponse {
 
         let body =
             data.map { data in
-                if let jsonData = try? JSONSerialization.data(withJSONObject: data, options: .prettyPrinted) {
-                    return String(data: jsonData, encoding: .utf8)?.unescapingUnicodeCharacters.unescapeSlash ?? ""
+
+                // make pretty
+                if let json = try? JSONSerialization.jsonObject(with: data, options: []),
+                    let jsonData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
+                {
+                    return String(data: jsonData, encoding: .utf8) ?? ""
                 } else {
-                    return String(describing: data)
+                    return String(data: data, encoding: .utf8) ?? "Invalid data"
                 }
             } ?? "No data"
 

@@ -18,7 +18,6 @@ import Foundation
                                 c.resume(returning: result)
                             }
                         }
-
                     },
                     onCancel: {
                         cancel()
