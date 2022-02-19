@@ -47,7 +47,7 @@ public protocol MediaAPIv1 {
     func uploadMedia(
         _ parameters: UploadMediaRequestParameters,
         completionHandler: @escaping (
-            Result<String /* MediaID */, TwitterAPIKitError>
+            TwitterAPIResponse<String>
         ) -> Void
     )
 
@@ -132,7 +132,7 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
     public func uploadMedia(
         _ parameters: UploadMediaRequestParameters,
         completionHandler: @escaping (
-            Result<String /* MediaID */, TwitterAPIKitError>
+            TwitterAPIResponse<String>
         ) -> Void
     ) {
         uploadMediaInit(
@@ -152,8 +152,8 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
             let mediaID: String
             do {
                 mediaID = try response.result.get().mediaID
-            } catch let error {
-                completionHandler(.failure(TwitterAPIKitError(error: error)))
+            } catch {
+                completionHandler(response.map { $0.mediaID })
                 return
             }
 
@@ -169,8 +169,8 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
 
                 guard let self = self else { return }
 
-                if let error = responses.first(where: { $0.isError })?.error {
-                    completionHandler(.failure(error))
+                if let error = responses.first(where: { $0.isError }) {
+                    completionHandler(error)
                     return
                 }
 
@@ -182,19 +182,21 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
                         var finalizeResult: TwitterAPIKit.UploadMediaFinalizeResponse
                         do {
                             finalizeResult = try response.result.get()
-                        } catch let error {
-                            completionHandler(.failure(TwitterAPIKitError(error: error)))
+                        } catch {
+                            completionHandler(response.map { $0.mediaID })
                             return
                         }
 
                         guard let processingInfo = finalizeResult.processingInfo else {
-                            completionHandler(.success(mediaID))
+                            completionHandler(response.map { $0.mediaID })
                             return
                         }
 
-                        self.waitMediaProcessing(mediaID: mediaID, initialWaitSec: processingInfo.checkAfterSecs ?? 0) {
-                            response in
-                            completionHandler(response.result.map { $0.mediaID })
+                        self.waitMediaProcessing(
+                            mediaID: mediaID,
+                            initialWaitSec: processingInfo.checkAfterSecs ?? 0
+                        ) { response in
+                            completionHandler(response.map { $0.mediaID })
                         }
                     }
             }
