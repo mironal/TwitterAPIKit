@@ -305,7 +305,7 @@ public class TwitterAPISessionDelegatedTask: TwitterAPISessionJSONTask {
     }
 }
 
-public protocol TwitterAPISessionSpecializedTask_: TwitterAPISessionDataTask {
+protocol TwitterAPISessionSpecializedTask_: TwitterAPISessionDataTask {
     associatedtype Success
     @discardableResult
     func responseObject(
@@ -338,7 +338,7 @@ public struct TwitterAPISessionSpecializedTask<Success>: TwitterAPISessionSpecia
 
     @discardableResult
     public func responseObject(
-        queue: DispatchQueue,
+        queue: DispatchQueue = .main,
         _ block: @escaping (TwitterAPIResponse<Success>) -> Void
     ) -> TwitterAPISessionSpecializedTask<Success> {
         innerTask.responseData(queue: queue) { response in
@@ -350,7 +350,8 @@ public struct TwitterAPISessionSpecializedTask<Success>: TwitterAPISessionSpecia
 
     @discardableResult
     public func responseData(
-        queue: DispatchQueue, _ block: @escaping (TwitterAPIResponse<Data>) -> Void
+        queue: DispatchQueue = .main,
+        _ block: @escaping (TwitterAPIResponse<Data>) -> Void
     ) -> TwitterAPISessionSpecializedTask<Success> {
         innerTask.responseData(queue: queue, block)
         return self
