@@ -75,13 +75,13 @@ extension TwitterAPIKit.TwitterAPIImplV1: AuthAPIv1 {
         _ request: PostOAuthRequestTokenRequestV1,
         completionHandler: @escaping (Result<TwitterOAuthTokenV1, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
-        return session.send(request).responseData(queue: .processQueue) { result in
+        return session.send(request).responseData(queue: .processQueue) { response in
             completionHandler(
-                result.flatMap {
-                    guard let token = TwitterOAuthTokenV1(queryStringData: $0.data) else {
+                response.result.flatMap {
+                    guard let token = TwitterOAuthTokenV1(queryStringData: $0) else {
                         return .failure(
                             .responseSerializeFailed(
-                                reason: .cannotConvert(data: $0.data, toTypeName: "TwitterOAuthTokenV1")
+                                reason: .cannotConvert(data: $0, toTypeName: "TwitterOAuthTokenV1")
                             )
                         )
                     }
@@ -111,13 +111,13 @@ extension TwitterAPIKit.TwitterAPIImplV1: AuthAPIv1 {
         _ request: PostOAuthAccessTokenRequestV1,
         completionHandler: @escaping (Result<TwitterOAuthAccessTokenV1, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
-        return session.send(request).responseData(queue: .processQueue) { result in
+        return session.send(request).responseData(queue: .processQueue) { response in
             completionHandler(
-                result.flatMap {
-                    guard let token = TwitterOAuthAccessTokenV1(queryStringData: $0.data) else {
+                response.result.flatMap {
+                    guard let token = TwitterOAuthAccessTokenV1(queryStringData: $0) else {
                         return .failure(
                             .responseSerializeFailed(
-                                reason: .cannotConvert(data: $0.data, toTypeName: "TwitterOAuthAccessTokenV1")
+                                reason: .cannotConvert(data: $0, toTypeName: "TwitterOAuthAccessTokenV1")
                             )
                         )
                     }
@@ -143,14 +143,14 @@ extension TwitterAPIKit.TwitterAPIImplV1: AuthAPIv1 {
         _ request: PostOAuth2TokenRequestV1,
         completionHandler: @escaping (Result<TwitterOAuth2BearerToken, TwitterAPIKitError>) -> Void
     ) -> TwitterAPISessionTask {
-        return session.send(request).responseData(queue: .processQueue) { result in
+        return session.send(request).responseData(queue: .processQueue) { response in
             completionHandler(
-                result.flatMap {
+                response.result.flatMap {
                     do {
-                        guard let token = try TwitterOAuth2BearerToken(jsonData: $0.data) else {
+                        guard let token = try TwitterOAuth2BearerToken(jsonData: $0) else {
                             return .failure(
                                 .responseSerializeFailed(
-                                    reason: .cannotConvert(data: $0.data, toTypeName: "TwitterOAuth2BearerToken")
+                                    reason: .cannotConvert(data: $0, toTypeName: "TwitterOAuth2BearerToken")
                                 )
                             )
                         }
@@ -158,7 +158,7 @@ extension TwitterAPIKit.TwitterAPIImplV1: AuthAPIv1 {
                     } catch let error {
                         return .failure(
                             .responseSerializeFailed(
-                                reason: .jsonSerializationFailed(error: error, data: $0.data, rateLimit: $0.rateLimit)
+                                reason: .jsonSerializationFailed(error: error)
                             )
                         )
                     }
