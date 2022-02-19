@@ -3,7 +3,6 @@
 [![Standard](https://img.shields.io/endpoint?url=https%3A%2F%2Ftwbadges.glitch.me%2Fbadges%2Fstandard)](https://developer.twitter.com/en/docs/twitter-api)
 [![v2](https://img.shields.io/endpoint?url=https%3A%2F%2Ftwbadges.glitch.me%2Fbadges%2Fv2)](https://developer.twitter.com/en/docs/twitter-api)
 
-
 Swift library for the Twitter API v1 and v2 (Work in progress).
 
 ---
@@ -69,45 +68,33 @@ let client.v1.directMessage.someDM_APIs()
 
     client.v1.getShowStatus(.init(id: "status id"))
          // Already serialized using "JSONSerialization.jsonObject(with:, options:)".
-        .responseObject() { result in }
-        .responseObject(queue: .global(qos: .default)) { result in  }
+        .responseObject() { response in }
+        .responseObject(queue: .global(qos: .default)) { response in  }
 
         // Already decoded using JSONDecoder.
-        .responseDecodable(type: Entity.self, queue: .global(qos: .default)) { result in }
-        .responseDecodable(type: Entity.self) { result in }
+        .responseDecodable(type: Entity.self, queue: .global(qos: .default)) { response in }
+        .responseDecodable(type: Entity.self) { response in }
 
         // Unprocessed data
-        .responseData() { result in /* Run in .main queue */ }
-        .responseData((queue: .global(qos: .default)) { result in /* Run in .global(qos: .default) queue  */ }
+        .responseData() { response in /* Run in .main queue */ }
+        .responseData((queue: .global(qos: .default)) { response in /* Run in .global(qos: .default) queue  */ }
 
         // !! A `prettyString` is provided for debugging purposes. !!
-        print(result.prettyString)
+        print(response.prettyString)
 
-        // Use result utils
+        result.map((Success) -> NewSuccess)
+        result.tryMap((Success) throws -> NewSuccess)
+        result.mapError((TwitterAPIKitError) -> TwitterAPIKitError>)
+        result.success // Success?
+        result.error // TwitterAPIKitError?
+        response.rateLimit
+
+        // Use result
         do {
-            let success = try result.get()
-            print(success.rateLimit)
-            print(success.data)
+            let success = try response.result.get()
+            print(success)
         } catch let error {
             print(error)
-        }
-        // ----
-
-        // Or
-
-        switch result {
-        case let .success((data, rateLimit, httpURLResponse)):
-            print("--- Success ---")
-            print("Rate Limit", rateLimit)
-
-        case .failure(let error): // TwitterAPIKitError
-            print("--- Error ---")
-            if let data = error.data {
-                print("Body:", String(data: data, encoding: .utf8)!)
-            }
-            if let rateLimit = error.rateLimit {
-                print("Rate Limit", rateLimit)
-            }
         }
     }
 ```
@@ -174,9 +161,7 @@ This method is intended to be used when the library does not yet support Twitter
     )
 
     let request = YourCustomRequest()
-    client.session.send(request) { result in
-        // ...
-    }
+    client.session.send(request)
 }
 ```
 
@@ -189,9 +174,9 @@ This method is intended to be used when the library does not yet support Twitter
 ```swift
 // for CLI tool
 func runOAuthV1() {
-    client.v1.postOAuthRequestToken(.init(oauthCallback: "oob")) { result0 in
+    client.v1.postOAuthRequestToken(.init(oauthCallback: "oob")).responseObject(queue: .main) { response in
         do {
-            let success = try result0.get()
+            let success = try response.result.get()
             print("Token:", success)
 
             let url = client.v1.makeOAuthAuthorizeURL(.init(oauthToken: success.oauthToken, forceLogin: true))!
@@ -200,9 +185,10 @@ func runOAuthV1() {
 
             let pinCode = readLine()!
 
-            client.v1.postOAuthAccessToken(.init(oauthToken: success.oauthToken, oauthVerifier: pinCode)) { result1 in
+            client.v1.postOAuthAccessToken(.init(oauthToken: success.oauthToken, oauthVerifier: pinCode))
+                responseObject(queue: .main) { response in
                 do {
-                    let success = try result1.get()
+                    let success = try response.result.get()
                     print("AccessToken:", success)
 
                 } catch let error {
@@ -238,9 +224,9 @@ func runOAuth2V1() {
         .basic(apiKey: "your consumer key", apiSecretKey: "your consumer secret")
     )
 
-    client.v1.postOAuth2BearerToken(.init()) { result in
+    client.v1.postOAuth2BearerToken(.init()).responseObject(queue: .main) { response in
         do {
-            let success = try result.get()
+            let success = try response.result.get()
             print("Token:", success)
         } catch let error {
             print("Error")
@@ -251,8 +237,8 @@ func runOAuth2V1() {
 
 func useBearerTokenV1() {
     let client = TwitterAPIKit(.bearer("AAAAAAAAAAAAAAAAAAAAA"))
-    client.v1.getUserTimeline(.init(target: .screenName("twitterapi"))) { result in
-        print(result)
+    client.v1.getUserTimeline(.init(target: .screenName("twitterapi"))).responseData { response in
+        print(response.prettyString)
     }
 }
 
