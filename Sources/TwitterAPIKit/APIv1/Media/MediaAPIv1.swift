@@ -12,19 +12,19 @@ public protocol MediaAPIv1 {
     @discardableResult
     func getUploadMediaStatus(
         _ request: GetUploadMediaStatusRequestV1
-    ) -> TwitterAPISessionTask
+    ) -> TwitterAPISessionJSONTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload-init
     @discardableResult
     func uploadMediaInit(
         _ request: UploadMediaInitRequestV1
-    ) -> TwitterAPISessionTask
+    ) -> TwitterAPISessionJSONTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload-append
     @discardableResult
     func uploadMediaAppend(
         _ request: UploadMediaAppendRequestV1
-    ) -> TwitterAPISessionTask
+    ) -> TwitterAPISessionJSONTask
 
     /// Utility method for split uploading of large files.
     func uploadMediaAppendSplitChunks(
@@ -42,7 +42,7 @@ public protocol MediaAPIv1 {
     @discardableResult
     func uploadMediaFinalize(
         _ request: UploadMediaFinalizeRequestV1
-    ) -> TwitterAPISessionTask
+    ) -> TwitterAPISessionJSONTask
 
     /// Upload media utility method.
     /// INIT -> APPEND x n -> FINALIZE -> STATUS x n (If needed)
@@ -73,21 +73,21 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
 
     public func getUploadMediaStatus(
         _ request: GetUploadMediaStatusRequestV1
-    ) -> TwitterAPISessionTask {
+    ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 
     @discardableResult
     public func uploadMediaInit(
         _ request: UploadMediaInitRequestV1
-    ) -> TwitterAPISessionTask {
+    ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 
     @discardableResult
     public func uploadMediaAppend(
         _ request: UploadMediaAppendRequestV1
-    ) -> TwitterAPISessionTask {
+    ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 
@@ -139,7 +139,7 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
 
     public func uploadMediaFinalize(
         _ request: UploadMediaFinalizeRequestV1
-    ) -> TwitterAPISessionTask {
+    ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 

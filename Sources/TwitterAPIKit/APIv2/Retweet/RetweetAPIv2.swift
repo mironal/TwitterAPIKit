@@ -6,38 +6,38 @@ public protocol RetweetAPIv2 {
     @discardableResult
     func getRetweetedBy(
         _ request: GetTweetsRetweetedByRequestV2
-    ) -> TwitterAPISessionTask
+    ) -> TwitterAPISessionJSONTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/tweets/retweets/api-reference/post-users-id-retweets
     @discardableResult
     func postRetweet(
         _ request: PostUsersRetweetsRequestV2
-    ) -> TwitterAPISessionTask
+    ) -> TwitterAPISessionJSONTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/tweets/retweets/api-reference/delete-users-id-retweets-tweet_id
     @discardableResult
     func deleteRetweet(
         _ request: DeleteUsersRetweetsRequestV2
-    ) -> TwitterAPISessionTask
+    ) -> TwitterAPISessionJSONTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV2: RetweetAPIv2 {
 
     public func getRetweetedBy(
         _ request: GetTweetsRetweetedByRequestV2
-    ) -> TwitterAPISessionTask {
+    ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 
     public func postRetweet(
         _ request: PostUsersRetweetsRequestV2
-    ) -> TwitterAPISessionTask {
+    ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 
     public func deleteRetweet(
         _ request: DeleteUsersRetweetsRequestV2
-    ) -> TwitterAPISessionTask {
+    ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }

@@ -4,7 +4,7 @@ class TwitterAPISessionDelegate: NSObject, URLSessionDataDelegate {
 
     private var tasks = [Int /* taskIdentifier */: TwitterAPISessionDelegatedTask]()
 
-    func appendAndResume(task: URLSessionTask) -> TwitterAPISessionTask {
+    func appendAndResume(task: URLSessionTask) -> TwitterAPISessionJSONTask {
 
         let twTask = TwitterAPISessionDelegatedTask(task: task)
         tasks[task.taskIdentifier] = twTask

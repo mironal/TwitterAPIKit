@@ -1,7 +1,8 @@
 import Foundation
 
-public protocol TwitterAPISessionTask {
+// The Twitter API basically returns a JSON response, but some APIs, such as the authentication API, return a special response.
 
+public protocol TwitterAPISessionDataTask {
     var taskIdentifier: Int { get }
     var currentRequest: URLRequest? { get }
     var originalRequest: URLRequest? { get }
@@ -13,6 +14,9 @@ public protocol TwitterAPISessionTask {
         queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<Data>) -> Void
     ) -> Self
+}
+
+public protocol TwitterAPISessionJSONTask: TwitterAPISessionDataTask {
 
     @discardableResult
     func responseObject(
@@ -28,7 +32,7 @@ public protocol TwitterAPISessionTask {
     ) -> Self
 }
 
-extension TwitterAPISessionTask {
+extension TwitterAPISessionJSONTask {
     @discardableResult
     public func responseData(
         _ block: @escaping (TwitterAPIResponse<Data>) -> Void
@@ -52,7 +56,7 @@ extension TwitterAPISessionTask {
     }
 }
 
-public struct TwitterAPIFailedTask: TwitterAPISessionTask {
+public struct TwitterAPIFailedTask: TwitterAPISessionJSONTask {
 
     public let error: TwitterAPIKitError
 
@@ -139,7 +143,7 @@ public struct TwitterAPIFailedTask: TwitterAPISessionTask {
     public func cancel() {}
 }
 
-public class TwitterAPISessionDelegatedTask: TwitterAPISessionTask {
+public class TwitterAPISessionDelegatedTask: TwitterAPISessionJSONTask {
 
     public var taskIdentifier: Int {
         return task.taskIdentifier

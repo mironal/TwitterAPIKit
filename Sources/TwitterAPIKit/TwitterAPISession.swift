@@ -20,7 +20,7 @@ open class TwitterAPISession {
         session.invalidateAndCancel()
     }
 
-    public func send(_ request: TwitterAPIRequest) -> TwitterAPISessionTask {
+    public func send(_ request: TwitterAPIRequest) -> TwitterAPISessionJSONTask {
 
         var urlRequest: URLRequest
         do {
