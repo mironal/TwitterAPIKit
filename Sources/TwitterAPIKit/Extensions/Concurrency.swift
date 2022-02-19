@@ -5,11 +5,11 @@ import Foundation
 #if compiler(>=5.5.2) && canImport(_Concurrency)
 
     @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
-    extension TwitterAPISessionResponse {
+    extension TwitterAPISessionJSONTask {
 
         // Currently, queue cannot be passed.
 
-        public var responseData: Result<TwitterAPISuccessReponse, TwitterAPIKitError> {
+        public var responseData: TwitterAPIResponse<Data> {
             get async throws {
                 return try await withTaskCancellationHandler(
                     operation: {
@@ -18,7 +18,6 @@ import Foundation
                                 c.resume(returning: result)
                             }
                         }
-
                     },
                     onCancel: {
                         cancel()
@@ -26,7 +25,7 @@ import Foundation
             }
         }
 
-        public var responseObject: Result<TwitterAPISerializedSuccessResponse, TwitterAPIKitError> {
+        public var responseObject: TwitterAPIResponse<Any> {
             get async throws {
                 return try await withTaskCancellationHandler(
                     operation: {
@@ -42,9 +41,7 @@ import Foundation
             }
         }
 
-        public func responseDecodable<T: Decodable>(type: T.Type) async throws -> Result<
-            TwitterAPIDecodedSuccessResponse<T>, TwitterAPIKitError
-        > {
+        public func responseDecodable<T: Decodable>(type: T.Type) async throws -> TwitterAPIResponse<T> {
             return try await withTaskCancellationHandler(
                 operation: {
                     return try await withUnsafeThrowingContinuation { c in

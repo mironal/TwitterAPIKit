@@ -1,257 +1,113 @@
 import Foundation
 
-public typealias TwitterAPISuccessReponse = (data: Data, rateLimit: TwitterRateLimit, response: HTTPURLResponse)
+public struct TwitterAPIResponse<Success> {
+    public let request: URLRequest?
+    public let response: HTTPURLResponse?
 
-public typealias TwitterAPISerializedSuccessResponse = (
-    data: Any, rateLimit: TwitterRateLimit, response: HTTPURLResponse
-)
+    public let data: Data?
+    public let result: Result<Success, TwitterAPIKitError>
+    public let rateLimit: TwitterRateLimit?
 
-public typealias TwitterAPIDecodedSuccessResponse<D: Decodable> = (
-    data: D, rateLimit: TwitterRateLimit, response: HTTPURLResponse
-)
+    public var success: Success? { return result.success }
+    public var error: TwitterAPIKitError? { return result.error }
+    public var isError: Bool { return error != nil }
 
-public protocol TwitterAPISessionResponse: TwitterAPISessionTask {
-
-    @discardableResult
-    func responseData(
-        queue: DispatchQueue,
-        _ block: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> Self
-
-    @discardableResult
-    func responseObject(
-        queue: DispatchQueue,
-        _ block: @escaping (Result<TwitterAPISerializedSuccessResponse, TwitterAPIKitError>) -> Void
-    ) -> Self
-
-    @discardableResult
-    func responseDecodable<T: Decodable>(
-        type: T.Type,
-        queue: DispatchQueue,
-        _ block: @escaping (Result<TwitterAPIDecodedSuccessResponse<T>, TwitterAPIKitError>) -> Void
-    ) -> Self
-}
-
-extension TwitterAPISessionResponse {
-    @discardableResult
-    public func responseData(
-        _ block: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> Self {
-        return responseData(queue: .main, block)
-    }
-
-    @discardableResult
-    public func responseObject(
-        _ block: @escaping (Result<TwitterAPISerializedSuccessResponse, TwitterAPIKitError>) -> Void
-    ) -> Self {
-        return responseObject(queue: .main, block)
-    }
-
-    @discardableResult
-    public func responseDecodable<T: Decodable>(
-        type: T.Type,
-        _ block: @escaping (Result<TwitterAPIDecodedSuccessResponse<T>, TwitterAPIKitError>) -> Void
-    ) -> Self {
-        return responseDecodable(type: type, queue: .main, block)
+    public init(
+        request: URLRequest?,
+        response: HTTPURLResponse?,
+        data: Data?,
+        result: Result<Success, TwitterAPIKitError>,
+        rateLimit: TwitterRateLimit?
+    ) {
+        self.request = request
+        self.response = response
+        self.data = data
+        self.result = result
+        self.rateLimit = rateLimit
     }
 }
 
-public struct TwitterAPIFailedResponse: TwitterAPISessionResponse {
+extension TwitterAPIResponse {
 
-    public let error: TwitterAPIKitError
+    public func map<NewSuccess>(_ transform: (Success) -> NewSuccess) -> TwitterAPIResponse<NewSuccess> {
+        return .init(
+            request: request,
+            response: response,
+            data: data,
+            result: result.map(transform),
+            rateLimit: rateLimit
+        )
+    }
 
-    public init(_ error: Error) {
-
-        switch error {
-        case let error as TwitterAPIKitError:
-            self.error = error
-        default:
-            self.error = .unkonwn(error: error)
+    public func tryMap<NewSuccess>(_ transform: (Success) throws -> NewSuccess) -> TwitterAPIResponse<NewSuccess> {
+        let nextResult: Result<NewSuccess, TwitterAPIKitError> = result.flatMap { data in
+            let r: Result<NewSuccess, Error> = .init {
+                return try transform(data)
+            }
+            return r.mapError { TwitterAPIKitError(error: $0) }
         }
-
-    }
-    public init(error: TwitterAPIKitError) {
-        self.error = error
-    }
-
-    public var taskIdentifier: Int {
-        return 0
-    }
-
-    public var currentRequest: URLRequest? {
-        return nil
+        return .init(
+            request: request,
+            response: response,
+            data: data,
+            result: nextResult,
+            rateLimit: rateLimit
+        )
     }
 
-    public var originalRequest: URLRequest? {
-        return nil
-    }
+    public func mapError(_ tranform: (TwitterAPIKitError) -> TwitterAPIKitError) -> TwitterAPIResponse {
+        return .init(
+            request: request,
+            response: response,
+            data: data,
+            result: result.mapError(tranform),
+            rateLimit: rateLimit
+        )
 
-    public var response: HTTPURLResponse? {
-        return nil
     }
-
-    public func responseData(
-        queue: DispatchQueue, _ block: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPIFailedResponse {
-        queue.async {
-            block(.failure(error))
-        }
-        return self
-    }
-
-    public func responseObject(
-        queue: DispatchQueue,
-        _ block: @escaping (Result<TwitterAPISerializedSuccessResponse, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPIFailedResponse {
-        queue.async {
-            block(.failure(error))
-        }
-        return self
-    }
-
-    public func responseDecodable<T>(
-        type: T.Type, queue: DispatchQueue,
-        _ block: @escaping (Result<TwitterAPIDecodedSuccessResponse<T>, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPIFailedResponse where T: Decodable {
-        queue.async {
-            block(.failure(error))
-        }
-        return self
-    }
-
-    public func cancel() {}
 }
 
-public class TwitterAPISessionDelegatedResponse: TwitterAPISessionResponse {
+extension TwitterAPIResponse {
 
-    public var taskIdentifier: Int {
-        return task.taskIdentifier
-    }
+    /// for debug
+    public var prettyString: String {
 
-    public var currentRequest: URLRequest? {
-        return task.currentRequest
-    }
+        let body =
+            data.map { data in
 
-    public var originalRequest: URLRequest? {
-        return task.originalRequest
-    }
+                // make pretty
+                if let json = try? JSONSerialization.jsonObject(with: data, options: []),
+                    let jsonData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
+                {
+                    return String(data: jsonData, encoding: .utf8) ?? ""
+                } else {
+                    return String(data: data, encoding: .utf8) ?? "Invalid data"
+                }
+            } ?? "No data"
 
-    public var response: HTTPURLResponse? {
-        return task.response as? HTTPURLResponse
-    }
+        let rateLimitStr = rateLimit.map { String(describing: $0) } ?? "No rate limit"
 
-    public private(set) var error: Error?
-    public var data: Data? {
-        guard completed else { return nil }
-        return dataChunk
-    }
-    public private(set) var completed = false
-
-    let task: URLSessionTask
-
-    private let taskQueue: DispatchQueue
-    private var dataChunk: Data = Data()
-    let group = DispatchGroup()
-
-    public init(task: URLSessionTask) {
-        self.task = task
-
-        // Serial queue
-        taskQueue = DispatchQueue(label: "TwitterAPIKit.task.\(task.taskIdentifier)")
-        taskQueue.suspend()
-    }
-
-    func append(chunk: Data) {
-        dataChunk.append(chunk)
-    }
-
-    func complete(error: Error?) {
-        self.error = error
-        self.completed = true
-        taskQueue.resume()
-    }
-
-    func didComplete(_ block: @escaping () -> Void) {
-        group.notify(queue: taskQueue, execute: block)
-    }
-
-    private func parseResponse() -> Result<TwitterAPISuccessReponse, TwitterAPIKitError> {
-
-        guard completed, let data = self.data else {
-            fatalError("Request not completed yet.")
+        switch self.result {
+        case .failure(let error):
+            return "Failure => \(error.localizedDescription)"
+                + "\n\(rateLimitStr)"
+                + "\n\(body)"
+        case .success:
+            let url = response?.url?.absoluteString ?? "NULL URL"
+            return "Success => \(url)\n\(rateLimitStr)\n\(body.unescapeSlash)"
         }
+    }
+}
 
-        guard error == nil, let httpResponse = response else {
-            return .failure(.responseFailed(reason: .invalidResponse(error: error, response: response)))
-        }
+extension String {
 
-        let rateLimit = TwitterRateLimit(header: httpResponse.allHeaderFields)
-
-        guard 200..<300 ~= httpResponse.statusCode else {
-            return .failure(
-                .responseFailed(
-                    reason: .unacceptableStatusCode(
-                        statusCode: httpResponse.statusCode,
-                        error: TwitterAPIErrorResponse(data: data),
-                        rateLimit: rateLimit
-                    )
-                )
-            )
-        }
-
-        return .success((data, rateLimit, httpResponse))
+    fileprivate var unescapeSlash: String {
+        return replacingOccurrences(of: #"\/"#, with: #"/"#)
     }
 
-    public func responseData(
-        queue: DispatchQueue, _ block: @escaping (Result<TwitterAPISuccessReponse, TwitterAPIKitError>) -> Void
-    ) -> Self {
-        group.enter()
-        taskQueue.async { [weak self] in
-            guard let self = self else { return }
-
-            let result = self.parseResponse()
-
-            queue.async { [weak self] in
-                block(result)
-                self?.group.leave()
-            }
-        }
-        return self
-    }
-
-    public func responseObject(
-        queue: DispatchQueue,
-        _ block: @escaping (Result<TwitterAPISerializedSuccessResponse, TwitterAPIKitError>) -> Void
-    ) -> Self {
-        group.enter()
-        taskQueue.async { [weak self] in
-            guard let self = self else { return }
-            let result = self.parseResponse().serialize()
-            queue.async { [weak self] in
-                block(result)
-                self?.group.leave()
-            }
-        }
-        return self
-    }
-
-    public func responseDecodable<T>(
-        type: T.Type, queue: DispatchQueue,
-        _ block: @escaping (Result<TwitterAPIDecodedSuccessResponse<T>, TwitterAPIKitError>) -> Void
-    ) -> Self where T: Decodable {
-        group.enter()
-        taskQueue.async { [weak self] in
-            guard let self = self else { return }
-            let result = self.parseResponse().decode(type)
-            queue.async { [weak self] in
-                block(result)
-                self?.group.leave()
-            }
-        }
-        return self
-    }
-
-    public func cancel() {
-        task.cancel()
+    fileprivate var unescapingUnicodeCharacters: String {
+        let mutableString = NSMutableString(string: self)
+        CFStringTransform(mutableString, nil, "Any-Hex/Java" as NSString, true)
+        return mutableString as String
     }
 }

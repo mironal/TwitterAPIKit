@@ -6,14 +6,13 @@ public protocol AuthAPIv1 {
     @discardableResult
     func postOAuthRequestTokenData(
         _ request: PostOAuthRequestTokenRequestV1
-    ) -> TwitterAPISessionResponse
+    ) -> TwitterAPISessionDataTask
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/request_token
     @discardableResult
     func postOAuthRequestToken(
-        _ request: PostOAuthRequestTokenRequestV1,
-        completionHandler: @escaping (Result<TwitterOAuthTokenV1, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask
+        _ request: PostOAuthRequestTokenRequestV1
+    ) -> TwitterAPISessionSpecializedTask<TwitterOAuthTokenV1>
 
     /// Create https://developer.twitter.com/en/docs/authentication/api-reference/authorize URL.
     func makeOAuthAuthorizeURL(_ request: GetOAuthAuthorizeRequestV1) -> URL?
@@ -25,33 +24,31 @@ public protocol AuthAPIv1 {
     @discardableResult
     func postOAuthAccessTokenData(
         _ request: PostOAuthAccessTokenRequestV1
-    ) -> TwitterAPISessionResponse
+    ) -> TwitterAPISessionDataTask
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/access_token
     @discardableResult
     func postOAuthAccessToken(
-        _ request: PostOAuthAccessTokenRequestV1,
-        completionHandler: @escaping (Result<TwitterOAuthAccessTokenV1, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask
+        _ request: PostOAuthAccessTokenRequestV1
+    ) -> TwitterAPISessionSpecializedTask<TwitterOAuthAccessTokenV1>
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/invalidate_access_token
     @discardableResult
     func postInvalidateAccessToken(
         _ request: PostOAuthInvalidateTokenRequestV1
-    ) -> TwitterAPISessionResponse
+    ) -> TwitterAPISessionJSONTask
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/token
     @discardableResult
     func postOAuth2BearerTokenData(
         _ request: PostOAuth2TokenRequestV1
-    ) -> TwitterAPISessionResponse
+    ) -> TwitterAPISessionDataTask
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/token
     @discardableResult
     func postOAuth2BearerToken(
-        _ request: PostOAuth2TokenRequestV1,
-        completionHandler: @escaping (Result<TwitterOAuth2BearerToken, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask
+        _ request: PostOAuth2TokenRequestV1
+    ) -> TwitterAPISessionSpecializedTask<TwitterOAuth2BearerToken>
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/invalidate_bearer_token
     ///
@@ -61,34 +58,29 @@ public protocol AuthAPIv1 {
     @discardableResult
     func postInvalidateOAuth2BearerToken(
         _ request: PostOAuth2InvalidateTokenRequestV1
-    ) -> TwitterAPISessionResponse
+    ) -> TwitterAPISessionJSONTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV1: AuthAPIv1 {
+
     public func postOAuthRequestTokenData(
         _ request: PostOAuthRequestTokenRequestV1
-    ) -> TwitterAPISessionResponse {
+    ) -> TwitterAPISessionDataTask {
         return session.send(request)
     }
 
-    public func postOAuthRequestToken(
-        _ request: PostOAuthRequestTokenRequestV1,
-        completionHandler: @escaping (Result<TwitterOAuthTokenV1, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask {
-        return session.send(request).responseData(queue: .processQueue) { result in
-            completionHandler(
-                result.flatMap {
-                    guard let token = TwitterOAuthTokenV1(queryStringData: $0.data) else {
-                        return .failure(
-                            .responseSerializeFailed(
-                                reason: .cannotConvert(data: $0.data, toTypeName: "TwitterOAuthTokenV1")
-                            )
-                        )
-                    }
-                    return .success(token)
+    func postOAuthRequestToken(
+        _ request: PostOAuthRequestTokenRequestV1
+    ) -> TwitterAPISessionSpecializedTask<TwitterOAuthTokenV1> {
+        return session.send(request)
+            .specialized { data in
+                guard let token = TwitterOAuthTokenV1(queryStringData: data) else {
+                    throw TwitterAPIKitError.responseSerializeFailed(
+                        reason: .cannotConvert(data: data, toTypeName: "TwitterOAuthTokenV1")
+                    )
                 }
-            )
-        }
+                return token
+            }
     }
 
     public func makeOAuthAuthorizeURL(_ request: GetOAuthAuthorizeRequestV1) -> URL? {
@@ -103,73 +95,59 @@ extension TwitterAPIKit.TwitterAPIImplV1: AuthAPIv1 {
 
     public func postOAuthAccessTokenData(
         _ request: PostOAuthAccessTokenRequestV1
-    ) -> TwitterAPISessionResponse {
+    ) -> TwitterAPISessionDataTask {
         return session.send(request)
     }
 
-    public func postOAuthAccessToken(
-        _ request: PostOAuthAccessTokenRequestV1,
-        completionHandler: @escaping (Result<TwitterOAuthAccessTokenV1, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask {
-        return session.send(request).responseData(queue: .processQueue) { result in
-            completionHandler(
-                result.flatMap {
-                    guard let token = TwitterOAuthAccessTokenV1(queryStringData: $0.data) else {
-                        return .failure(
-                            .responseSerializeFailed(
-                                reason: .cannotConvert(data: $0.data, toTypeName: "TwitterOAuthAccessTokenV1")
-                            )
-                        )
-                    }
-                    return .success(token)
+    func postOAuthAccessToken(
+        _ request: PostOAuthAccessTokenRequestV1
+    ) -> TwitterAPISessionSpecializedTask<TwitterOAuthAccessTokenV1> {
+        return session.send(request)
+            .specialized { data in
+                guard let token = TwitterOAuthAccessTokenV1(queryStringData: data) else {
+                    throw TwitterAPIKitError.responseSerializeFailed(
+                        reason: .cannotConvert(data: data, toTypeName: "TwitterOAuthAccessTokenV1")
+                    )
                 }
-            )
-        }
+                return token
+            }
     }
 
     public func postInvalidateAccessToken(
         _ request: PostOAuthInvalidateTokenRequestV1
-    ) -> TwitterAPISessionResponse {
+    ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 
     public func postOAuth2BearerTokenData(
         _ request: PostOAuth2TokenRequestV1
-    ) -> TwitterAPISessionResponse {
+    ) -> TwitterAPISessionDataTask {
         return session.send(request)
     }
 
-    public func postOAuth2BearerToken(
-        _ request: PostOAuth2TokenRequestV1,
-        completionHandler: @escaping (Result<TwitterOAuth2BearerToken, TwitterAPIKitError>) -> Void
-    ) -> TwitterAPISessionTask {
-        return session.send(request).responseData(queue: .processQueue) { result in
-            completionHandler(
-                result.flatMap {
-                    do {
-                        guard let token = try TwitterOAuth2BearerToken(jsonData: $0.data) else {
-                            return .failure(
-                                .responseSerializeFailed(
-                                    reason: .cannotConvert(data: $0.data, toTypeName: "TwitterOAuth2BearerToken")
-                                )
-                            )
-                        }
-                        return .success(token)
-                    } catch let error {
-                        return .failure(
-                            .responseSerializeFailed(
-                                reason: .jsonSerializationFailed(error: error, data: $0.data, rateLimit: $0.rateLimit)
-                            )
+    func postOAuth2BearerToken(
+        _ request: PostOAuth2TokenRequestV1
+    ) -> TwitterAPISessionSpecializedTask<TwitterOAuth2BearerToken> {
+        return session.send(request)
+            .specialized { data in
+                do {
+                    guard let token = try TwitterOAuth2BearerToken(jsonData: data) else {
+                        throw TwitterAPIKitError.responseSerializeFailed(
+                            reason: .cannotConvert(data: data, toTypeName: "TwitterOAuth2BearerToken")
                         )
                     }
+                    return token
+                } catch let error {
+                    throw TwitterAPIKitError.responseSerializeFailed(
+                        reason: .jsonSerializationFailed(error: error)
+                    )
                 }
-            )
-        }
+            }
     }
 
     public func postInvalidateOAuth2BearerToken(
         _ request: PostOAuth2InvalidateTokenRequestV1
-    ) -> TwitterAPISessionResponse {
+    ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }

@@ -5,26 +5,26 @@ public protocol TweetAPIv2 {
     @discardableResult
     func getTweets(
         _ request: GetTweetsRequestV2
-    ) -> TwitterAPISessionResponse
+    ) -> TwitterAPISessionJSONTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/tweets/lookup/api-reference/get-tweets-id
     @discardableResult
     func getTweet(
         _ request: GetTweetRequestV2
-    ) -> TwitterAPISessionResponse
+    ) -> TwitterAPISessionJSONTask
 
 }
 
 extension TwitterAPIKit.TwitterAPIImplV2: TweetAPIv2 {
     public func getTweets(
         _ request: GetTweetsRequestV2
-    ) -> TwitterAPISessionResponse {
+    ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 
     public func getTweet(
         _ request: GetTweetRequestV2
-    ) -> TwitterAPISessionResponse {
+    ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }

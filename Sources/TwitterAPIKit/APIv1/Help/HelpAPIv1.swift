@@ -6,13 +6,13 @@ public protocol HelpAPIv1 {
     @discardableResult
     func getSupportedLanguages(
         _ request: GetHelpLanguagesRequestV1
-    ) -> TwitterAPISessionResponse
+    ) -> TwitterAPISessionJSONTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV1: HelpAPIv1 {
     func getSupportedLanguages(
         _ request: GetHelpLanguagesRequestV1
-    ) -> TwitterAPISessionResponse {
+    ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }

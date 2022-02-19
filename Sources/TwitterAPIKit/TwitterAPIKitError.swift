@@ -13,14 +13,14 @@ public enum TwitterAPIKitError: Error {
 
     case responseFailed(reason: ResponseFailureReason)
     public enum ResponseFailureReason {
-        case invalidResponse(error: Error?, response: URLResponse?)
-        case unacceptableStatusCode(statusCode: Int, error: TwitterAPIErrorResponse, rateLimit: TwitterRateLimit)
+        case invalidResponse(error: Error?)
+        case unacceptableStatusCode(statusCode: Int, error: TwitterAPIErrorResponse)
     }
 
     case responseSerializeFailed(reason: ResponseSerializationFailureReason)
     public enum ResponseSerializationFailureReason {
-        case jsonSerializationFailed(error: Error, data: Data, rateLimit: TwitterRateLimit)
-        case jsonDecodeFailed(error: Error, data: Data, rateLimit: TwitterRateLimit)
+        case jsonSerializationFailed(error: Error)
+        case jsonDecodeFailed(error: Error)
         case cannotConvert(data: Data, toTypeName: String)
     }
 
@@ -89,14 +89,12 @@ extension TwitterAPIKitError.RequestFailureReason {
 extension TwitterAPIKitError.ResponseFailureReason {
     public var localizedDescription: String {
         switch self {
-        case let .invalidResponse(error: error, response: response):
+        case let .invalidResponse(error: error):
             if let error = error {
                 return "Response is invalid: \(error.localizedDescription)"
-            } else if let response = response {
-                return "Response is invalid: \(response)"
             }
             return "Response is invalid"
-        case let .unacceptableStatusCode(statusCode, error: error, rateLimit: _):
+        case let .unacceptableStatusCode(statusCode, error: error):
             return "Response status code was unacceptable: \(statusCode) with message: \(error.message)."
         }
     }
@@ -105,9 +103,9 @@ extension TwitterAPIKitError.ResponseFailureReason {
 extension TwitterAPIKitError.ResponseSerializationFailureReason {
     public var localizedDescription: String {
         switch self {
-        case .jsonSerializationFailed(let error, data: _, rateLimit: _):
+        case .jsonSerializationFailed(let error):
             return "Response could not be serialized because of error:\n\(error.localizedDescription)"
-        case .jsonDecodeFailed(let error, data: _, rateLimit: _):
+        case .jsonDecodeFailed(let error):
             return "Response could not be decoded because of error:\n\(error.localizedDescription)"
         case .cannotConvert(data: _, let toTypeName):
             return "Response could not convert to \"\(toTypeName)\""
