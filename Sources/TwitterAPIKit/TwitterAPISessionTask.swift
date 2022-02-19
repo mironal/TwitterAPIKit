@@ -305,7 +305,16 @@ public class TwitterAPISessionDelegatedTask: TwitterAPISessionJSONTask {
     }
 }
 
-public struct TwitterAPISessionSpecializedTask<Success>: TwitterAPISessionDataTask {
+public protocol TwitterAPISessionSpecializedTask_: TwitterAPISessionDataTask {
+    associatedtype Success
+    @discardableResult
+    func responseObject(
+        queue: DispatchQueue,
+        _ block: @escaping (TwitterAPIResponse<Success>) -> Void
+    ) -> TwitterAPISessionSpecializedTask<Success>
+}
+
+public struct TwitterAPISessionSpecializedTask<Success>: TwitterAPISessionSpecializedTask_ {
 
     public var taskIdentifier: Int {
         return innerTask.taskIdentifier
@@ -327,6 +336,7 @@ public struct TwitterAPISessionSpecializedTask<Success>: TwitterAPISessionDataTa
         self.transform = transform
     }
 
+    @discardableResult
     public func responseObject(
         queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<Success>) -> Void
@@ -338,6 +348,7 @@ public struct TwitterAPISessionSpecializedTask<Success>: TwitterAPISessionDataTa
         return self
     }
 
+    @discardableResult
     public func responseData(
         queue: DispatchQueue, _ block: @escaping (TwitterAPIResponse<Data>) -> Void
     ) -> TwitterAPISessionSpecializedTask<Success> {
@@ -347,5 +358,25 @@ public struct TwitterAPISessionSpecializedTask<Success>: TwitterAPISessionDataTa
 
     public func cancel() {
         innerTask.cancel()
+    }
+}
+
+extension Array where Element: TwitterAPISessionSpecializedTask_ {
+
+    func responseObject(
+        queue: DispatchQueue = .main, _ block: @escaping ([TwitterAPIResponse<Element.Success>]) -> Void
+    ) {
+
+        let group = DispatchGroup()
+
+        var responses = [TwitterAPIResponse<Element.Success>]()
+
+        self.forEach { task in
+            task.responseObject(queue: .processQueue) { responses.append($0) }
+        }
+
+        group.notify(queue: queue) {
+            block(responses)
+        }
     }
 }

@@ -29,14 +29,12 @@ public protocol MediaAPIv1 {
     /// Utility method for split uploading of large files.
     func uploadMediaAppendSplitChunks(
         _ request: UploadMediaAppendRequestV1,
-        maxBytes: Int,
-        completionHandler: @escaping (Result<[TwitterAPIResponse<Data>], TwitterAPIKitError>) -> Void
-    )
+        maxBytes: Int
+    ) -> [TwitterAPISessionSpecializedTask<String /* mediaID */>]
 
     func uploadMediaAppendSplitChunks(
-        _ request: UploadMediaAppendRequestV1,
-        completionHandler: @escaping (Result<[TwitterAPIResponse<Data>], TwitterAPIKitError>) -> Void
-    )
+        _ request: UploadMediaAppendRequestV1
+    ) -> [TwitterAPISessionSpecializedTask<String /* mediaID */>]
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload-finalize
     @discardableResult
@@ -57,14 +55,14 @@ public protocol MediaAPIv1 {
         mediaID: String,
         initialWaitSec: Int,
         completionHandler: @escaping (
-            Result<TwitterAPIKit.UploadMediaStatusResponse, TwitterAPIKitError>
+            TwitterAPIResponse<TwitterAPIKit.UploadMediaStatusResponse>
         ) -> Void
     )
 
     func waitMediaProcessing(
         mediaID: String,
         completionHandler: @escaping (
-            Result<TwitterAPIKit.UploadMediaStatusResponse, TwitterAPIKitError>
+            TwitterAPIResponse<TwitterAPIKit.UploadMediaStatusResponse>
         ) -> Void
     )
 }
@@ -91,50 +89,38 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
         return session.send(request)
     }
 
-    func uploadMediaAppendSplitChunks(
-        _ request: UploadMediaAppendRequestV1,
-        completionHandler: @escaping (Result<[TwitterAPIResponse<Data>], TwitterAPIKitError>) -> Void
-    ) {
-        uploadMediaAppendSplitChunks(request, maxBytes: 5_242_880 /* 5MB */, completionHandler: completionHandler)
+    func uploadMediaAppendSplitChunks(_ request: UploadMediaAppendRequestV1) -> [TwitterAPISessionSpecializedTask<
+        String
+    >] {
+        return uploadMediaAppendSplitChunks(request, maxBytes: 5_242_880 /* 5MB */)
     }
 
-    func uploadMediaAppendSplitChunks(
-        _ request: UploadMediaAppendRequestV1,
-        maxBytes: Int,
-        completionHandler: @escaping (Result<[TwitterAPIResponse<Data>], TwitterAPIKitError>) -> Void
-    ) {
+    func uploadMediaAppendSplitChunks(_ request: UploadMediaAppendRequestV1, maxBytes: Int)
+        -> [TwitterAPISessionSpecializedTask<String>]
+    {
 
         // Split media data
 
         let totalDataSize = request.media.count
-        let group = DispatchGroup()
 
-        var responses = [TwitterAPIResponse<Data>]()
+        var tasks = [TwitterAPISessionSpecializedTask<String>]()
 
         var nextRequest = request
         repeat {
             let start = nextRequest.segmentIndex * maxBytes
             let len = min(totalDataSize - nextRequest.segmentIndex * maxBytes, maxBytes)
-            group.enter()
 
-            uploadMediaAppend(nextRequest.subdata(in: start..<(start + len)))
-                .responseData(queue: .processQueue) { response in
-                    defer { group.leave() }
-                    responses.append(response)
+            let task = uploadMediaAppend(nextRequest.subdata(in: start..<(start + len)))
+                .specialized { _ in
+                    return request.mediaID
                 }
+
+            tasks.append(task)
 
             nextRequest = nextRequest.nextSegment()
         } while (nextRequest.segmentIndex * maxBytes) < totalDataSize
 
-        group.notify(queue: .main) {
-            let firstError = responses.first { $0.isError }?.error
-
-            if let error = firstError {
-                completionHandler(.failure(error))
-                return
-            }
-            completionHandler(.success(responses))
-        }
+        return tasks
     }
 
     public func uploadMediaFinalize(
@@ -179,15 +165,16 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
                     media: parameters.media,
                     segmentIndex: 0
                 )
-            ) { [weak self] response in
+            ).responseObject(queue: .processQueue) { [weak self] responses in
+
                 guard let self = self else { return }
 
-                if let error = response.error {
+                if let error = responses.first(where: { $0.isError })?.error {
                     completionHandler(.failure(error))
                     return
                 }
 
-                _ = self.uploadMediaFinalize(.init(mediaID: mediaID))
+                self.uploadMediaFinalize(.init(mediaID: mediaID))
                     .responseDecodable(type: TwitterAPIKit.UploadMediaFinalizeResponse.self, queue: .processQueue) {
                         [weak self] response in
                         guard let self = self else { return }
@@ -206,8 +193,8 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
                         }
 
                         self.waitMediaProcessing(mediaID: mediaID, initialWaitSec: processingInfo.checkAfterSecs ?? 0) {
-                            result in
-                            completionHandler(result.map { $0.mediaID })
+                            response in
+                            completionHandler(response.result.map { $0.mediaID })
                         }
                     }
             }
@@ -218,7 +205,7 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
         mediaID: String,
         initialWaitSec: Int,
         completionHandler: @escaping (
-            Result<TwitterAPIKit.UploadMediaStatusResponse, TwitterAPIKitError>
+            TwitterAPIResponse<TwitterAPIKit.UploadMediaStatusResponse>
         ) -> Void
     ) {
 
@@ -231,7 +218,7 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
     public func waitMediaProcessing(
         mediaID: String,
         completionHandler: @escaping (
-            Result<TwitterAPIKit.UploadMediaStatusResponse, TwitterAPIKitError>
+            TwitterAPIResponse<TwitterAPIKit.UploadMediaStatusResponse>
         ) -> Void
     ) {
         _ = getUploadMediaStatus(.init(mediaID: mediaID))
@@ -247,23 +234,28 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
                         let .inProgress(checkAfterSecs: sec, progressPercent: _):
 
                         self.waitMediaProcessing(
-                            mediaID: mediaID, initialWaitSec: sec, completionHandler: completionHandler)
+                            mediaID: mediaID,
+                            initialWaitSec: sec,
+                            completionHandler: completionHandler
+                        )
 
                     case .succeeded:
-                        completionHandler(.success(success))
+                        completionHandler(response)
                     case let .failed(error: error):
-                        completionHandler(.failure(.uploadMediaFailed(reason: .processingFailed(error: error))))
+                        throw TwitterAPIKitError.uploadMediaFailed(reason: .processingFailed(error: error))
                     case .unknown:
-                        completionHandler(
-                            .failure(.unkonwn(error: NSError(domain: "TwitterAPIKit", code: 0, userInfo: [:]))))
+                        throw TwitterAPIKitError.unkonwn(
+                            error: NSError(domain: "TwitterAPIKit", code: 0, userInfo: [:]))
                     }
                 } catch let error as TwitterAPIKitError {
-                    completionHandler(.failure(error))
+                    completionHandler(
+                        response.mapError { _ in return error }
+                    )
                     return
-
                 } catch let error {
-                    completionHandler(.failure(.unkonwn(error: error)))
-                    return
+                    completionHandler(
+                        response.mapError { _ in return TwitterAPIKitError.unkonwn(error: error) }
+                    )
                 }
             }
     }

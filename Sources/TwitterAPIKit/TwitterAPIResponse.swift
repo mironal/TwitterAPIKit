@@ -54,6 +54,17 @@ extension TwitterAPIResponse {
             rateLimit: rateLimit
         )
     }
+
+    public func mapError(_ tranform: (TwitterAPIKitError) -> TwitterAPIKitError) -> TwitterAPIResponse {
+        return .init(
+            request: request,
+            response: response,
+            data: data,
+            result: result.mapError(tranform),
+            rateLimit: rateLimit
+        )
+
+    }
 }
 
 extension TwitterAPIResponse {
