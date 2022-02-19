@@ -199,7 +199,7 @@ public class TwitterAPISessionDelegatedTask: TwitterAPISessionTask {
         }
 
         guard error == nil, let httpResponse = response else {
-            return .failure(.responseFailed(reason: .invalidResponse(error: error, response: response)))
+            return .failure(.responseFailed(reason: .invalidResponse(error: error)))
         }
 
         let rateLimit = TwitterRateLimit(header: httpResponse.allHeaderFields)
@@ -209,8 +209,7 @@ public class TwitterAPISessionDelegatedTask: TwitterAPISessionTask {
                 .responseFailed(
                     reason: .unacceptableStatusCode(
                         statusCode: httpResponse.statusCode,
-                        error: TwitterAPIErrorResponse(data: data),
-                        rateLimit: rateLimit
+                        error: TwitterAPIErrorResponse(data: data)
                     )
                 )
             )
