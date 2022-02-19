@@ -1,11 +1,5 @@
 import Foundation
 
-extension DispatchQueue {
-    static var processQueue: DispatchQueue {
-        .global(qos: .default)
-    }
-}
-
 public protocol MediaAPIv1 {
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/get-media-upload-status
