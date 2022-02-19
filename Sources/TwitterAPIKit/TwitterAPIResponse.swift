@@ -28,6 +28,20 @@ public struct TwitterAPIResponse<Success> {
 }
 
 extension TwitterAPIResponse {
+    public func map<NewSuccess>(_ transform: (Success) -> NewSuccess) -> TwitterAPIResponse<NewSuccess> {
+        return .init(
+            request: request,
+            response: response,
+            data: data,
+            result: result.map(transform),
+            rateLimit: rateLimit
+        )
+    }
+}
+
+extension TwitterAPIResponse {
+
+    /// for debug
     public var prettyString: String {
 
         let body =
