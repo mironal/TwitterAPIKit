@@ -17,13 +17,13 @@ open class TwitterAPISession {
         self.environment = environment
     }
 
-    public func send(_ request: TwitterAPIRequest) -> TwitterAPISessionResponse {
+    public func send(_ request: TwitterAPIRequest) -> TwitterAPISessionTask {
 
         var urlRequest: URLRequest
         do {
             urlRequest = try request.buildRequest(environment: environment)
         } catch let error {
-            return TwitterAPIFailedResponse(error)
+            return TwitterAPIFailedTask(error)
         }
 
         switch auth {
@@ -47,7 +47,7 @@ open class TwitterAPISession {
         case let .basic(apiKey: apiKey, apiSecretKey: apiSecretKey):
             let credential = "\(apiKey):\(apiSecretKey)"
             guard let credentialData = credential.data(using: .utf8) else {
-                return TwitterAPIFailedResponse(
+                return TwitterAPIFailedTask(
                     error: .requestFailed(reason: .cannotEncodeStringToData(string: credential))
                 )
             }

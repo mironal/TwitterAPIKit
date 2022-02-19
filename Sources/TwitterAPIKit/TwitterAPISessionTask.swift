@@ -7,9 +7,6 @@ public protocol TwitterAPISessionTask {
     var originalRequest: URLRequest? { get }
 
     func cancel()
-}
-
-public protocol TwitterAPISessionResponse: TwitterAPISessionTask {
 
     @discardableResult
     func responseData(
@@ -31,7 +28,7 @@ public protocol TwitterAPISessionResponse: TwitterAPISessionTask {
     ) -> Self
 }
 
-extension TwitterAPISessionResponse {
+extension TwitterAPISessionTask {
     @discardableResult
     public func responseData(
         _ block: @escaping (TwitterAPIResponse<Data>) -> Void
@@ -55,7 +52,7 @@ extension TwitterAPISessionResponse {
     }
 }
 
-public struct TwitterAPIFailedResponse: TwitterAPISessionResponse {
+public struct TwitterAPIFailedTask: TwitterAPISessionTask {
 
     public let error: TwitterAPIKitError
 
@@ -92,7 +89,7 @@ public struct TwitterAPIFailedResponse: TwitterAPISessionResponse {
     public func responseData(
         queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<Data>) -> Void
-    ) -> TwitterAPIFailedResponse {
+    ) -> TwitterAPIFailedTask {
         queue.async {
             let response = TwitterAPIResponse<Data>(
                 request: nil,
@@ -108,7 +105,7 @@ public struct TwitterAPIFailedResponse: TwitterAPISessionResponse {
     public func responseObject(
         queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<Any>) -> Void
-    ) -> TwitterAPIFailedResponse {
+    ) -> TwitterAPIFailedTask {
         queue.async {
             let response = TwitterAPIResponse<Any>(
                 request: nil,
@@ -125,7 +122,7 @@ public struct TwitterAPIFailedResponse: TwitterAPISessionResponse {
     public func responseDecodable<T>(
         type: T.Type, queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<T>) -> Void
-    ) -> TwitterAPIFailedResponse where T: Decodable {
+    ) -> TwitterAPIFailedTask where T: Decodable {
         queue.async {
             let response = TwitterAPIResponse<T>(
                 request: nil,
@@ -142,7 +139,7 @@ public struct TwitterAPIFailedResponse: TwitterAPISessionResponse {
     public func cancel() {}
 }
 
-public class TwitterAPISessionDelegatedResponse: TwitterAPISessionResponse {
+public class TwitterAPISessionDelegatedTask: TwitterAPISessionTask {
 
     public var taskIdentifier: Int {
         return task.taskIdentifier

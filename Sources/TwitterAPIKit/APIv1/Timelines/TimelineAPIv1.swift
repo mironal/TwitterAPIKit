@@ -7,38 +7,38 @@ public protocol TimelineAPIv1 {
     @discardableResult
     func getHomeTimeline(
         _ request: GetStatusesHomeTimelineRequestV1
-    ) -> TwitterAPISessionResponse
+    ) -> TwitterAPISessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/timelines/api-reference/get-statuses-mentions_timeline
     @discardableResult
     func getMentionsTimeline(
         _ request: GetStatusesMentionsTimelineRequestV1
-    ) -> TwitterAPISessionResponse
+    ) -> TwitterAPISessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/timelines/api-reference/get-statuses-user_timeline
     @discardableResult
     func getUserTimeline(
         _ request: GetStatusesUserTimelineRequestV1
-    ) -> TwitterAPISessionResponse
+    ) -> TwitterAPISessionTask
 
 }
 
 extension TwitterAPIKit.TwitterAPIImplV1: TimelineAPIv1 {
     public func getHomeTimeline(
         _ request: GetStatusesHomeTimelineRequestV1
-    ) -> TwitterAPISessionResponse {
+    ) -> TwitterAPISessionTask {
         return session.send(request)
     }
 
     public func getMentionsTimeline(
         _ request: GetStatusesMentionsTimelineRequestV1
-    ) -> TwitterAPISessionResponse {
+    ) -> TwitterAPISessionTask {
         return session.send(request)
     }
 
     public func getUserTimeline(
         _ request: GetStatusesUserTimelineRequestV1
-    ) -> TwitterAPISessionResponse {
+    ) -> TwitterAPISessionTask {
         return session.send(request)
     }
 

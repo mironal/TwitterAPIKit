@@ -6,26 +6,26 @@ public protocol TimelineAPIv2 {
     @discardableResult
     func getUserTweets(
         _ request: GetUsersTweetsRequestV2
-    ) -> TwitterAPISessionResponse
+    ) -> TwitterAPISessionTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/tweets/timelines/api-reference/get-users-id-mentions
     @discardableResult
     func getUserMensions(
         _ request: GetUsersMentionsRequestV2
-    ) -> TwitterAPISessionResponse
+    ) -> TwitterAPISessionTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV2: TimelineAPIv2 {
 
     public func getUserTweets(
         _ request: GetUsersTweetsRequestV2
-    ) -> TwitterAPISessionResponse {
+    ) -> TwitterAPISessionTask {
         return session.send(request)
     }
 
     public func getUserMensions(
         _ request: GetUsersMentionsRequestV2
-    ) -> TwitterAPISessionResponse {
+    ) -> TwitterAPISessionTask {
         return session.send(request)
     }
 }

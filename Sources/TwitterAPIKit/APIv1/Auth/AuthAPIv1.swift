@@ -6,7 +6,7 @@ public protocol AuthAPIv1 {
     @discardableResult
     func postOAuthRequestTokenData(
         _ request: PostOAuthRequestTokenRequestV1
-    ) -> TwitterAPISessionResponse
+    ) -> TwitterAPISessionTask
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/request_token
     @discardableResult
@@ -25,7 +25,7 @@ public protocol AuthAPIv1 {
     @discardableResult
     func postOAuthAccessTokenData(
         _ request: PostOAuthAccessTokenRequestV1
-    ) -> TwitterAPISessionResponse
+    ) -> TwitterAPISessionTask
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/access_token
     @discardableResult
@@ -38,13 +38,13 @@ public protocol AuthAPIv1 {
     @discardableResult
     func postInvalidateAccessToken(
         _ request: PostOAuthInvalidateTokenRequestV1
-    ) -> TwitterAPISessionResponse
+    ) -> TwitterAPISessionTask
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/token
     @discardableResult
     func postOAuth2BearerTokenData(
         _ request: PostOAuth2TokenRequestV1
-    ) -> TwitterAPISessionResponse
+    ) -> TwitterAPISessionTask
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/token
     @discardableResult
@@ -61,13 +61,13 @@ public protocol AuthAPIv1 {
     @discardableResult
     func postInvalidateOAuth2BearerToken(
         _ request: PostOAuth2InvalidateTokenRequestV1
-    ) -> TwitterAPISessionResponse
+    ) -> TwitterAPISessionTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV1: AuthAPIv1 {
     public func postOAuthRequestTokenData(
         _ request: PostOAuthRequestTokenRequestV1
-    ) -> TwitterAPISessionResponse {
+    ) -> TwitterAPISessionTask {
         return session.send(request)
     }
 
@@ -103,7 +103,7 @@ extension TwitterAPIKit.TwitterAPIImplV1: AuthAPIv1 {
 
     public func postOAuthAccessTokenData(
         _ request: PostOAuthAccessTokenRequestV1
-    ) -> TwitterAPISessionResponse {
+    ) -> TwitterAPISessionTask {
         return session.send(request)
     }
 
@@ -129,13 +129,13 @@ extension TwitterAPIKit.TwitterAPIImplV1: AuthAPIv1 {
 
     public func postInvalidateAccessToken(
         _ request: PostOAuthInvalidateTokenRequestV1
-    ) -> TwitterAPISessionResponse {
+    ) -> TwitterAPISessionTask {
         return session.send(request)
     }
 
     public func postOAuth2BearerTokenData(
         _ request: PostOAuth2TokenRequestV1
-    ) -> TwitterAPISessionResponse {
+    ) -> TwitterAPISessionTask {
         return session.send(request)
     }
 
@@ -169,7 +169,7 @@ extension TwitterAPIKit.TwitterAPIImplV1: AuthAPIv1 {
 
     public func postInvalidateOAuth2BearerToken(
         _ request: PostOAuth2InvalidateTokenRequestV1
-    ) -> TwitterAPISessionResponse {
+    ) -> TwitterAPISessionTask {
         return session.send(request)
     }
 }
