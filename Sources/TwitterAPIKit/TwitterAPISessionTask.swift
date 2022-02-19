@@ -35,6 +35,7 @@ public protocol TwitterAPISessionJSONTask: TwitterAPISessionDataTask {
     @discardableResult
     func responseDecodable<T: Decodable>(
         type: T.Type,
+        decoder: JSONDecoder,
         queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<T>) -> Void
     ) -> Self
@@ -58,9 +59,27 @@ extension TwitterAPISessionJSONTask {
     @discardableResult
     public func responseDecodable<T: Decodable>(
         type: T.Type,
+        decoder: JSONDecoder,
         _ block: @escaping (TwitterAPIResponse<T>) -> Void
     ) -> Self {
-        return responseDecodable(type: type, queue: .main, block)
+        return responseDecodable(type: type, decoder: decoder, queue: .main, block)
+    }
+
+    @discardableResult
+    public func responseDecodable<T: Decodable>(
+        type: T.Type,
+        queue: DispatchQueue,
+        _ block: @escaping (TwitterAPIResponse<T>) -> Void
+    ) -> Self {
+        return responseDecodable(type: type, decoder: TwitterAPIKit.defaultJSONDecoder, queue: queue, block)
+    }
+
+    @discardableResult
+    public func responseDecodable<T: Decodable>(
+        type: T.Type,
+        _ block: @escaping (TwitterAPIResponse<T>) -> Void
+    ) -> Self {
+        return responseDecodable(type: type, decoder: TwitterAPIKit.defaultJSONDecoder, queue: .main, block)
     }
 }
 
@@ -132,7 +151,9 @@ public struct TwitterAPIFailedTask: TwitterAPISessionJSONTask {
     }
 
     public func responseDecodable<T>(
-        type: T.Type, queue: DispatchQueue,
+        type: T.Type,
+        decoder: JSONDecoder,
+        queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<T>) -> Void
     ) -> TwitterAPIFailedTask where T: Decodable {
         queue.async {
@@ -230,74 +251,53 @@ public class TwitterAPISessionDelegatedTask: TwitterAPISessionJSONTask {
         return .success((data: data, rateLimit: rateLimit))
     }
 
-    public func responseData(queue: DispatchQueue, _ block: @escaping (TwitterAPIResponse<Data>) -> Void) -> Self {
+    private func registerResponseBlock<T>(
+        queue: DispatchQueue,
+        map mapResult: @escaping (Result<Data, TwitterAPIKitError>) -> Result<T, TwitterAPIKitError>,
+        response block: @escaping ((TwitterAPIResponse<T>) -> Void)
+    ) -> Self {
+
         group.enter()
         taskQueue.async { [weak self] in
             guard let self = self else { return }
-
             let result = self.getResult()
+
             let response = TwitterAPIResponse(
                 request: self.currentRequest,
                 response: self.response,
                 data: self.data,
-                result: result.map { $0.data },
+                result: mapResult(result.map { $0.data }),
                 rateLimit: result.success?.rateLimit
             )
 
             queue.async { [weak self] in
+                guard let self = self else { return }
                 block(response)
-                self?.group.leave()
+                self.group.leave()
             }
         }
+
         return self
+    }
+
+    public func responseData(queue: DispatchQueue, _ block: @escaping (TwitterAPIResponse<Data>) -> Void) -> Self {
+        return registerResponseBlock(queue: queue, map: { $0 }, response: block)
     }
 
     public func responseObject(
         queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<Any>) -> Void
     ) -> Self {
-        group.enter()
-        taskQueue.async { [weak self] in
-            guard let self = self else { return }
-
-            let result = self.getResult()
-            let response = TwitterAPIResponse(
-                request: self.currentRequest,
-                response: self.response,
-                data: self.data,
-                result: result.map { $0.data }.serialize(),
-                rateLimit: result.success?.rateLimit
-            )
-            queue.async { [weak self] in
-                block(response)
-                self?.group.leave()
-            }
-        }
-        return self
+        return registerResponseBlock(queue: queue, map: { $0.serialize() }, response: block)
     }
 
     public func responseDecodable<T>(
-        type: T.Type, queue: DispatchQueue,
+        type: T.Type,
+        decoder: JSONDecoder = TwitterAPIKit.defaultJSONDecoder,
+        queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<T>) -> Void
     ) -> Self where T: Decodable {
-        group.enter()
-        taskQueue.async { [weak self] in
-            guard let self = self else { return }
-
-            let result = self.getResult()
-            let response = TwitterAPIResponse(
-                request: self.currentRequest,
-                response: self.response,
-                data: self.data,
-                result: result.map { $0.data }.decode(type),
-                rateLimit: result.success?.rateLimit
-            )
-            queue.async { [weak self] in
-                block(response)
-                self?.group.leave()
-            }
-        }
-        return self
+        return registerResponseBlock(queue: queue, map: { $0.decode(type, decodar: decoder) }, response: block)
     }
 
     public func cancel() {

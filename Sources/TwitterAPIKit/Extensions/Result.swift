@@ -20,7 +20,7 @@ extension Result where Success == Data, Failure == TwitterAPIKitError {
 
     func decode<T: Decodable>(
         _ type: T.Type,
-        decodar: JSONDecoder = TwitterAPIKit.defaultJSONDecoder
+        decodar: JSONDecoder
     ) -> Result<T, Failure> {
         return flatMap { data in
             let result: Result<T, Error> = .init {
