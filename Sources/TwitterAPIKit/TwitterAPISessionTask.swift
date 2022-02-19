@@ -16,6 +16,14 @@ public protocol TwitterAPISessionDataTask {
     ) -> Self
 }
 
+extension TwitterAPISessionDataTask {
+    func specialized<NewSuccess>(_ transform: @escaping (Data) throws -> NewSuccess)
+        -> TwitterAPISessionSpecializedTask<NewSuccess>
+    {
+        return TwitterAPISessionSpecializedTask(task: self, transform: transform)
+    }
+}
+
 public protocol TwitterAPISessionJSONTask: TwitterAPISessionDataTask {
 
     @discardableResult
@@ -294,5 +302,50 @@ public class TwitterAPISessionDelegatedTask: TwitterAPISessionJSONTask {
 
     public func cancel() {
         task.cancel()
+    }
+}
+
+public struct TwitterAPISessionSpecializedTask<Success>: TwitterAPISessionDataTask {
+
+    public var taskIdentifier: Int {
+        return innerTask.taskIdentifier
+    }
+    public var currentRequest: URLRequest? {
+        return innerTask.currentRequest
+    }
+    public var originalRequest: URLRequest? {
+        return innerTask.originalRequest
+    }
+
+    private let innerTask: TwitterAPISessionDataTask
+    private let transform: (Data) throws -> Success
+    init(
+        task: TwitterAPISessionDataTask,
+        transform: @escaping (Data) throws -> Success
+    ) {
+        self.innerTask = task
+        self.transform = transform
+    }
+
+    public func responseObject(
+        queue: DispatchQueue,
+        _ block: @escaping (TwitterAPIResponse<Success>) -> Void
+    ) -> TwitterAPISessionSpecializedTask<Success> {
+        innerTask.responseData(queue: queue) { response in
+            let success = response.tryMap(transform)
+            block(success)
+        }
+        return self
+    }
+
+    public func responseData(
+        queue: DispatchQueue, _ block: @escaping (TwitterAPIResponse<Data>) -> Void
+    ) -> TwitterAPISessionSpecializedTask<Success> {
+        innerTask.responseData(queue: queue, block)
+        return self
+    }
+
+    public func cancel() {
+        innerTask.cancel()
     }
 }

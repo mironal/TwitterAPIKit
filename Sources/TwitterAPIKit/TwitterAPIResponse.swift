@@ -28,12 +28,29 @@ public struct TwitterAPIResponse<Success> {
 }
 
 extension TwitterAPIResponse {
+
     public func map<NewSuccess>(_ transform: (Success) -> NewSuccess) -> TwitterAPIResponse<NewSuccess> {
         return .init(
             request: request,
             response: response,
             data: data,
             result: result.map(transform),
+            rateLimit: rateLimit
+        )
+    }
+
+    public func tryMap<NewSuccess>(_ transform: (Success) throws -> NewSuccess) -> TwitterAPIResponse<NewSuccess> {
+        let nextResult: Result<NewSuccess, TwitterAPIKitError> = result.flatMap { data in
+            let r: Result<NewSuccess, Error> = .init {
+                return try transform(data)
+            }
+            return r.mapError { TwitterAPIKitError(error: $0) }
+        }
+        return .init(
+            request: request,
+            response: response,
+            data: data,
+            result: nextResult,
             rateLimit: rateLimit
         )
     }
