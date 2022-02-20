@@ -10,6 +10,11 @@ public protocol UserAPIv2 {
     func getUsers(
         _ request: GetUsersRequestV2
     ) -> TwitterAPISessionJSONTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/users/lookup/api-reference/get-users-by-username-username
+    func getUserByUsername(
+        _ request: GetUsersByUsernameRequestV2
+    ) -> TwitterAPISessionJSONTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV2: UserAPIv2 {
@@ -19,6 +24,10 @@ extension TwitterAPIKit.TwitterAPIImplV2: UserAPIv2 {
     }
 
     func getUsers(_ request: GetUsersRequestV2) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
+
+    func getUserByUsername(_ request: GetUsersByUsernameRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }
