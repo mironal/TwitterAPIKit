@@ -246,3 +246,33 @@ extension Set where Element == TwitterMediaFieldsV2 {
         param["media.fields"] = commaSeparatedString
     }
 }
+
+/// list.fields
+public enum TwitterListFieldsV2: TwitterAPIv2RequestParameter, Hashable {
+
+    case createdAt
+    case followerCount
+    case memberCount
+    case `private`
+    case description
+    case ownerID
+    case other(String)
+
+    public var stringValue: String {
+        switch self {
+        case .createdAt: return "created_at"
+        case .followerCount: return "follower_count"
+        case .memberCount: return "member_count"
+        case .private: return "private"
+        case .description: return "description"
+        case .ownerID: return "owner_id"
+        case .other(let string): return string
+        }
+    }
+}
+
+extension Set where Element == TwitterListFieldsV2 {
+    func bind(param: inout [String: Any]) {
+        param["list.fields"] = commaSeparatedString
+    }
+}

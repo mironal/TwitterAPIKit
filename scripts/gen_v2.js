@@ -98,6 +98,7 @@
                 "poll.fields": "Set<TwitterPollFieldsV2>",
                 "tweet.fields": "Set<TwitterTweetFieldsV2>",
                 "user.fields": "Set<TwitterUserFieldsV2>",
+                "list.fields": "Set<TwitterListFieldsV2>",
             }
 
             const typeToSwiftType = {
