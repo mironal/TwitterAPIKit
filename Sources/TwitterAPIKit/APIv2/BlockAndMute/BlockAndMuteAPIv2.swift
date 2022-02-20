@@ -16,6 +16,10 @@ public protocol BlockAndMuteAPIv2 {
     func unblockUser(
         _ request: DeleteUsersBlockingRequestV2
     ) -> TwitterAPISessionJSONTask
+
+    func getMuteUsers(
+        _ request: GetUsersMutingRequestV2
+    ) -> TwitterAPISessionJSONTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV2: BlockAndMuteAPIv2 {
@@ -29,6 +33,10 @@ extension TwitterAPIKit.TwitterAPIImplV2: BlockAndMuteAPIv2 {
     }
 
     func unblockUser(_ request: DeleteUsersBlockingRequestV2) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
+
+    func getMuteUsers(_ request: GetUsersMutingRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }
