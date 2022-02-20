@@ -32,11 +32,11 @@ extension TwitterAPIKit.TwitterAPIImplV2: TwitterAPIResourceV2 {
     var user: UserAPIv2 { return self }
 }
 
-public protocol TwitterAPIV2RequestParameter {
+public protocol TwitterAPIv2RequestParameter {
     var stringValue: String { get }
 }
 
-extension Set where Element: TwitterAPIV2RequestParameter {
+extension Set where Element: TwitterAPIv2RequestParameter {
     var commaSeparatedString: String {
         return map { $0.stringValue }.sorted().joined(separator: ",")
     }

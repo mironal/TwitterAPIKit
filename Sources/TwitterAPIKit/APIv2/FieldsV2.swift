@@ -3,7 +3,7 @@ import Foundation
 // https://developer.twitter.com/en/docs/twitter-api/fields
 
 /// tweet.fields
-public enum TwitterTweetFieldsV2: TwitterAPIV2RequestParameter, Hashable {
+public enum TwitterTweetFieldsV2: TwitterAPIv2RequestParameter, Hashable {
 
     case attachments
     case authorID
@@ -80,7 +80,7 @@ extension Set where Element == TwitterTweetFieldsV2 {
 }
 
 /// user.fields
-public enum TwitterUserFieldsV2: TwitterAPIV2RequestParameter, Hashable {
+public enum TwitterUserFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case createdAt
     case description
     case entities
@@ -137,7 +137,7 @@ extension Set where Element == TwitterUserFieldsV2 {
 }
 
 /// place.fields
-public enum TwitterPlaceFieldsV2: TwitterAPIV2RequestParameter, Hashable {
+public enum TwitterPlaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
 
     case containedWithin
     case country
@@ -177,7 +177,7 @@ extension Set where Element == TwitterPlaceFieldsV2 {
 }
 
 /// poll.fields
-public enum TwitterPollFieldsV2: TwitterAPIV2RequestParameter, Hashable {
+public enum TwitterPollFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case durationMinutes
     case endDatetime
     case id
@@ -207,7 +207,7 @@ extension Set where Element == TwitterPollFieldsV2 {
 }
 
 /// media.fields
-public enum TwitterMediaFieldsV2: TwitterAPIV2RequestParameter, Hashable {
+public enum TwitterMediaFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case durationMs
     case height
     case mediaKey

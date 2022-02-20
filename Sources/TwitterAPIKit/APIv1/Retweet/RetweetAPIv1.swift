@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol RetweetAPIV1 {
+public protocol RetweetAPIv1 {
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/post-statuses-retweet-id
     func postRetweet(
@@ -28,7 +28,7 @@ public protocol RetweetAPIV1 {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV1: RetweetAPIV1 {
+extension TwitterAPIKit.TwitterAPIImplV1: RetweetAPIv1 {
     public func postRetweet(
         _ request: PostRetweetRequestV1
     ) -> TwitterAPISessionJSONTask {
