@@ -3,13 +3,11 @@ import Foundation
 public protocol AuthAPIv1 {
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/request_token
-    @discardableResult
     func postOAuthRequestTokenData(
         _ request: PostOAuthRequestTokenRequestV1
     ) -> TwitterAPISessionDataTask
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/request_token
-    @discardableResult
     func postOAuthRequestToken(
         _ request: PostOAuthRequestTokenRequestV1
     ) -> TwitterAPISessionSpecializedTask<TwitterOAuthTokenV1>
@@ -21,31 +19,26 @@ public protocol AuthAPIv1 {
     func makeOAuthAuthenticateURL(_ request: GetOAuthAuthenticateRequestV1) -> URL?
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/access_token
-    @discardableResult
     func postOAuthAccessTokenData(
         _ request: PostOAuthAccessTokenRequestV1
     ) -> TwitterAPISessionDataTask
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/access_token
-    @discardableResult
     func postOAuthAccessToken(
         _ request: PostOAuthAccessTokenRequestV1
     ) -> TwitterAPISessionSpecializedTask<TwitterOAuthAccessTokenV1>
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/invalidate_access_token
-    @discardableResult
     func postInvalidateAccessToken(
         _ request: PostOAuthInvalidateTokenRequestV1
     ) -> TwitterAPISessionJSONTask
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/token
-    @discardableResult
     func postOAuth2BearerTokenData(
         _ request: PostOAuth2TokenRequestV1
     ) -> TwitterAPISessionDataTask
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/token
-    @discardableResult
     func postOAuth2BearerToken(
         _ request: PostOAuth2TokenRequestV1
     ) -> TwitterAPISessionSpecializedTask<TwitterOAuth2BearerToken>
@@ -55,7 +48,6 @@ public protocol AuthAPIv1 {
     ///May not work. {"errors":[{"code":348,"message":"Client application is not permitted to to invalidate this token."}]}
     /// https://twittercommunity.com/t/oauth2-invalidate-token-not-working-for-app-only-authentication-tokens/133108
     /// https://twittercommunity.com/t/invalidate-bearer-client-application-not-permitted/162761
-    @discardableResult
     func postInvalidateOAuth2BearerToken(
         _ request: PostOAuth2InvalidateTokenRequestV1
     ) -> TwitterAPISessionJSONTask

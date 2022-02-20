@@ -3,19 +3,16 @@ import Foundation
 public protocol MediaAPIv1 {
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/get-media-upload-status
-    @discardableResult
     func getUploadMediaStatus(
         _ request: GetUploadMediaStatusRequestV1
     ) -> TwitterAPISessionJSONTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload-init
-    @discardableResult
     func uploadMediaInit(
         _ request: UploadMediaInitRequestV1
     ) -> TwitterAPISessionJSONTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload-append
-    @discardableResult
     func uploadMediaAppend(
         _ request: UploadMediaAppendRequestV1
     ) -> TwitterAPISessionJSONTask
@@ -31,7 +28,6 @@ public protocol MediaAPIv1 {
     ) -> [TwitterAPISessionSpecializedTask<String /* mediaID */>]
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload-finalize
-    @discardableResult
     func uploadMediaFinalize(
         _ request: UploadMediaFinalizeRequestV1
     ) -> TwitterAPISessionJSONTask
@@ -69,14 +65,12 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
         return session.send(request)
     }
 
-    @discardableResult
     public func uploadMediaInit(
         _ request: UploadMediaInitRequestV1
     ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 
-    @discardableResult
     public func uploadMediaAppend(
         _ request: UploadMediaAppendRequestV1
     ) -> TwitterAPISessionJSONTask {
