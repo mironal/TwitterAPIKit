@@ -15,6 +15,11 @@ public protocol TweetAPIv2 {
     func deleteTweet(
         _ request: DeleteTweetRequestV2
     ) -> TwitterAPISessionJSONTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/tweets/manage-tweets/api-reference/post-tweets
+    func postTweet(
+        _ request: PostTweetsRequestV2
+    ) -> TwitterAPISessionJSONTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV2: TweetAPIv2 {
@@ -28,6 +33,10 @@ extension TwitterAPIKit.TwitterAPIImplV2: TweetAPIv2 {
     }
 
     func deleteTweet(_ request: DeleteTweetRequestV2) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
+
+    func postTweet(_ request: PostTweetsRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }
