@@ -10,6 +10,7 @@ public typealias TwitterAPIv2 =
     & TimelineAPIv2
     & TweetAPIv2
     & TweetCountAPIv2
+    & UserAPIv2
 
 public protocol TwitterAPIResourceV2 {
     var blockAndMute: BlockAndMuteAPIv2 { get }
@@ -18,6 +19,7 @@ public protocol TwitterAPIResourceV2 {
     var timeline: TimelineAPIv2 { get }
     var tweet: TweetAPIv2 { get }
     var tweetCount: TweetCountAPIv2 { get }
+    var user: UserAPIv2 { get }
 }
 
 extension TwitterAPIKit.TwitterAPIImplV2: TwitterAPIResourceV2 {
@@ -27,6 +29,7 @@ extension TwitterAPIKit.TwitterAPIImplV2: TwitterAPIResourceV2 {
     var timeline: TimelineAPIv2 { return self }
     var tweet: TweetAPIv2 { return self }
     var tweetCount: TweetCountAPIv2 { return self }
+    var user: UserAPIv2 { return self }
 }
 
 public protocol TwitterAPIV2RequestParameter {
