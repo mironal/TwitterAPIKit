@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol FriendshipsAPIV1 {
+public protocol FriendshipsAPIv1 {
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/api-reference/get-followers-ids
     func getFollowerIDs(
@@ -64,7 +64,7 @@ public protocol FriendshipsAPIV1 {
 
 }
 
-extension TwitterAPIKit.TwitterAPIImplV1: FriendshipsAPIV1 {
+extension TwitterAPIKit.TwitterAPIImplV1: FriendshipsAPIv1 {
 
     public func getFollowerIDs(
         _ request: GetFollowersIDsRequestV1

@@ -2,7 +2,7 @@ import Foundation
 
 // https://developer.twitter.com/en/docs/twitter-api/expansions
 
-public enum TwitterTweetExpansionsV2: TwitterAPIV2RequestParameter, Hashable {
+public enum TwitterTweetExpansionsV2: TwitterAPIv2RequestParameter, Hashable {
 
     case attachmentsPollIDs
     case attachmentsMediaKeys
@@ -35,7 +35,7 @@ extension Set where Element == TwitterTweetExpansionsV2 {
     }
 }
 
-public enum TwitterUserExpansionsV2: TwitterAPIV2RequestParameter, Hashable {
+public enum TwitterUserExpansionsV2: TwitterAPIv2RequestParameter, Hashable {
     case pinnedTweetID
 
     public var stringValue: String {
