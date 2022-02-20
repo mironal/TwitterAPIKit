@@ -52,6 +52,9 @@ public protocol ListAPIv2 {
         _ request: GetUsersListMembershipsRequestV2
     ) -> TwitterAPISessionJSONTask
 
+    func getListMembers(
+        _ request: GetListsMembersRequestV2
+    ) -> TwitterAPISessionJSONTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV2: ListAPIv2 {
@@ -93,6 +96,10 @@ extension TwitterAPIKit.TwitterAPIImplV2: ListAPIv2 {
     }
 
     func getListMemberships(_ request: GetUsersListMembershipsRequestV2) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
+
+    func getListMembers(_ request: GetListsMembersRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }
