@@ -17,6 +17,11 @@ public protocol ListAPIv2 {
         _ request: GetUsersOwnedListsRequestV2
     ) -> TwitterAPISessionJSONTask
 
+    /// https://developer.twitter.com/en/docs/twitter-api/lists/list-follows/api-reference/post-users-id-followed-lists
+    func followList(
+        _ request: PostUsersFollowedListsRequestV2
+    ) -> TwitterAPISessionJSONTask
+
     /// https://developer.twitter.com/en/docs/twitter-api/lists/list-follows/api-reference/delete-users-id-followed-lists-list_id
     func unfollowList(
         _ request: DeleteUsersFollowedListsRequestV2
@@ -34,6 +39,10 @@ extension TwitterAPIKit.TwitterAPIImplV2: ListAPIv2 {
     }
 
     func getLists(_ request: GetUsersOwnedListsRequestV2) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
+
+    func followList(_ request: PostUsersFollowedListsRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 
