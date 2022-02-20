@@ -37,15 +37,35 @@ extension Set where Element == TwitterTweetExpansionsV2 {
 
 public enum TwitterUserExpansionsV2: TwitterAPIv2RequestParameter, Hashable {
     case pinnedTweetID
+    case other(String)
 
     public var stringValue: String {
         switch self {
         case .pinnedTweetID: return "pinned_tweet_id"
+        case .other(let string): return string
         }
     }
 }
 
 extension Set where Element == TwitterUserExpansionsV2 {
+    func bind(param: inout [String: Any]) {
+        param["expansions"] = commaSeparatedString
+    }
+}
+
+public enum TwitterListExpansionsV2: TwitterAPIv2RequestParameter, Hashable {
+    case ownerID
+    case other(String)
+
+    public var stringValue: String {
+        switch self {
+        case .ownerID: return "owner_id"
+        case .other(let string): return string
+        }
+    }
+}
+
+extension Set where Element == TwitterListExpansionsV2 {
     func bind(param: inout [String: Any]) {
         param["expansions"] = commaSeparatedString
     }

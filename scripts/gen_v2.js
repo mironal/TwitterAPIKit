@@ -89,6 +89,8 @@
                     return "Set<TwitterTweetExpansionsV2>"
                 } else if (prop.type.includes("enum (pinned_tweet_id")) {
                     return "Set<TwitterUserExpansionsV2>"
+                } else if (prop.type.includes("enum (owner_id)")) {
+                    return "Set<TwitterListExpansionsV2>"
                 }
             }
 
