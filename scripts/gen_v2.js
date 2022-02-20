@@ -79,7 +79,8 @@
 
         function toType() {
 
-            if (prop.name === "ids" && prop.type === "string") {
+            if (prop.name === "ids" && prop.type === "string" ||
+                prop.rawName.endsWith("_ids") && prop.type === "array") {
                 return "[String]"
             }
 
@@ -99,19 +100,9 @@
                 "user.fields": "Set<TwitterUserFieldsV2>",
             }
 
-            // TODO: 
-            /*
-            {
-    "name": "exclude",
-    "rawName": "exclude",
-    "type": "enum (retweets, replies)",
-    "required": false,
-    "kind": "query"
-    }
-            */
-
             const typeToSwiftType = {
                 "integer": "Int",
+                "number": "Int",
                 "string": "String",
                 "date (ISO 8601)": "Date",
                 "boolean": "Bool"
@@ -174,9 +165,35 @@
     function swiftPropertyString(prop, allProps) {
         const type = prop.swiftType ?? "Unknown"
         const optional = prop.required ? "" : "?"
-        const properties = allProps.filter(p => p.parent && p.parent.name == prop.name).reduce((prev, current) => { return [...prev, swiftPropertyString(current, allProps)] }, []).join(", ")
-        const comment = properties.length === 0 ? "" : " // Has prop {" + properties + "}"
-        const string = `public let ${prop.name}: ${type}${optional}${comment}`
+        const properties = allProps.filter(p => p.parent && p.parent.name == prop.name)
+            .map(p => {
+                const name = p.name.replace(prop.name, "")
+                const replacedName = name.charAt(0).toLowerCase() + name.slice(1)
+                const replacedRawName = p.rawName.replace(prop.rawName + ".", "")
+                return { ...p, name: replacedName, rawName: replacedRawName }
+            })
+
+        const structName = properties.length > 0 ? prop.name.charAt(0).toUpperCase() + prop.name.slice(1) : undefined
+        const structStr = `
+        // The properties of ${prop.name} are such a struct. If enum is more suitable, please modify it.
+        public struct ${structName} {
+            ${properties.map(p => swiftPropertyString(p, allPathProps)).join("\n")}
+
+            func bind(param: inout [String: Any]) {
+                var p = [String: Any]()
+                
+                ${properties.map(p => { return `p["${p.rawName}"]` }).join("\n")}
+
+                param["${prop.rawName}"] = p
+            }
+        }`
+
+        let string = `public let ${prop.name}: ${structName || type}${optional}`
+        if (properties.length > 0) {
+            string = `${structStr}
+            ${string}
+            `
+        }
 
         return string
     }
