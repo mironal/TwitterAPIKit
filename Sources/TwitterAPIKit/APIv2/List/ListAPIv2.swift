@@ -31,6 +31,11 @@ public protocol ListAPIv2 {
     func listFollowers(
         _ request: GetListsFollowersRequestV2
     ) -> TwitterAPISessionJSONTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/lists/list-follows/api-reference/get-users-id-followed_lists
+    func followedLists(
+        _ request: GetUsersFollowedListsRequestV2
+    ) -> TwitterAPISessionJSONTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV2: ListAPIv2 {
@@ -56,6 +61,10 @@ extension TwitterAPIKit.TwitterAPIImplV2: ListAPIv2 {
     }
 
     func listFollowers(_ request: GetListsFollowersRequestV2) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
+
+    func followedLists(_ request: GetUsersFollowedListsRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }
