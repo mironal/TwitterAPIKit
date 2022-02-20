@@ -41,6 +41,11 @@ public protocol ListAPIv2 {
     func addListMember(
         _ request: PostListsMembersRequestV2
     ) -> TwitterAPISessionJSONTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/lists/list-members/api-reference/delete-lists-id-members-user_id
+    func removeListMember(
+        _ request: DeleteListsMembersRequestV2
+    ) -> TwitterAPISessionJSONTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV2: ListAPIv2 {
@@ -74,6 +79,10 @@ extension TwitterAPIKit.TwitterAPIImplV2: ListAPIv2 {
     }
 
     func addListMember(_ request: PostListsMembersRequestV2) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
+
+    func removeListMember(_ request: DeleteListsMembersRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }
