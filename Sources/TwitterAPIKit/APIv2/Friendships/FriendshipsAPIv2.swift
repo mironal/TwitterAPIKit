@@ -12,8 +12,13 @@ public protocol FriendshipsAPIv2 {
     ) -> TwitterAPISessionJSONTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/users/follows/api-reference/post-users-source_user_id-following
-    func postFollow(
+    func follow(
         _ request: PostUsersFollowingRequestV2
+    ) -> TwitterAPISessionJSONTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/users/follows/api-reference/delete-users-source_id-following
+    func unfollow(
+        _ request: DeleteUsersFollowingRequestV2
     ) -> TwitterAPISessionJSONTask
 }
 
@@ -27,7 +32,11 @@ extension TwitterAPIKit.TwitterAPIImplV2: FriendshipsAPIv2 {
         return session.send(request)
     }
 
-    func postFollow(_ request: PostUsersFollowingRequestV2) -> TwitterAPISessionJSONTask {
+    func follow(_ request: PostUsersFollowingRequestV2) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
+
+    func unfollow(_ request: DeleteUsersFollowingRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }
