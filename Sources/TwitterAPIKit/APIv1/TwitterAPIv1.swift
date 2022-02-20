@@ -17,8 +17,8 @@ public typealias TwitterAPIv1 =
     & SearchAPIv1
     & TimelineAPIv1
     & TrendAPIv1
-    & UserAPIv1
     & TweetAPIv1
+    & UserAPIv1
 
 public protocol TwitterAPIResourceV1 {
     var account: AccountAPIv1 { get }
@@ -37,8 +37,8 @@ public protocol TwitterAPIResourceV1 {
     var search: SearchAPIv1 { get }
     var timeline: TimelineAPIv1 { get }
     var trend: TrendAPIv1 { get }
-    var user: UserAPIv1 { get }
     var tweet: TweetAPIv1 { get }
+    var user: UserAPIv1 { get }
 
 }
 
@@ -59,6 +59,6 @@ extension TwitterAPIKit.TwitterAPIImplV1: TwitterAPIResourceV1 {
     var search: SearchAPIv1 { return self }
     var timeline: TimelineAPIv1 { return self }
     var trend: TrendAPIv1 { return self }
-    var user: UserAPIv1 { return self }
     var tweet: TweetAPIv1 { return self }
+    var user: UserAPIv1 { return self }
 }
