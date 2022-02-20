@@ -20,6 +20,11 @@ public protocol TweetAPIv2 {
     func postTweet(
         _ request: PostTweetsRequestV2
     ) -> TwitterAPISessionJSONTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/tweets/hide-replies/api-reference/put-tweets-id-hidden
+    func hideReply(
+        _ request: PutTweetsHiddenRequestV2
+    ) -> TwitterAPISessionJSONTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV2: TweetAPIv2 {
@@ -37,6 +42,10 @@ extension TwitterAPIKit.TwitterAPIImplV2: TweetAPIv2 {
     }
 
     func postTweet(_ request: PostTweetsRequestV2) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
+
+    func hideReply(_ request: PutTweetsHiddenRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }
