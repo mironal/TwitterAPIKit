@@ -26,6 +26,11 @@ public protocol SpacesAPIv2 {
     func getSPacesTweets(
         _ request: GetSpacesTweetsRequestV2
     ) -> TwitterAPISessionJSONTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/spaces/search/api-reference/get-spaces-search
+    func searchSpaces(
+        _ request: GetSpacesSearchRequestV2
+    ) -> TwitterAPISessionJSONTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV2: SpacesAPIv2 {
@@ -47,6 +52,10 @@ extension TwitterAPIKit.TwitterAPIImplV2: SpacesAPIv2 {
     }
 
     func getSPacesTweets(_ request: GetSpacesTweetsRequestV2) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
+
+    func searchSpaces(_ request: GetSpacesSearchRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }
