@@ -276,3 +276,79 @@ extension Set where Element == TwitterListFieldsV2 {
         param["list.fields"] = commaSeparatedString
     }
 }
+
+/// space.fields
+public enum TwitterSpaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
+
+    case hostIDs
+    case createdAt
+    case creatorID
+    case id
+    case lang
+    case invitedUserIDs
+    case participantCount
+    case speakerIDs
+    case startedAt
+    case endedAt
+    case subscriberCount
+    case topicIDs
+    case state
+    case title
+    case updatedAt
+    case scheduledStart
+    case isTicketed
+    case other(String)
+
+    public var stringValue: String {
+        switch self {
+        case .hostIDs: return "host_ids"
+        case .createdAt: return "created_at"
+        case .creatorID: return "creator_id"
+        case .id: return "id"
+        case .lang: return "lang"
+        case .invitedUserIDs: return "invited_user_ids"
+        case .participantCount: return "participant_count"
+        case .speakerIDs: return "speaker_ids"
+        case .startedAt: return "started_at"
+        case .endedAt: return "ended_at"
+        case .subscriberCount: return "subscriber_count"
+        case .topicIDs: return "topic_ids"
+        case .state: return "state"
+        case .title: return "title"
+        case .updatedAt: return "updated_at"
+        case .scheduledStart: return "scheduled_start"
+        case .isTicketed: return "is_ticketed"
+        case .other(let string): return string
+        }
+    }
+}
+
+extension Set where Element == TwitterSpaceFieldsV2 {
+    func bind(param: inout [String: Any]) {
+        param["space.fields"] = commaSeparatedString
+    }
+}
+
+/// topic.fields
+public enum TwitterTopicFieldsV2: TwitterAPIv2RequestParameter, Hashable {
+
+    case id
+    case name
+    case description
+    case other(String)
+
+    public var stringValue: String {
+        switch self {
+        case .id: return "id"
+        case .name: return "name"
+        case .description: return "description"
+        case .other(let string): return string
+        }
+    }
+}
+
+extension Set where Element == TwitterTopicFieldsV2 {
+    func bind(param: inout [String: Any]) {
+        param["topic.fields"] = commaSeparatedString
+    }
+}

@@ -2,7 +2,15 @@ import Foundation
 
 // https://developer.twitter.com/en/docs/twitter-api/expansions
 
-public enum TwitterTweetExpansionsV2: TwitterAPIv2RequestParameter, Hashable {
+protocol TwitterExpansionsParameterV2: TwitterAPIv2RequestParameter {}
+
+extension Set where Element: TwitterExpansionsParameterV2 {
+    func bind(param: inout [String: Any]) {
+        param["expansions"] = commaSeparatedString
+    }
+}
+
+public enum TwitterTweetExpansionsV2: TwitterExpansionsParameterV2, Hashable {
 
     case attachmentsPollIDs
     case attachmentsMediaKeys
@@ -29,13 +37,7 @@ public enum TwitterTweetExpansionsV2: TwitterAPIv2RequestParameter, Hashable {
     }
 }
 
-extension Set where Element == TwitterTweetExpansionsV2 {
-    func bind(param: inout [String: Any]) {
-        param["expansions"] = commaSeparatedString
-    }
-}
-
-public enum TwitterUserExpansionsV2: TwitterAPIv2RequestParameter, Hashable {
+public enum TwitterUserExpansionsV2: TwitterExpansionsParameterV2, Hashable {
     case pinnedTweetID
     case other(String)
 
@@ -47,13 +49,7 @@ public enum TwitterUserExpansionsV2: TwitterAPIv2RequestParameter, Hashable {
     }
 }
 
-extension Set where Element == TwitterUserExpansionsV2 {
-    func bind(param: inout [String: Any]) {
-        param["expansions"] = commaSeparatedString
-    }
-}
-
-public enum TwitterListExpansionsV2: TwitterAPIv2RequestParameter, Hashable {
+public enum TwitterListExpansionsV2: TwitterExpansionsParameterV2, Hashable {
     case ownerID
     case other(String)
 
@@ -65,8 +61,21 @@ public enum TwitterListExpansionsV2: TwitterAPIv2RequestParameter, Hashable {
     }
 }
 
-extension Set where Element == TwitterListExpansionsV2 {
-    func bind(param: inout [String: Any]) {
-        param["expansions"] = commaSeparatedString
+public enum TwitterSpaceExpansionsV2: TwitterExpansionsParameterV2, Hashable {
+
+    case invitedUserIDs
+    case speakerIDs
+    case creatorID
+    case hostIDs
+    case other(String)
+
+    public var stringValue: String {
+        switch self {
+        case .invitedUserIDs: return "invited_user_ids"
+        case .speakerIDs: return "speaker_ids"
+        case .creatorID: return "creator_id"
+        case .hostIDs: return "host_ids"
+        case .other(let string): return string
+        }
     }
 }

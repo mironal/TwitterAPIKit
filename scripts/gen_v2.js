@@ -79,8 +79,9 @@
 
         function toType() {
 
-            if (prop.name === "ids" && prop.type === "string" ||
-                prop.rawName.endsWith("_ids") && prop.type === "array") {
+            if (prop.name === "ids" && prop.type === "string"
+                || prop.rawName.endsWith("_ids") && prop.type === "string"
+                ||prop.rawName.endsWith("_ids") && prop.type === "array") {
                 return "[String]"
             }
 
@@ -91,6 +92,8 @@
                     return "Set<TwitterUserExpansionsV2>"
                 } else if (prop.type.includes("enum (owner_id)")) {
                     return "Set<TwitterListExpansionsV2>"
+                } else if (prop.type.includes("enum (invited_user_ids, speaker_ids, creator_id, host_ids)")) {
+                    return "Set<TwitterSpaceExpansionsV2>"
                 }
             }
 
@@ -101,6 +104,8 @@
                 "tweet.fields": "Set<TwitterTweetFieldsV2>",
                 "user.fields": "Set<TwitterUserFieldsV2>",
                 "list.fields": "Set<TwitterListFieldsV2>",
+                "space.fields": "Set<TwitterSpaceFieldsV2>",
+                "topic.fields": "Set<TwitterTopicFieldsV2>"
             }
 
             const typeToSwiftType = {
