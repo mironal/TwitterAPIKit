@@ -257,7 +257,7 @@ Task {
 ## TODO
 
 - [ ] Support API v1 endpoint : 80% completed (Commonly used APIs are 100% supported.)
-- [ ] Support API v2 endpoint: 15% completed
+- [ ] Support API v2 endpoint: 70% completed
 - [x] Swift Concurrency (Experimental)
 - [ ] Document
 
