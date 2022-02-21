@@ -66,6 +66,11 @@ public protocol ListAPIv2 {
     func updateList(
         _ request: PutListRequestV2
     ) -> TwitterAPISessionJSONTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/lists/manage-lists/api-reference/delete-lists-id
+    func deleteList(
+        _ request: DeleteListRequestV2
+    ) -> TwitterAPISessionJSONTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV2: ListAPIv2 {
@@ -119,6 +124,10 @@ extension TwitterAPIKit.TwitterAPIImplV2: ListAPIv2 {
     }
 
     func updateList(_ request: PutListRequestV2) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
+
+    func deleteList(_ request: DeleteListRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }
