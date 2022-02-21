@@ -71,6 +71,11 @@ public protocol ListAPIv2 {
     func deleteList(
         _ request: DeleteListRequestV2
     ) -> TwitterAPISessionJSONTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/lists/pinned-lists/api-reference/post-users-id-pinned-lists
+    func pinList(
+        _ request: PostUsersPinnedListsRequestV2
+    ) -> TwitterAPISessionJSONTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV2: ListAPIv2 {
@@ -128,6 +133,10 @@ extension TwitterAPIKit.TwitterAPIImplV2: ListAPIv2 {
     }
 
     func deleteList(_ request: DeleteListRequestV2) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
+
+    func pinList(_ request: PostUsersPinnedListsRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }
