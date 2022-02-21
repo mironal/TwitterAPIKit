@@ -1,11 +1,19 @@
 # TwitterAPIKit
 
+Swift library for the Twitter API v1 and v2 (Work in progress).
+
 [![Standard](https://img.shields.io/endpoint?url=https%3A%2F%2Ftwbadges.glitch.me%2Fbadges%2Fstandard)](https://developer.twitter.com/en/docs/twitter-api)
 [![v2](https://img.shields.io/endpoint?url=https%3A%2F%2Ftwbadges.glitch.me%2Fbadges%2Fv2)](https://developer.twitter.com/en/docs/twitter-api)
 
-Swift library for the Twitter API v1 and v2 (Work in progress).
+
+
+Please see this issue for the progress of the API implementation.
+
+- [API v1](https://github.com/mironal/TwitterAPIKit/issues/5)
+- [API v2](https://github.com/mironal/TwitterAPIKit/issues/6)
 
 ---
+## Motivation
 
 Unfortunately, I couldn't find any active Twitter API library for Swift at the moment.
 
