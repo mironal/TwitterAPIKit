@@ -7,6 +7,7 @@ public typealias TwitterAPIv2 =
     & BlockAndMuteAPIv2
     & FriendshipsAPIv2
     & LikeAPIv2
+    & ListAPIv2
     & RetweetAPIv2
     & TimelineAPIv2
     & TweetAPIv2
@@ -17,6 +18,7 @@ public protocol TwitterAPIResourceV2 {
     var blockAndMute: BlockAndMuteAPIv2 { get }
     var friendships: FriendshipsAPIv2 { get }
     var like: LikeAPIv2 { get }
+    var list: ListAPIv2 { get }
     var retweet: RetweetAPIv2 { get }
     var timeline: TimelineAPIv2 { get }
     var tweet: TweetAPIv2 { get }
@@ -28,6 +30,7 @@ extension TwitterAPIKit.TwitterAPIImplV2: TwitterAPIResourceV2 {
     var blockAndMute: BlockAndMuteAPIv2 { return self }
     var friendships: FriendshipsAPIv2 { return self }
     var like: LikeAPIv2 { return self }
+    var list: ListAPIv2 { return self }
     var retweet: RetweetAPIv2 { return self }
     var timeline: TimelineAPIv2 { return self }
     var tweet: TweetAPIv2 { return self }
