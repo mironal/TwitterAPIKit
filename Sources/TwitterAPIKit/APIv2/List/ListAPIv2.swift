@@ -57,8 +57,14 @@ public protocol ListAPIv2 {
         _ request: GetListsMembersRequestV2
     ) -> TwitterAPISessionJSONTask
 
+    /// https://developer.twitter.com/en/docs/twitter-api/lists/manage-lists/api-reference/post-lists
     func createList(
         _ request: PostListsRequestV2
+    ) -> TwitterAPISessionJSONTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/lists/manage-lists/api-reference/put-lists-id
+    func updateList(
+        _ request: PutListRequestV2
     ) -> TwitterAPISessionJSONTask
 }
 
@@ -109,6 +115,10 @@ extension TwitterAPIKit.TwitterAPIImplV2: ListAPIv2 {
     }
 
     func createList(_ request: PostListsRequestV2) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
+
+    func updateList(_ request: PutListRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }
