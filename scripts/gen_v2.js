@@ -79,8 +79,9 @@
 
         function toType() {
 
-            if (prop.name === "ids" && prop.type === "string" ||
-                prop.rawName.endsWith("_ids") && prop.type === "array") {
+            if (prop.name === "ids" && prop.type === "string"
+                || prop.rawName.endsWith("_ids") && prop.type === "string"
+                ||prop.rawName.endsWith("_ids") && prop.type === "array") {
                 return "[String]"
             }
 
