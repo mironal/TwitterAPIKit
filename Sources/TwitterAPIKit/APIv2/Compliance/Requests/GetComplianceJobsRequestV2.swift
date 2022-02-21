@@ -2,13 +2,6 @@ import Foundation
 
 /// https://developer.twitter.com/en/docs/twitter-api/compliance/batch-compliance/api-reference/get-compliance-jobs
 open class GetComplianceJobsRequestV2: TwitterAPIRequest {
-    public enum JobType: String {
-        case tweets
-        case users
-        func bind(param: inout [String: Any]) {
-            param["type"] = rawValue
-        }
-    }
 
     public enum Status: String {
         case created
@@ -20,7 +13,7 @@ open class GetComplianceJobsRequestV2: TwitterAPIRequest {
         }
     }
 
-    public let type: JobType
+    public let type: TwitterComplianceJobTypeV2
     public let status: Status?
 
     public var method: HTTPMethod {
@@ -39,7 +32,7 @@ open class GetComplianceJobsRequestV2: TwitterAPIRequest {
     }
 
     public init(
-        type: JobType,
+        type: TwitterComplianceJobTypeV2,
         status: Status? = .none
     ) {
         self.type = type
