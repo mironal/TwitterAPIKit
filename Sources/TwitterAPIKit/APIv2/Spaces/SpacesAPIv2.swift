@@ -16,6 +16,11 @@ public protocol SpacesAPIv2 {
     func getSpacesByCreators(
         _ request: GetSpacesByCreatorIDsRequestV2
     ) -> TwitterAPISessionJSONTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/spaces/lookup/api-reference/get-spaces-id-buyers
+    func getSpacesBuyers(
+        _ request: GetSpacesBuyersRequestV2
+    ) -> TwitterAPISessionJSONTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV2: SpacesAPIv2 {
@@ -29,6 +34,10 @@ extension TwitterAPIKit.TwitterAPIImplV2: SpacesAPIv2 {
     }
 
     func getSpacesByCreators(_ request: GetSpacesByCreatorIDsRequestV2) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
+
+    func getSpacesBuyers(_ request: GetSpacesBuyersRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }
