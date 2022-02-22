@@ -14,7 +14,7 @@ public enum TwitterAPIKitError: Error {
     case responseFailed(reason: ResponseFailureReason)
     public enum ResponseFailureReason {
         case invalidResponse(error: Error?)
-        case unacceptableStatusCode(statusCode: Int, error: TwitterAPIErrorResponse)
+        case unacceptableStatusCode(statusCode: Int, error: TwitterAPIErrorResponse, rateLimit: TwitterRateLimit)
     }
 
     case responseSerializeFailed(reason: ResponseSerializationFailureReason)
@@ -94,7 +94,7 @@ extension TwitterAPIKitError.ResponseFailureReason {
                 return "Response is invalid: \(error.localizedDescription)"
             }
             return "Response is invalid"
-        case let .unacceptableStatusCode(statusCode, error: error):
+        case let .unacceptableStatusCode(statusCode, error: error, rateLimit: _):
             return "Response status code was unacceptable: \(statusCode) with message: \(error.message)."
         }
     }
