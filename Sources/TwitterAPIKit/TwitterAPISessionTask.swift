@@ -242,7 +242,8 @@ public class TwitterAPISessionDelegatedTask: TwitterAPISessionJSONTask {
                 .responseFailed(
                     reason: .unacceptableStatusCode(
                         statusCode: httpResponse.statusCode,
-                        error: TwitterAPIErrorResponse(data: data)
+                        error: TwitterAPIErrorResponse(data: data),
+                        rateLimit: rateLimit
                     )
                 )
             )
