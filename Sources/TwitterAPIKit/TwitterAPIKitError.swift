@@ -40,6 +40,33 @@ public enum TwitterAPIKitError: Error {
 }
 
 extension TwitterAPIKitError {
+    public var isRequestFailed: Bool {
+        if case .requestFailed = self { return true }
+        return false
+    }
+
+    public var isResponseFailed: Bool {
+        if case .responseFailed = self { return true }
+        return false
+    }
+
+    public var isResponseSerializeFailed: Bool {
+        if case .responseSerializeFailed = self { return true }
+        return false
+    }
+
+    public var isUploadMediaFailed: Bool {
+        if case .uploadMediaFailed = self { return true }
+        return false
+    }
+
+    public var isUnkonwn: Bool {
+        if case .unkonwn = self { return true }
+        return false
+    }
+}
+
+extension TwitterAPIKitError {
     public struct UploadMediaError: Decodable, Error {
         public let code: Int
         public let name: String
