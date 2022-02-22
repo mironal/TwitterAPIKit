@@ -64,6 +64,21 @@ extension TwitterAPIKitError {
         if case .unkonwn = self { return true }
         return false
     }
+
+    public var underlyingError: Error? {
+        switch self {
+        case .requestFailed(let reason):
+            return reason.underlyingError
+        case .responseFailed(let reason):
+            return reason.underlyingError
+        case .responseSerializeFailed(let reason):
+            return reason.underlyingError
+        case .uploadMediaFailed(let reason):
+            return reason.underlyingError
+        case .unkonwn(let error):
+            return error
+        }
+    }
 }
 
 extension TwitterAPIKitError {
@@ -111,6 +126,17 @@ extension TwitterAPIKitError.RequestFailureReason {
             return "JSON could not be serialized because of error:\n\(error.localizedDescription)"
         }
     }
+
+    public var underlyingError: Error? {
+        switch self {
+        case .invalidURL,
+            .invalidParameter,
+            .cannotEncodeStringToData:
+            return nil
+        case .jsonSerializationFailed(let error):
+            return error
+        }
+    }
 }
 
 extension TwitterAPIKitError.ResponseFailureReason {
@@ -123,6 +149,15 @@ extension TwitterAPIKitError.ResponseFailureReason {
             return "Response is invalid"
         case let .unacceptableStatusCode(statusCode, error: error, rateLimit: _):
             return "Response status code was unacceptable: \(statusCode) with message: \(error.message)."
+        }
+    }
+
+    public var underlyingError: Error? {
+        switch self {
+        case let .invalidResponse(error: error):
+            return error
+        case .unacceptableStatusCode(statusCode: _, error: _, rateLimit: _):
+            return nil
         }
     }
 }
@@ -138,6 +173,16 @@ extension TwitterAPIKitError.ResponseSerializationFailureReason {
             return "Response could not convert to \"\(toTypeName)\""
         }
     }
+
+    public var underlyingError: Error? {
+        switch self {
+        case let .jsonSerializationFailed(error: error),
+            let .jsonDecodeFailed(error: error):
+            return error
+        case .cannotConvert:
+            return nil
+        }
+    }
 }
 
 extension TwitterAPIKitError.UploadMediaFailureReason {
@@ -145,6 +190,13 @@ extension TwitterAPIKitError.UploadMediaFailureReason {
         switch self {
         case .processingFailed(let error):
             return error.message
+        }
+    }
+
+    public var underlyingError: Error? {
+        switch self {
+        case let .processingFailed(error: error):
+            return error
         }
     }
 }
