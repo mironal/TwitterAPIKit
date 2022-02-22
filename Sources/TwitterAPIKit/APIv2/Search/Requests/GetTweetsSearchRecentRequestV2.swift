@@ -3,7 +3,7 @@ import Foundation
 /// https://developer.twitter.com/en/docs/twitter-api/tweets/search/api-reference/get-tweets-search-recent
 open class GetTweetsSearchRecentRequestV2: TwitterAPIRequest {
 
-    public enum SortOrder: String {
+    public enum TwitterSearchTweetsSortOrderV2: String {
         case recency
         case relevancy
 
@@ -21,7 +21,7 @@ open class GetTweetsSearchRecentRequestV2: TwitterAPIRequest {
     public let placeFields: Set<TwitterPlaceFieldsV2>?
     public let pollFields: Set<TwitterPollFieldsV2>?
     public let sinceID: String?
-    public let sortOrder: SortOrder?
+    public let sortOrder: TwitterSearchTweetsSortOrderV2?
     public let startTime: Date?
     public let tweetFields: Set<TwitterTweetFieldsV2>?
     public let untilID: String?
@@ -64,7 +64,7 @@ open class GetTweetsSearchRecentRequestV2: TwitterAPIRequest {
         placeFields: Set<TwitterPlaceFieldsV2>? = .none,
         pollFields: Set<TwitterPollFieldsV2>? = .none,
         sinceID: String? = .none,
-        sortOrder: SortOrder? = .none,
+        sortOrder: TwitterSearchTweetsSortOrderV2? = .none,
         startTime: Date? = .none,
         tweetFields: Set<TwitterTweetFieldsV2>? = .none,
         untilID: String? = .none,
