@@ -10,7 +10,7 @@ public protocol DirectMessageAPIv1 {
     /// https://developer.twitter.com/en/docs/twitter-api/v1/direct-messages/sending-and-receiving/api-reference/delete-message-event
     func deleteDirectMessage(
         _ request: DeleteDirectMessageRequestV1
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionDataTask  // 204 - No Content
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/direct-messages/sending-and-receiving/api-reference/get-event
     func getDirectMessage(
@@ -33,7 +33,7 @@ extension TwitterAPIKit.TwitterAPIImplV1: DirectMessageAPIv1 {
 
     public func deleteDirectMessage(
         _ request: DeleteDirectMessageRequestV1
-    ) -> TwitterAPISessionJSONTask {
+    ) -> TwitterAPISessionDataTask {
         return session.send(request)
     }
 

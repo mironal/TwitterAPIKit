@@ -160,6 +160,22 @@ extension TwitterAPIKitError.ResponseFailureReason {
             return nil
         }
     }
+
+    /// A status code in the case of unacceptableStatusCode.
+    public var statusCode: Int? {
+        if case .unacceptableStatusCode(statusCode: let statusCode, error: _, rateLimit: _) = self {
+            return statusCode
+        }
+        return nil
+    }
+
+    /// A rate limit in the case of unacceptableStatusCode.
+    public var rateLimit: TwitterRateLimit? {
+        if case .unacceptableStatusCode(statusCode: _, error: _, rateLimit: let rateLimit) = self {
+            return rateLimit
+        }
+        return nil
+    }
 }
 
 extension TwitterAPIKitError.ResponseSerializationFailureReason {
