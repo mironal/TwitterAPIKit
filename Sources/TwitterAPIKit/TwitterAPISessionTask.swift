@@ -360,7 +360,7 @@ public struct TwitterAPISessionSpecializedTask<Success>: TwitterAPISessionSpecia
 
     @discardableResult
     public func responseData(
-        queue: DispatchQueue = .main,
+        queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<Data>) -> Void
     ) -> TwitterAPISessionSpecializedTask<Success> {
         innerTask.responseData(queue: queue, block)
