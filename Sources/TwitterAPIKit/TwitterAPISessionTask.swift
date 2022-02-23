@@ -17,6 +17,15 @@ public protocol TwitterAPISessionDataTask {
 }
 
 extension TwitterAPISessionDataTask {
+    @discardableResult
+    public func responseData(
+        _ block: @escaping (TwitterAPIResponse<Data>) -> Void
+    ) -> Self {
+        return responseData(queue: .main, block)
+    }
+}
+
+extension TwitterAPISessionDataTask {
     func specialized<NewSuccess>(_ transform: @escaping (Data) throws -> NewSuccess)
         -> TwitterAPISessionSpecializedTask<NewSuccess>
     {
@@ -351,7 +360,7 @@ public struct TwitterAPISessionSpecializedTask<Success>: TwitterAPISessionSpecia
 
     @discardableResult
     public func responseData(
-        queue: DispatchQueue = .main,
+        queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<Data>) -> Void
     ) -> TwitterAPISessionSpecializedTask<Success> {
         innerTask.responseData(queue: queue, block)
