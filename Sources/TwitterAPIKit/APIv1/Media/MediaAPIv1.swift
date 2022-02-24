@@ -59,6 +59,10 @@ public protocol MediaAPIv1 {
     func createMediaMetadata(
         _ request: PostMediaMetadataCreateRequestV1
     ) -> TwitterAPISessionDataTask
+
+    func createSubtitle(
+        _ request: PostMediaSubtitlesCreateRequestV1
+    ) -> TwitterAPISessionDataTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
@@ -255,6 +259,10 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
     }
 
     func createMediaMetadata(_ request: PostMediaMetadataCreateRequestV1) -> TwitterAPISessionDataTask {
+        return session.send(request)
+    }
+
+    func createSubtitle(_ request: PostMediaSubtitlesCreateRequestV1) -> TwitterAPISessionDataTask {
         return session.send(request)
     }
 }
