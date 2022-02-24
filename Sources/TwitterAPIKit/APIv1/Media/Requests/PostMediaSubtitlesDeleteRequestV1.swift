@@ -1,5 +1,6 @@
 import Foundation
 
+/// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-subtitles-delete
 open class PostMediaSubtitlesDeleteRequestV1: TwitterAPIRequest {
 
     public let mediaID: String

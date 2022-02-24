@@ -56,14 +56,17 @@ public protocol MediaAPIv1 {
         ) -> Void
     )
 
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-metadata-create
     func createMediaMetadata(
         _ request: PostMediaMetadataCreateRequestV1
     ) -> TwitterAPISessionDataTask
 
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-subtitles-create
     func createSubtitle(
         _ request: PostMediaSubtitlesCreateRequestV1
     ) -> TwitterAPISessionDataTask
 
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-subtitles-delete
     func deleteSubtitle(
         _ request: PostMediaSubtitlesDeleteRequestV1
     ) -> TwitterAPISessionDataTask
