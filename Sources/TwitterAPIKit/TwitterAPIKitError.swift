@@ -148,7 +148,7 @@ extension TwitterAPIKitError.ResponseFailureReason {
             }
             return "Response is invalid"
         case let .unacceptableStatusCode(statusCode, error: error, rateLimit: _):
-            return "Response status code was unacceptable: \(statusCode) with message: \(error.message)."
+            return "Response status code was unacceptable: \(statusCode) with message: \(error.message)"
         }
     }
 
@@ -232,55 +232,5 @@ extension TwitterAPIKitError {
     public var responseSerializationFailureReason: ResponseSerializationFailureReason? {
         guard case .responseSerializeFailed(let reason) = self else { return nil }
         return reason
-    }
-}
-
-/// https://developer.twitter.com/ja/docs/basics/response-codes
-public struct TwitterAPIErrorResponse {
-
-    public let message: String
-    public let code: Int
-    public let errors: [TwitterAPIErrorResponse]
-
-    public init(message: String, code: Int, errors: [TwitterAPIErrorResponse]) {
-        self.message = message
-        self.code = code
-        self.errors = errors
-    }
-
-    /// {"errors":[{"message":"Sorry, that page does not exist","code":34}]}
-    public init(data: Data) {
-        guard let obj = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-            let errors = obj["errors"] as? [[String: Any]]
-        else {
-            self.message = String(data: data, encoding: .utf8) ?? "Unknown"
-            self.code = 0
-            self.errors = []
-            return
-        }
-
-        let tErrors: [TwitterAPIErrorResponse] = errors.compactMap { error in
-            guard let message = error["message"] as? String, let code = error["code"] as? Int else { return nil }
-            return TwitterAPIErrorResponse(message: message, code: code, errors: [])
-        }
-
-        guard !tErrors.isEmpty else {
-            self.message = String(data: data, encoding: .utf8) ?? "Unknown"
-            self.code = 0
-            self.errors = []
-            return
-        }
-
-        self.message = tErrors[0].message
-        self.code = tErrors[0].code
-        self.errors = tErrors
-    }
-
-    var isValid: Bool {
-        return !errors.isEmpty
-    }
-
-    public func contains(code: Int) -> Bool {
-        return errors.contains(where: { $0.code == code })
     }
 }

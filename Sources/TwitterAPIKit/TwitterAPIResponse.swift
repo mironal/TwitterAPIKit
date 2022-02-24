@@ -91,7 +91,7 @@ extension TwitterAPIResponse {
         case .failure(let error):
             return "Failure => \(error.localizedDescription)"
                 + "\n\(rateLimitStr)"
-                + "\n\(body)"
+                + "\n\(body.unescapeSlash)"
         case .success:
             let url = response?.url?.absoluteString ?? "NULL URL"
             return "Success => \(url)\n\(rateLimitStr)\n\(body.unescapeSlash)"
