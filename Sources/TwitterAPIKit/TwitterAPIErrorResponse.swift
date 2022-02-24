@@ -32,6 +32,13 @@ extension TwitterAPIErrorResponse {
             return String(data: data, encoding: .utf8) ?? "Unknown"
         }
     }
+
+    public var code: Int? {
+        if case .v1(let v1) = self {
+            return v1.code
+        }
+        return nil
+    }
 }
 
 /// https://developer.twitter.com/ja/docs/basics/response-codes
