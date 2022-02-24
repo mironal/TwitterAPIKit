@@ -63,6 +63,10 @@ public protocol MediaAPIv1 {
     func createSubtitle(
         _ request: PostMediaSubtitlesCreateRequestV1
     ) -> TwitterAPISessionDataTask
+
+    func deleteSubtitle(
+        _ request: PostMediaSubtitlesDeleteRequestV1
+    ) -> TwitterAPISessionDataTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
@@ -263,6 +267,10 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
     }
 
     func createSubtitle(_ request: PostMediaSubtitlesCreateRequestV1) -> TwitterAPISessionDataTask {
+        return session.send(request)
+    }
+
+    func deleteSubtitle(_ request: PostMediaSubtitlesDeleteRequestV1) -> TwitterAPISessionDataTask {
         return session.send(request)
     }
 }
