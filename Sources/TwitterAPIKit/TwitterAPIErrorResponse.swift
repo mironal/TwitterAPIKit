@@ -22,7 +22,7 @@ public enum TwitterAPIErrorResponse {
 }
 
 extension TwitterAPIErrorResponse {
-    var message: String {
+    public var message: String {
         switch self {
         case .v1(let twitterAPIErrorResponseV1):
             return twitterAPIErrorResponseV1.message
@@ -31,6 +31,13 @@ extension TwitterAPIErrorResponse {
         case .unknown(let data):
             return String(data: data, encoding: .utf8) ?? "Unknown"
         }
+    }
+
+    public var code: Int? {
+        if case .v1(let v1) = self {
+            return v1.code
+        }
+        return nil
     }
 }
 
