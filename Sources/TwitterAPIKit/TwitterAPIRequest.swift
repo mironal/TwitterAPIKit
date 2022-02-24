@@ -22,7 +22,7 @@ public enum BodyContentType: String {
     /// In this case use MultipartFormDataPart as a parameter
     /// example: UploadMediaAppendRequestV1.swift
     case multipartFormData = "multipart/form-data"
-    case json = "application/json"
+    case json = "application/json; charset=UTF-8"
 }
 
 public enum MultipartFormDataPart {
