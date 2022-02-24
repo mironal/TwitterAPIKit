@@ -61,6 +61,12 @@ let client.v1.directMessage.someDM_APIs()
 
 ## Example
 
+### Projects
+
+- https://github.com/mironal/TwitterAPIKit-iOS-sample
+
+### Basic
+
 ```swift
     let consumerKey = ""
     let consumerSecret = ""
