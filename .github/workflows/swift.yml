@@ -19,9 +19,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-spm-
       - name: LS
+        run: ls -la BuildTools
+      - name: LS build
         run: ls -la BuildTools/.build
       - name: Lint
-        run: swift run -c release --package-path BuildTools swift-format lint -p --strict --recursive ./Sources ./Tests ./scripts
+        run: swift run -c release --skip-build --package-path BuildTools swift-format lint -p --strict --recursive ./Sources ./Tests ./scripts
       - name: Build
         run: swift build -v
       - name: Run tests
