@@ -25,7 +25,12 @@ public protocol DirectMessageAPIv1 {
     /// https://developer.twitter.com/en/docs/twitter-api/v1/direct-messages/typing-indicator-and-read-receipts/api-reference/new-read-receipt
     func postDirectMessageMarkRead(
         _ request: PostDirectMessagesMarkReadRequestV1
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionDataTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/direct-messages/typing-indicator-and-read-receipts/api-reference/new-typing-indicator
+    func postDirectMessageTypingIndicator(
+        _ request: PostDirectMessagesIndicateTypingRequestV1
+    ) -> TwitterAPISessionDataTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV1: DirectMessageAPIv1 {
@@ -56,7 +61,13 @@ extension TwitterAPIKit.TwitterAPIImplV1: DirectMessageAPIv1 {
 
     func postDirectMessageMarkRead(
         _ request: PostDirectMessagesMarkReadRequestV1
-    ) -> TwitterAPISessionJSONTask {
+    ) -> TwitterAPISessionDataTask {
+        return session.send(request)
+    }
+
+    func postDirectMessageTypingIndicator(
+        _ request: PostDirectMessagesIndicateTypingRequestV1
+    ) -> TwitterAPISessionDataTask {
         return session.send(request)
     }
 }
