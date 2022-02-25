@@ -85,16 +85,41 @@ extension TwitterAPIResponse {
                 }
             } ?? "No data"
 
-        let rateLimitStr = rateLimit.map { String(describing: $0) } ?? "No rate limit"
+        let contentType = "> Content-Type: \(request?.allHTTPHeaderFields?["Content-Type"] ?? "No Content-Type")"
+        let contentLength =
+            "> Content-Length: \(request?.allHTTPHeaderFields?["Content-Length"] ?? "No Content-Length")"
+        let request = "> \(request?.httpMethod?.uppercased() ?? "Unnown Method"): \(request?.url?.description ?? "")"
+        let statusCode = "< Status code: \(response?.statusCode ?? 0)"
+        let rateLimitStr = "< \(rateLimit.map { String(describing: $0) } ?? "No rate limit")"
+
+        let responseContentType = "< Content-Type: \(response?.allHeaderFields["Content-Type"] ?? "No Content-Type")"
+        let responseContentLength =
+            "< Content-Length: \(response?.allHeaderFields["Content-Length"] ?? "No Content-Length")"
 
         switch self.result {
         case .failure(let error):
-            return "Failure => \(error.localizedDescription)"
+            return "-- Request failure --"
+                + "\n\(request)"
+                + "\n\(contentType)"
+                + "\n\(contentLength)"
+                + "\n\(statusCode)"
+                + "\n\(responseContentType)"
+                + "\n\(responseContentLength)"
                 + "\n\(rateLimitStr)"
-                + "\n\(body.unescapeSlash)"
+                + "\n\(error.localizedDescription)"
+                + "\n<"
+                + "\n\(body.count == 0 ? "Empty body" : body.unescapeSlash)"
         case .success:
-            let url = response?.url?.absoluteString ?? "NULL URL"
-            return "Success => \(url)\n\(rateLimitStr)\n\(body.unescapeSlash)"
+            return "-- Request success --"
+                + "\n\(request)"
+                + "\n\(contentType)"
+                + "\n\(contentLength)"
+                + "\n\(statusCode)"
+                + "\n\(responseContentType)"
+                + "\n\(responseContentLength)"
+                + "\n\(rateLimitStr)"
+                + "\n<"
+                + "\n\(body.count == 0 ? "Empty body" : body.unescapeSlash)"
         }
     }
 }
