@@ -16,7 +16,7 @@ jobs:
         id: "cache-spm"
         with:
           path: BuildTools/.build
-          key: ${{ runner.os }}-v2-spm-${{ hashFiles('**/BuildTools/Package.resolved') }}
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/BuildTools/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-spm-
       - name: Build tools
