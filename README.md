@@ -2,9 +2,13 @@
 
 Swift library for the Twitter API v1 and v2 (Work in progress).
 
+[![Swift](https://github.com/mironal/TwitterAPIKit/actions/workflows/swift.yml/badge.svg)](https://github.com/mironal/TwitterAPIKit/actions/workflows/swift.yml)
+
 [![Standard](https://img.shields.io/endpoint?url=https%3A%2F%2Ftwbadges.glitch.me%2Fbadges%2Fstandard)](https://developer.twitter.com/en/docs/twitter-api) [![v2](https://img.shields.io/endpoint?url=https%3A%2F%2Ftwbadges.glitch.me%2Fbadges%2Fv2)](https://developer.twitter.com/en/docs/twitter-api)
 
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmironal%2FTwitterAPIKit%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/mironal/TwitterAPIKit) [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmironal%2FTwitterAPIKit%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/mironal/TwitterAPIKit)
+
+
 
 Please see this issue for the progress of the API implementation.
 
