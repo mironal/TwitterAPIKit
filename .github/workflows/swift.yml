@@ -18,6 +18,8 @@ jobs:
           key: ${{ runner.os }}-spm-${{ hashFiles('**/BuildTools/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-spm-
+      - name: LS
+        run: ls -la BuildTools/.build
       - name: Lint
         run: swift run -c release --package-path BuildTools swift-format lint -p --strict --recursive ./Sources ./Tests ./scripts
       - name: Build
