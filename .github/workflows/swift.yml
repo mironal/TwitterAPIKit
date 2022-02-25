@@ -13,13 +13,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
+        id: "cache-spm"
         with:
           path: BuildTools/.build
           key: ${{ runner.os }}-spm-${{ hashFiles('**/BuildTools/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-spm-
+      - name: Build tools
+        if: steps.cache-spm.outputs.cache-hit != 'true'
+        run: swift build -c release --package-path BuildTools
       - name: Lint
-        run: swift run -c release --package-path BuildTools swift-format lint -p --strict --recursive ./Sources ./Tests ./scripts
+        run: |
+          swift run -c release --skip-build --package-path BuildTools swift-format --version
+          swift run -c release --skip-build --package-path BuildTools swift-format lint -p --strict --recursive ./Sources ./Tests ./scripts
       - name: Build
         run: swift build -v
       - name: Run tests
