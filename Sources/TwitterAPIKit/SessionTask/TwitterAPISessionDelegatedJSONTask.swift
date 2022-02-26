@@ -37,9 +37,6 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
     private var dataChunk: Data = Data()
     let group = DispatchGroup()
 
-    deinit {
-        print("deinit")
-    }
     public init(task: URLSessionTask) {
         self.task = task
 
