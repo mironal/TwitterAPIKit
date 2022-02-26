@@ -12,6 +12,7 @@ public typealias TwitterAPIv2 =
     & RetweetAPIv2
     & SearchAPIv2
     & SpacesAPIv2
+    & StreamAPIv2
     & TimelineAPIv2
     & TweetAPIv2
     & TweetCountAPIv2
@@ -26,6 +27,7 @@ public protocol TwitterAPIResourceV2 {
     var retweet: RetweetAPIv2 { get }
     var search: SearchAPIv2 { get }
     var spaces: SpacesAPIv2 { get }
+    var stream: StreamAPIv2 { get }
     var timeline: TimelineAPIv2 { get }
     var tweet: TweetAPIv2 { get }
     var tweetCount: TweetCountAPIv2 { get }
@@ -41,6 +43,7 @@ extension TwitterAPIKit.TwitterAPIImplV2: TwitterAPIResourceV2 {
     var retweet: RetweetAPIv2 { return self }
     var search: SearchAPIv2 { return self }
     var spaces: SpacesAPIv2 { return self }
+    var stream: StreamAPIv2 { return self }
     var timeline: TimelineAPIv2 { return self }
     var tweet: TweetAPIv2 { return self }
     var tweetCount: TweetCountAPIv2 { return self }
