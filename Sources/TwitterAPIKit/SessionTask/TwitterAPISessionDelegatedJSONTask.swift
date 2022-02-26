@@ -1,5 +1,9 @@
 import Foundation
 
+protocol TwitterAPISessionDelegatedJSONTaskDelegate: AnyObject {
+    func didFinishQueueInJsonTask(task: TwitterAPISessionDelegatedJSONTask)
+}
+
 public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, TwitterAPISessionDelegatedTask {
 
     public var taskIdentifier: Int {
@@ -18,6 +22,8 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
         return task.response as? HTTPURLResponse
     }
 
+    weak var delegate: TwitterAPISessionDelegatedJSONTaskDelegate?
+
     public private(set) var error: Error?
     public var data: Data? {
         guard completed else { return nil }
@@ -31,6 +37,9 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
     private var dataChunk: Data = Data()
     let group = DispatchGroup()
 
+    deinit {
+        print("deinit")
+    }
     public init(task: URLSessionTask) {
         self.task = task
 
@@ -46,11 +55,12 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
     func complete(error: Error?) {
         self.error = error
         self.completed = true
-        taskQueue.resume()
-    }
 
-    func releaseTask(_ block: @escaping () -> Void) {
-        group.notify(queue: taskQueue, execute: block)
+        group.notify(queue: taskQueue) { [weak self] in
+            guard let self = self else { return }
+            self.delegate?.didFinishQueueInJsonTask(task: self)
+        }
+        taskQueue.resume()
     }
 
     private func getResult() -> Result<(data: Data, rateLimit: TwitterRateLimit), TwitterAPIKitError> {

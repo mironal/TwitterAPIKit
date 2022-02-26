@@ -79,4 +79,19 @@ extension TwitterAPISessionSpecializedTask {
     }
 }
 
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension TwitterAPISessionStreamTask {
+
+    public func streamResponse(queue: DispatchQueue) -> AsyncStream<TwitterAPIResponse<Data>> {
+        return AsyncStream { continuation in
+            streamResponse(queue: queue) { response in
+                continuation.yield(response)
+            }
+            continuation.onTermination = { @Sendable _ in
+                cancel()
+            }
+        }
+    }
+}
+
 #endif

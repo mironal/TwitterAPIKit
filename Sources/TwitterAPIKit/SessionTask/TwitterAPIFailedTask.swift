@@ -1,6 +1,6 @@
 import Foundation
 
-public struct TwitterAPIFailedTask: TwitterAPISessionJSONTask {
+public struct TwitterAPIFailedTask: TwitterAPISessionJSONTask, TwitterAPISessionStreamTask {
 
     public let error: TwitterAPIKitError
 
@@ -82,6 +82,21 @@ public struct TwitterAPIFailedTask: TwitterAPISessionJSONTask {
                 rateLimit: nil)
             block(response)
 
+        }
+        return self
+    }
+
+    public func streamResponse(queue: DispatchQueue, _ block: @escaping (TwitterAPIResponse<Data>) -> Void)
+        -> TwitterAPIFailedTask
+    {
+        queue.async {
+            let response = TwitterAPIResponse<Data>(
+                request: nil,
+                response: nil,
+                data: nil,
+                result: .failure(error),
+                rateLimit: nil)
+            block(response)
         }
         return self
     }

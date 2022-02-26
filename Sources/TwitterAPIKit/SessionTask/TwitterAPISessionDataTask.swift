@@ -1,12 +1,6 @@
 import Foundation
 
-public protocol TwitterAPISessionDataTask {
-
-    var taskIdentifier: Int { get }
-    var currentRequest: URLRequest? { get }
-    var originalRequest: URLRequest? { get }
-
-    func cancel()
+public protocol TwitterAPISessionDataTask: TwitterAPISessionTask {
 
     @discardableResult
     func responseData(

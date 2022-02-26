@@ -7,8 +7,6 @@ protocol TwitterAPISessionDelegatedTask {
     func append(chunk: Data)
 
     func complete(error: Error?)
-
-    func releaseTask(_ block: @escaping () -> Void)
 }
 
 class TwitterAPISessionDelegate: NSObject, URLSessionDataDelegate {
@@ -18,6 +16,7 @@ class TwitterAPISessionDelegate: NSObject, URLSessionDataDelegate {
     func appendAndResume(task: URLSessionTask) -> TwitterAPISessionJSONTask {
 
         let twTask = TwitterAPISessionDelegatedJSONTask(task: task)
+        twTask.delegate = self
         tasks[task.taskIdentifier] = twTask
 
         task.resume()
@@ -25,14 +24,14 @@ class TwitterAPISessionDelegate: NSObject, URLSessionDataDelegate {
         return twTask
     }
 
-    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+    func appendAndResumeStream(task: URLSessionTask) -> TwitterAPISessionDelegatedStreamTask {
+        let twTask = TwitterAPISessionDelegatedStreamTask(task: task)
+        tasks[task.taskIdentifier] = twTask
+        task.resume()
+        return twTask
+    }
 
-        print("-----")
-        if let json = try? JSONSerialization.jsonObject(with: data, options: []) {
-            print("JOSON", json)
-        } else {
-            print("Not JSON", String(data: data, encoding: .utf8)!)
-        }
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
 
         tasks[dataTask.taskIdentifier]?.append(chunk: data)
     }
@@ -42,8 +41,11 @@ class TwitterAPISessionDelegate: NSObject, URLSessionDataDelegate {
         guard let task = tasks[task.taskIdentifier] else { return }
 
         task.complete(error: error)
-        task.releaseTask { [weak self] in
-            self?.tasks[task.taskIdentifier] = nil
-        }
+    }
+}
+
+extension TwitterAPISessionDelegate: TwitterAPISessionDelegatedJSONTaskDelegate {
+    func didFinishQueueInJsonTask(task: TwitterAPISessionDelegatedJSONTask) {
+        tasks[task.taskIdentifier] = nil
     }
 }
