@@ -35,6 +35,8 @@ public protocol TwitterAPIRequest {
     var baseURLType: TwitterBaseURLType { get }
     var path: String { get }
     var parameters: [String: Any] { get }
+    var queryParameters: [String: Any] { get }
+    var bodyParameters: [String: Any] { get }
     var bodyContentType: BodyContentType { get }
 }
 
@@ -45,5 +47,18 @@ extension TwitterAPIRequest {
 
     public var bodyContentType: BodyContentType {
         return .wwwFormUrlEncoded
+    }
+    public var queryParameters: [String: Any] {
+        if method.prefersQueryParameters {
+            return parameters
+        }
+        return [:]
+    }
+
+    public var bodyParameters: [String: Any] {
+        if !method.prefersQueryParameters {
+            return parameters
+        }
+        return [:]
     }
 }

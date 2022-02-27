@@ -95,29 +95,29 @@ extension TwitterAPIRequest {
         else {
             throw TwitterAPIKitError.requestFailed(reason: .invalidURL(url: ""))
         }
-        if method.prefersQueryParameters {
-            urlComponent.queryItems = parameters.map { .init(name: $0, value: "\($1)") }
+        if !queryParameters.isEmpty {
+            urlComponent.queryItems = queryParameters.map { .init(name: $0, value: "\($1)") }
         }
 
         var request = URLRequest(url: urlComponent.url!)
         request.httpMethod = method.rawValue
 
-        if !method.prefersQueryParameters {
+        if !bodyParameters.isEmpty {
 
             switch bodyContentType {
             case .wwwFormUrlEncoded:
                 request.setValue(bodyContentType.rawValue, forHTTPHeaderField: "Content-Type")
-                let query = parameters.urlEncodedQueryString
+                let query = bodyParameters.urlEncodedQueryString
                 guard let data = query.data(using: .utf8) else {
                     throw TwitterAPIKitError.requestFailed(reason: .cannotEncodeStringToData(string: query))
                 }
                 request.httpBody = data
             case .multipartFormData:
 
-                guard let parts = Array(parameters.values) as? [MultipartFormDataPart] else {
+                guard let parts = Array(bodyParameters.values) as? [MultipartFormDataPart] else {
                     throw TwitterAPIKitError.requestFailed(
                         reason: .invalidParameter(
-                            parameter: parameters,
+                            parameter: bodyParameters,
                             cause:
                                 "Parameter must be specified in `MultipartFormDataPart` for `BodyContentType.multipartFormData`."
                         ))
@@ -134,7 +134,7 @@ extension TwitterAPIRequest {
                 request.setValue(bodyContentType.rawValue, forHTTPHeaderField: "Content-Type")
                 do {
                     request.httpBody = try JSONSerialization.data(
-                        withJSONObject: parameters, options: []
+                        withJSONObject: bodyParameters, options: []
                     )
                 } catch let error {
                     throw TwitterAPIKitError.requestFailed(reason: .jsonSerializationFailed(error: error))
