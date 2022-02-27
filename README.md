@@ -8,14 +8,13 @@ Swift library for the Twitter API v1 and v2 (Work in progress).
 
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmironal%2FTwitterAPIKit%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/mironal/TwitterAPIKit) [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmironal%2FTwitterAPIKit%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/mironal/TwitterAPIKit)
 
-
-
 Please see this issue for the progress of the API implementation.
 
 - [API v1](https://github.com/mironal/TwitterAPIKit/issues/5)
 - [API v2](https://github.com/mironal/TwitterAPIKit/issues/6)
 
 ---
+
 ## Motivation
 
 Unfortunately, I couldn't find any active Twitter API library for Swift at the moment.
@@ -271,10 +270,15 @@ Task {
 }
 ```
 
+### Stream API
+
+- [Sample code for GET /2/tweets/sample/stream](https://gist.github.com/mironal/bd511a211f6a300b32350b83350894eb)
+- [Sample code for GET /2/tweets/search/stream](https://gist.github.com/mironal/6ad38705ad729c71afec9816abccbfd4)
+
 ## TODO
 
-- [ ] Support API v1 endpoint : 80% completed (Commonly used APIs are 100% supported.)
-- [ ] Support API v2 endpoint: 90% completed
+- [ ] Support API v1 endpoint : 83% completed (Commonly used APIs are 100% supported.)
+- [x] Support API v2 endpoint: 100% completed (Except for Lab)
 - [x] Swift Concurrency (Experimental)
 - [ ] Document
 

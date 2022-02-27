@@ -26,4 +26,24 @@ extension Data {
             return Data(bytes: result, count: digestLen)
         }
     }
+
+    func split(separator: Data, omittingEmptySubsequences: Bool = true) -> [Data] {
+        var current = startIndex
+        var chunks = [Data]()
+
+        while let range = self[current...].range(of: separator) {
+
+            if !omittingEmptySubsequences {
+                chunks.append(self[current..<range.lowerBound])
+            } else if range.lowerBound > current {
+                chunks.append(self[current..<range.lowerBound])
+            }
+
+            current = range.upperBound
+        }
+        if current < self.endIndex {
+            chunks.append(self[current...])
+        }
+        return chunks
+    }
 }
