@@ -79,6 +79,13 @@ extension TwitterAPIKitError {
             return error
         }
     }
+
+    public var isCancelled: Bool {
+        guard let error = underlyingError as? URLError else {
+            return false
+        }
+        return error.code == .cancelled
+    }
 }
 
 extension TwitterAPIKitError {
