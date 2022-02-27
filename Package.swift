@@ -7,7 +7,9 @@ let package = Package(
     name: "TwitterAPIKit",
     platforms: [
         .macOS(.v10_14),
-        .iOS(.v12)
+        .iOS(.v12),
+        .tvOS(.v12),
+        .watchOS(.v6)
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
