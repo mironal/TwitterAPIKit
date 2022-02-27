@@ -18,6 +18,27 @@ private class PostTwitterReqeust: TwitterAPIRequest {
     }
 }
 
+private class EmptyRequest: TwitterAPIRequest {
+    var method: HTTPMethod { return .get }
+    var path: String { return "/empty.json" }
+    var parameters: [String: Any] {
+        return [:]
+    }
+}
+
+private class QueryAndBodyRequest: TwitterAPIRequest {
+    var method: HTTPMethod { return .post }
+    var path: String { return "/query_and_body.json" }
+
+    var queryParameters: [String: Any] {
+        return ["query": "value"]
+    }
+
+    var bodyParameters: [String: Any] {
+        return ["body": "value"]
+    }
+}
+
 class TwitterAPISessionTests: XCTestCase {
 
     lazy var session: TwitterAPISession =
@@ -71,6 +92,37 @@ class TwitterAPISessionTests: XCTestCase {
 
         let exp = expectation(description: "")
         session.send(PostTwitterReqeust()).responseData(queue: .main) { _ in
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 10)
+    }
+
+    func testEmpty() throws {
+        MockURLProtocol.requestAssert = { request in
+            XCTAssertEqual(request.httpMethod, "GET")
+            XCTAssertEqual(request.url?.absoluteString, "https://api.example.com/empty.json")
+            XCTAssertNil(request.httpBody)
+        }
+
+        let exp = expectation(description: "")
+        session.send(EmptyRequest()).responseData(queue: .main) { _ in
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 10)
+    }
+
+    func testQueryAndBody() throws {
+        MockURLProtocol.requestAssert = { request in
+            XCTAssertEqual(request.httpMethod, "POST")
+            XCTAssertEqual(request.url?.absoluteString, "https://api.example.com/query_and_body.json?query=value")
+            XCTAssertNil(request.httpBody)
+            let data = try! Data(reading: request.httpBodyStream!)
+            let body = String(data: data, encoding: .utf8)!
+            XCTAssertEqual(body, "body=value")
+        }
+
+        let exp = expectation(description: "")
+        session.send(QueryAndBodyRequest()).responseData(queue: .main) { _ in
             exp.fulfill()
         }
         wait(for: [exp], timeout: 10)
