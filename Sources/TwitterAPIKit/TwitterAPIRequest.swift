@@ -48,6 +48,11 @@ extension TwitterAPIRequest {
     public var bodyContentType: BodyContentType {
         return .wwwFormUrlEncoded
     }
+
+    public var parameters: [String: Any] {
+        return [:]
+    }
+
     public var queryParameters: [String: Any] {
         if method.prefersQueryParameters {
             return parameters
