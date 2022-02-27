@@ -16,6 +16,11 @@ public protocol StreamAPIv2 {
     func postSearchStreamRules(
         _ request: PostTweetsSearchStreamRulesRequestV2
     ) -> TwitterAPISessionJSONTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/tweets/filtered-stream/api-reference/get-tweets-search-stream
+    func searchStream(
+        _ request: GetTweetsSearchStreamRequestV2
+    ) -> TwitterAPISessionStreamTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV2: StreamAPIv2 {
@@ -34,5 +39,9 @@ extension TwitterAPIKit.TwitterAPIImplV2: StreamAPIv2 {
         _ request: PostTweetsSearchStreamRulesRequestV2
     ) -> TwitterAPISessionJSONTask {
         return session.send(request)
+    }
+
+    func searchStream(_ request: GetTweetsSearchStreamRequestV2) -> TwitterAPISessionStreamTask {
+        return session.send(streamRequest: request)
     }
 }
