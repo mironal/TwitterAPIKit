@@ -7,6 +7,11 @@ public protocol StreamAPIv2 {
         _ request: GetTweetsSampleStreamRequestV2
     ) -> TwitterAPISessionStreamTask
 
+    /// https://developer.twitter.com/en/docs/twitter-api/tweets/filtered-stream/api-reference/get-tweets-search-stream-rules
+    func getSearchStreamRules(
+        _ request: GetTweetsSearchStreamRulesRequestV2
+    ) -> TwitterAPISessionJSONTask
+
     /// https://developer.twitter.com/en/docs/twitter-api/tweets/filtered-stream/api-reference/post-tweets-search-stream-rules#Validate
     func postSearchStreamRules(
         _ request: PostTweetsSearchStreamRulesRequestV2
@@ -17,6 +22,12 @@ extension TwitterAPIKit.TwitterAPIImplV2: StreamAPIv2 {
 
     func sampleStream(_ request: GetTweetsSampleStreamRequestV2) -> TwitterAPISessionStreamTask {
         return session.send(streamRequest: request)
+    }
+
+    func getSearchStreamRules(
+        _ request: GetTweetsSearchStreamRulesRequestV2
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
     }
 
     func postSearchStreamRules(
