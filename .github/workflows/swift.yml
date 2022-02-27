@@ -31,6 +31,6 @@ jobs:
       - name: Run tests
         run: |
           swift test --enable-code-coverage
-          xcrun llvm-cov export -format="lcov" .build/debug/TwitterAPIKitPackageTests.xctest/Contents/MacOS/TwitterAPIKitPackageTests -instr-profile .build/debug/codecov/default.profdata > info.lcov
+          xcrun llvm-cov export -format="lcov" .build/debug/TwitterAPIKitPackageTests.xctest/Contents/MacOS/TwitterAPIKitPackageTests -instr-profile .build/debug/codecov/default.profdata -ignore-filename-regex=".build|Tests" > info.lcov
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
