@@ -99,10 +99,12 @@ public struct TwitterAPIErrorResponseV1 {
     }
 }
 
+extension TwitterAPIErrorResponseV1: Equatable {}
+
 /// https://developer.twitter.com/en/support/twitter-api/error-troubleshooting
 public struct TwitterAPIErrorResponseV2 {
 
-    public struct Error {
+    public struct Error: Equatable {
         public let message: String
         public let parameter: [String /* paramter name */: [String] /* values */]
 
@@ -132,3 +134,5 @@ public struct TwitterAPIErrorResponseV2 {
         errors = ((obj["errors"] as? [[String: Any]]) ?? []).map { Error(obj: $0) }
     }
 }
+
+extension TwitterAPIErrorResponseV2: Equatable {}
