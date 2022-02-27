@@ -39,6 +39,20 @@ extension TwitterAPIErrorResponse {
         }
         return nil
     }
+
+    public var v1: TwitterAPIErrorResponseV1? {
+        if case let .v1(v1) = self {
+            return v1
+        }
+        return nil
+    }
+
+    public var v2: TwitterAPIErrorResponseV2? {
+        if case let .v2(v2) = self {
+            return v2
+        }
+        return nil
+    }
 }
 
 /// https://developer.twitter.com/ja/docs/basics/response-codes
