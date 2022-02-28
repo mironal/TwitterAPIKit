@@ -27,7 +27,8 @@ public struct TwitterAPISessionSpecializedTask<Success>: TwitterAPISessionSpecia
 
     private let innerTask: TwitterAPISessionDataTask
     private let transform: (Data) throws -> Success
-    init(
+
+    public init(
         task: TwitterAPISessionDataTask,
         transform: @escaping (Data) throws -> Success
     ) {

@@ -25,3 +25,37 @@ class MockTwitterAPISessionTask: TwitterAPISessionTask {
         cancelled = true
     }
 }
+
+class MockTwitterAPISessionDataTask: MockTwitterAPISessionTask, TwitterAPISessionDataTask {
+
+    var data: Data
+
+    init(
+        data: Data,
+        taskIdentifier: Int,
+        currentRequest: URLRequest? = nil,
+        originalRequest: URLRequest? = nil,
+        httpResponse: HTTPURLResponse? = nil
+    ) {
+        self.data = data
+        super.init(
+            taskIdentifier: taskIdentifier, currentRequest: currentRequest, originalRequest: originalRequest,
+            httpResponse: httpResponse)
+    }
+
+    func responseData(queue: DispatchQueue, _ block: @escaping (TwitterAPIResponse<Data>) -> Void) -> Self {
+
+        queue.async { [weak self] in
+            guard let self = self else { return }
+            block(
+                .init(
+                    request: self.currentRequest,
+                    response: self.httpResponse,
+                    data: self.data,
+                    result: .success(self.data),
+                    rateLimit: TwitterRateLimit(header: [:])
+                ))
+        }
+        return self
+    }
+}
