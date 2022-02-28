@@ -131,6 +131,9 @@ class TwitterAPIErrorResponseTests: XCTestCase {
 
             XCTAssertFalse(error.isUnknown)
             XCTAssertNil(error.unknownData)
+
+            XCTAssertEqual(error.message, "message1")
+            XCTAssertEqual(error.code, 1)
         }
 
         try XCTContext.runActivity(named: "v2") { _ in
@@ -154,6 +157,9 @@ class TwitterAPIErrorResponseTests: XCTestCase {
 
             XCTAssertFalse(error.isUnknown)
             XCTAssertNil(error.unknownData)
+
+            XCTAssertEqual(error.message, "_detail_")
+            XCTAssertNil(error.code)
         }
 
         XCTContext.runActivity(named: "unknown") { _ in
@@ -162,6 +168,8 @@ class TwitterAPIErrorResponseTests: XCTestCase {
                 let error = TwitterAPIErrorResponse(data: Data())
                 XCTAssertEqual(error, .unknown(Data()))
                 XCTAssertTrue(error.isUnknown)
+                XCTAssertEqual(error.message, "")
+                XCTAssertNil(error.code)
             }
 
             XCTContext.runActivity(named: "invalid") { _ in
@@ -170,6 +178,7 @@ class TwitterAPIErrorResponseTests: XCTestCase {
                 XCTAssertEqual(error, .unknown(data))
                 XCTAssertTrue(error.isUnknown)
                 XCTAssertEqual(error.unknownData, data)
+                XCTAssertEqual(error.message, "{}")
             }
         }
     }
