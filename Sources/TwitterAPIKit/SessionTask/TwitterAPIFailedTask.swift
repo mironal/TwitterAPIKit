@@ -4,22 +4,12 @@ public struct TwitterAPIFailedTask: TwitterAPISessionJSONTask, TwitterAPISession
 
     public let error: TwitterAPIKitError
 
-    public init(_ error: Error) {
-
-        switch error {
-        case let error as TwitterAPIKitError:
-            self.error = error
-        default:
-            self.error = .unkonwn(error: error)
-        }
-
-    }
-    public init(error: TwitterAPIKitError) {
+    public init(_ error: TwitterAPIKitError) {
         self.error = error
     }
 
     public var taskIdentifier: Int {
-        return 0
+        return -1
     }
 
     public var currentRequest: URLRequest? {

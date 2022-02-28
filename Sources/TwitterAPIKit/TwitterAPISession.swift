@@ -27,7 +27,7 @@ open class TwitterAPISession {
             let task = session.dataTask(with: urlRequest)
             return sessionDelegate.appendAndResume(task: task)
         } catch let error {
-            return TwitterAPIFailedTask(error)
+            return TwitterAPIFailedTask(.init(error: error))
         }
     }
 
@@ -37,7 +37,7 @@ open class TwitterAPISession {
             let task = session.dataTask(with: urlRequest)
             return sessionDelegate.appendAndResumeStream(task: task)
         } catch let error {
-            return TwitterAPIFailedTask(error)
+            return TwitterAPIFailedTask(.init(error: error))
         }
     }
 
