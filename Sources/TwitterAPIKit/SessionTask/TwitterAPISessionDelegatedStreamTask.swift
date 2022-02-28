@@ -6,13 +6,13 @@ public class TwitterAPISessionDelegatedStreamTask: TwitterAPISessionStreamTask, 
     public var taskIdentifier: Int { return task.taskIdentifier }
     public var currentRequest: URLRequest? { return task.currentRequest }
     public var originalRequest: URLRequest? { return task.originalRequest }
-    public var response: HTTPURLResponse? {
-        return task.response as? HTTPURLResponse
+    public var httpResponse: HTTPURLResponse? {
+        return task.httpResponse
     }
-    private let task: URLSessionTask
+    private let task: TwitterAPISessionTask
     private var dataBlocks = [(TwitterAPIResponse<Data>) -> Void]()
 
-    init(task: URLSessionTask) {
+    init(task: TwitterAPISessionTask) {
         self.task = task
     }
 
@@ -41,7 +41,7 @@ public class TwitterAPISessionDelegatedStreamTask: TwitterAPISessionStreamTask, 
 
         let response = TwitterAPIResponse(
             request: currentRequest,
-            response: response,
+            response: httpResponse,
             data: result.success,
             result: result,
             rateLimit: nil

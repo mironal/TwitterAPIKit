@@ -30,7 +30,7 @@ public struct TwitterAPIFailedTask: TwitterAPISessionJSONTask, TwitterAPISession
         return nil
     }
 
-    public var response: HTTPURLResponse? {
+    public var httpResponse: HTTPURLResponse? {
         return nil
     }
 
