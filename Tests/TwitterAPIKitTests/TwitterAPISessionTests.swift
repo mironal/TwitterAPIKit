@@ -46,7 +46,6 @@ class TwitterAPISessionTests: XCTestCase {
 
             let config = URLSessionConfiguration.default
             config.protocolClasses = [MockURLProtocol.self]
-            let urlSession = URLSession.init(configuration: config)
 
             return TwitterAPISession(
                 auth: .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
@@ -126,6 +125,92 @@ class TwitterAPISessionTests: XCTestCase {
             exp.fulfill()
         }
         wait(for: [exp], timeout: 10)
+    }
+
+    func testStream() throws {
+
+        let config = URLSessionConfiguration.default
+        config.protocolClasses = [MockURLProtocol.self]
+
+        let session = TwitterAPISession(
+            auth: .bearer("bearer_token"),
+            configuration: config,
+            environment: .init(
+                apiURL: URL(string: "https://api.example.com")!,
+                uploadURL: URL(string: "https://upload.example.com")!
+            )
+        )
+
+        MockURLProtocol.requestHandler = { request in
+
+            let data = "aaaa\r\nbbbb\r\n".data(using: .utf8)!
+
+            return (
+                HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: "2.0", headerFields: nil)!, data
+            )
+        }
+
+        MockURLProtocol.requestAssert = { request in
+            print(request)
+        }
+
+        let exp = expectation(description: "")
+        exp.expectedFulfillmentCount = 2
+        session.send(streamRequest: GetTwitterReqeust()).streamResponse(queue: .global(qos: .default)) { response in
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 10)
+    }
+
+    // MARK: - Auth
+
+    func testBasicAuth() throws {
+        let config = URLSessionConfiguration.default
+        config.protocolClasses = [MockURLProtocol.self]
+
+        let session = TwitterAPISession(
+            auth: .basic(apiKey: "api_key", apiSecretKey: "api_secret_key"),
+            configuration: config,
+            environment: .init(
+                apiURL: URL(string: "https://api.example.com")!,
+                uploadURL: URL(string: "https://upload.example.com")!
+            )
+        )
+
+        MockURLProtocol.requestAssert = { request in
+            XCTAssertEqual(request.allHTTPHeaderFields?["Authorization"], "Basic YXBpX2tleTphcGlfc2VjcmV0X2tleQ==")
+        }
+
+        let exp = expectation(description: "")
+        session.send(GetTwitterReqeust()).responseData(queue: .main) { _ in
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 10)
+    }
+
+    func testBearerAuth() throws {
+        let config = URLSessionConfiguration.default
+        config.protocolClasses = [MockURLProtocol.self]
+
+        let session = TwitterAPISession(
+            auth: .bearer("bearer_token"),
+            configuration: config,
+            environment: .init(
+                apiURL: URL(string: "https://api.example.com")!,
+                uploadURL: URL(string: "https://upload.example.com")!
+            )
+        )
+
+        MockURLProtocol.requestAssert = { request in
+            XCTAssertEqual(request.allHTTPHeaderFields?["Authorization"], "Bearer bearer_token")
+        }
+
+        let exp = expectation(description: "")
+        session.send(GetTwitterReqeust()).responseData(queue: .main) { _ in
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 10)
+
     }
 }
 

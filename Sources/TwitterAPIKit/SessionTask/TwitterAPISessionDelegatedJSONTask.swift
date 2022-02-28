@@ -18,8 +18,8 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
         return task.originalRequest
     }
 
-    public var response: HTTPURLResponse? {
-        return task.response as? HTTPURLResponse
+    public var httpResponse: HTTPURLResponse? {
+        return task.httpResponse
     }
 
     weak var delegate: TwitterAPISessionDelegatedJSONTaskDelegate?
@@ -31,13 +31,13 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
     }
     public private(set) var completed = false
 
-    let task: URLSessionTask
+    let task: TwitterAPISessionTask
 
     private let taskQueue: DispatchQueue
     private var dataChunk: Data = Data()
     let group = DispatchGroup()
 
-    public init(task: URLSessionTask) {
+    public init(task: TwitterAPISessionTask) {
         self.task = task
 
         // Serial queue
@@ -66,7 +66,7 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
             fatalError("Request not completed yet.")
         }
 
-        guard error == nil, let httpResponse = response else {
+        guard error == nil, let httpResponse = httpResponse else {
             return .failure(.responseFailed(reason: .invalidResponse(error: error)))
         }
 
@@ -100,7 +100,7 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
 
             let response = TwitterAPIResponse(
                 request: self.currentRequest,
-                response: self.response,
+                response: self.httpResponse,
                 data: self.data,
                 result: mapResult(result.map { $0.data }),
                 rateLimit: result.success?.rateLimit

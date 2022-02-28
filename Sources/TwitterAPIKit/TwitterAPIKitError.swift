@@ -34,8 +34,9 @@ public enum TwitterAPIKitError: Error {
     public init(error: Error) {
         if let error = error as? TwitterAPIKitError {
             self = error
+        } else {
+            self = .unkonwn(error: error)
         }
-        self = .unkonwn(error: error)
     }
 }
 
@@ -93,6 +94,12 @@ extension TwitterAPIKitError {
         public let code: Int
         public let name: String
         public let message: String
+
+        public init(code: Int, name: String, message: String) {
+            self.code = code
+            self.name = name
+            self.message = message
+        }
     }
 }
 

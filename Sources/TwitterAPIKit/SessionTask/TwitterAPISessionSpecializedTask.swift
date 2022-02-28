@@ -21,6 +21,10 @@ public struct TwitterAPISessionSpecializedTask<Success>: TwitterAPISessionSpecia
         return innerTask.originalRequest
     }
 
+    public var httpResponse: HTTPURLResponse? {
+        return innerTask.httpResponse
+    }
+
     private let innerTask: TwitterAPISessionDataTask
     private let transform: (Data) throws -> Success
     init(
