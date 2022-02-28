@@ -22,18 +22,35 @@ class TwitterAPISessionDelegatedJSONTaskTests: XCTestCase {
         )
 
         let exp = expectation(description: "")
-        exp.expectedFulfillmentCount = 3
+        exp.expectedFulfillmentCount = 6
 
         _ = task.responseData(queue: .global(qos: .background)) { response in
 
             XCTAssertEqual(response.success, Data("{\"key\":\"value\"}".utf8))
 
+            XCTAssertFalse(Thread.isMainThread)
             exp.fulfill()
-        }.responseObject(queue: .global(qos: .background)) { response in
+        }
+        .responseData { _ in
+            XCTAssertTrue(Thread.isMainThread)
+            exp.fulfill()
+        }
+        .responseObject(queue: .global(qos: .background)) { response in
             AssertEqualAnyDict(response.success as! [String: Any], ["key": "value"])
+            XCTAssertFalse(Thread.isMainThread)
             exp.fulfill()
-        }.responseDecodable(type: DecodableObj.self, queue: .global(qos: .background)) { response in
+        }
+        .responseObject { _ in
+            XCTAssertTrue(Thread.isMainThread)
+            exp.fulfill()
+        }
+        .responseDecodable(type: DecodableObj.self, queue: .global(qos: .background)) { response in
             XCTAssertEqual(response.success, .init(key: "value"))
+            XCTAssertFalse(Thread.isMainThread)
+            exp.fulfill()
+        }
+        .responseDecodable(type: DecodableObj.self) { _ in
+            XCTAssertTrue(Thread.isMainThread)
             exp.fulfill()
         }
 
