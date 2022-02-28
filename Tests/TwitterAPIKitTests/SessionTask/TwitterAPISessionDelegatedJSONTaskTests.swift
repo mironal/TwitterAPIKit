@@ -21,6 +21,8 @@ class TwitterAPISessionDelegatedJSONTaskTests: XCTestCase {
             task: mockTask
         )
 
+        XCTAssertEqual(task.taskIdentifier, 1)
+
         let exp = expectation(description: "")
         exp.expectedFulfillmentCount = 6
 
