@@ -14,12 +14,3 @@ extension URLSessionTask: TwitterAPISessionTask {
         return response as? HTTPURLResponse
     }
 }
-
-/*
-
- TwitterAPISessionTask
-    |- TwitterAPISessionDataTask
-    |   |- TwitterAPISessionJSONTask
-    |   |- TwitterAPISessionSpecializedTask
-    |- TwitterAPISessionStreamTask
- */
