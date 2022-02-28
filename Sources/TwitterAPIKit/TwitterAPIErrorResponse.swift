@@ -1,11 +1,11 @@
 import Foundation
 
-public enum TwitterAPIErrorResponse {
+public enum TwitterAPIErrorResponse: Equatable {
     case v1(TwitterAPIErrorResponseV1)
     case v2(TwitterAPIErrorResponseV2)
     case unknown(Data)
 
-    init(data: Data) {
+    public init(data: Data) {
         guard let obj = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
             self = .unknown(data)
             return
@@ -40,11 +40,19 @@ extension TwitterAPIErrorResponse {
         return nil
     }
 
+    public var isV1: Bool {
+        return v1 != nil
+    }
+
     public var v1: TwitterAPIErrorResponseV1? {
         if case let .v1(v1) = self {
             return v1
         }
         return nil
+    }
+
+    public var isV2: Bool {
+        return v2 != nil
     }
 
     public var v2: TwitterAPIErrorResponseV2? {
@@ -53,6 +61,18 @@ extension TwitterAPIErrorResponse {
         }
         return nil
     }
+
+    public var isUnknown: Bool {
+        return unknownData != nil
+    }
+
+    public var unknownData: Data? {
+        if case let .unknown(data) = self {
+            return data
+        }
+        return nil
+    }
+
 }
 
 /// https://developer.twitter.com/ja/docs/basics/response-codes
@@ -90,12 +110,8 @@ public struct TwitterAPIErrorResponseV1 {
         self.errors = tErrors
     }
 
-    var isValid: Bool {
-        return !errors.isEmpty
-    }
-
     public func contains(code: Int) -> Bool {
-        return errors.contains(where: { $0.code == code })
+        return code == self.code || errors.contains(where: { $0.code == code })
     }
 }
 
@@ -106,11 +122,16 @@ public struct TwitterAPIErrorResponseV2 {
 
     public struct Error: Equatable {
         public let message: String
-        public let parameter: [String /* paramter name */: [String] /* values */]
+        public let parameters: [String /* paramter name */: [String] /* values */]
 
-        init(obj: [String: Any]) {
+        public init(message: String, parameters: [String: [String]]) {
+            self.message = message
+            self.parameters = parameters
+        }
+
+        public init(obj: [String: Any]) {
             message = obj["message"].map { String(describing: $0) } ?? ""
-            parameter = (obj["parameters"] as? [String: [String]]) ?? [:]
+            parameters = (obj["parameters"] as? [String: [String]]) ?? [:]
         }
     }
 
@@ -118,6 +139,18 @@ public struct TwitterAPIErrorResponseV2 {
     public let detail: String
     public let type: String
     public let errors: [Error]
+
+    public init(
+        title: String,
+        detail: String,
+        type: String,
+        errors: [Error]
+    ) {
+        self.title = title
+        self.detail = detail
+        self.type = type
+        self.errors = errors
+    }
 
     public init?(obj: [String: Any]) {
 
