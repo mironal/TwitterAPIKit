@@ -25,6 +25,10 @@ class PostTweetsRequestV2Tests: XCTestCase {
             text: "text"
         )
 
+        XCTAssertEqual(request.path, "/2/tweets")
+        XCTAssertEqual(request.method, .post)
+        XCTAssertEqual(request.bodyContentType, .json)
+
         AssertEqualAnyDict(
             request.parameters,
             [
