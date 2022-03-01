@@ -31,7 +31,7 @@ class TwitterAPIKitErrorTests: XCTestCase {
         XCTAssertTrue(TwitterAPIKitError.requestFailed(reason: .cannotEncodeStringToData(string: "")).isRequestFailed)
         XCTAssertTrue(
             TwitterAPIKitError.requestFailed(
-                reason: .jsonSerializationFailed(error: NSError(domain: "", code: 0, userInfo: nil))
+                reason: .jsonSerializationFailed(obj: [:])
             ).isRequestFailed)
     }
 

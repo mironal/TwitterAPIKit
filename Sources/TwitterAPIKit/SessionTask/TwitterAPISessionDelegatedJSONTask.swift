@@ -35,7 +35,7 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
 
     private let taskQueue: DispatchQueue
     private var dataChunk: Data = Data()
-    let group = DispatchGroup()
+    private let group = DispatchGroup()
 
     public init(task: TwitterAPISessionTask) {
         self.task = task
@@ -120,11 +120,19 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
         return registerResponseBlock(queue: queue, map: { $0 }, response: block)
     }
 
+    public func responseData(_ block: @escaping (TwitterAPIResponse<Data>) -> Void) -> Self {
+        return responseData(queue: .main, block)
+    }
+
     public func responseObject(
         queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<Any>) -> Void
     ) -> Self {
         return registerResponseBlock(queue: queue, map: { $0.serialize() }, response: block)
+    }
+
+    public func responseObject(_ block: @escaping (TwitterAPIResponse<Any>) -> Void) -> Self {
+        return responseObject(queue: .main, block)
     }
 
     public func responseDecodable<T>(
@@ -134,6 +142,44 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
         _ block: @escaping (TwitterAPIResponse<T>) -> Void
     ) -> Self where T: Decodable {
         return registerResponseBlock(queue: queue, map: { $0.decode(type, decodar: decoder) }, response: block)
+    }
+
+    public func responseDecodable<T>(
+        type: T.Type,
+        decoder: JSONDecoder,
+        _ block: @escaping (TwitterAPIResponse<T>) -> Void
+    ) -> Self where T: Decodable {
+        return responseDecodable(
+            type: type,
+            decoder: decoder,
+            queue: .main,
+            block
+        )
+    }
+
+    public func responseDecodable<T>(
+        type: T.Type,
+        queue: DispatchQueue,
+        _ block: @escaping (TwitterAPIResponse<T>) -> Void
+    ) -> Self where T: Decodable {
+        return responseDecodable(
+            type: type,
+            decoder: TwitterAPIKit.defaultJSONDecoder,
+            queue: queue,
+            block
+        )
+    }
+
+    public func responseDecodable<T>(
+        type: T.Type,
+        _ block: @escaping (TwitterAPIResponse<T>) -> Void
+    ) -> Self where T: Decodable {
+        return responseDecodable(
+            type: type,
+            decoder: TwitterAPIKit.defaultJSONDecoder,
+            queue: .main,
+            block
+        )
     }
 
     public func cancel() {

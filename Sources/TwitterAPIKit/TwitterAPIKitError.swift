@@ -8,7 +8,7 @@ public enum TwitterAPIKitError: Error {
         case invalidParameter(parameter: [String: Any], cause: String)
 
         case cannotEncodeStringToData(string: String)
-        case jsonSerializationFailed(error: Error)
+        case jsonSerializationFailed(obj: Any)
     }
 
     case responseFailed(reason: ResponseFailureReason)
@@ -136,8 +136,8 @@ extension TwitterAPIKitError.RequestFailureReason {
             return "Parameter is not valid: \(parameter), cause: \(cause)"
         case .cannotEncodeStringToData(let string):
             return "Could not encode \"\(string)\""
-        case .jsonSerializationFailed(let error):
-            return "JSON could not be serialized because of error:\n\(error.localizedDescription)"
+        case .jsonSerializationFailed(let obj):
+            return "JSON could not be serialized. May be invalid object \(String(describing: obj))"
         }
     }
 
@@ -145,10 +145,9 @@ extension TwitterAPIKitError.RequestFailureReason {
         switch self {
         case .invalidURL,
             .invalidParameter,
-            .cannotEncodeStringToData:
+            .cannotEncodeStringToData,
+            .jsonSerializationFailed:
             return nil
-        case .jsonSerializationFailed(let error):
-            return error
         }
     }
 }

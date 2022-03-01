@@ -27,7 +27,8 @@ public struct TwitterAPISessionSpecializedTask<Success>: TwitterAPISessionSpecia
 
     private let innerTask: TwitterAPISessionDataTask
     private let transform: (Data) throws -> Success
-    init(
+
+    public init(
         task: TwitterAPISessionDataTask,
         transform: @escaping (Data) throws -> Success
     ) {
@@ -56,6 +57,15 @@ public struct TwitterAPISessionSpecializedTask<Success>: TwitterAPISessionSpecia
         return self
     }
 
+    @discardableResult
+    public func responseData(
+        _ block: @escaping (TwitterAPIResponse<Data>) -> Void
+    ) -> TwitterAPISessionSpecializedTask<
+        Success
+    > {
+        return responseData(queue: .main, block)
+    }
+
     public func cancel() {
         innerTask.cancel()
     }
@@ -70,17 +80,23 @@ extension Array where Element: TwitterAPISessionSpecializedTask_ {
         let group = DispatchGroup()
 
         var responses = [TwitterAPIResponse<Element.Success>]()
+        let innerQueue = DispatchQueue(label: "TwitterAPISessionSpecializedTask.array")
+        innerQueue.suspend()
 
         self.forEach { task in
             group.enter()
-            task.responseObject(queue: .processQueue) {
-                responses.append($0)
-                group.leave()
+            innerQueue.async {
+                task.responseObject(queue: innerQueue) {
+                    responses.append($0)
+                    group.leave()
+                }
             }
         }
 
         group.notify(queue: queue) {
             block(responses)
         }
+
+        innerQueue.resume()
     }
 }

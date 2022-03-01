@@ -11,25 +11,33 @@ class TwitterAPIFailedTaskTests: XCTestCase {
 
     func test() throws {
 
-        let response = TwitterAPIFailedTask(.responseFailed(reason: .invalidResponse(error: nil)))
+        let task = TwitterAPIFailedTask(.responseFailed(reason: .invalidResponse(error: nil)))
 
-        XCTAssertTrue(response.error.isResponseFailed)
-        XCTAssertEqual(response.taskIdentifier, -1)
-        XCTAssertNil(response.currentRequest)
-        XCTAssertNil(response.originalRequest)
-        XCTAssertNil(response.httpResponse)
+        XCTAssertTrue(task.error.isResponseFailed)
+        XCTAssertEqual(task.taskIdentifier, -1)
+        XCTAssertNil(task.currentRequest)
+        XCTAssertNil(task.originalRequest)
+        XCTAssertNil(task.httpResponse)
 
         let exp = expectation(description: "")
-        exp.expectedFulfillmentCount = 3
-        response.responseData { response in
+        exp.expectedFulfillmentCount = 4
+        task.responseData { response in
+            XCTAssertNotNil(response.error)
+            XCTAssertTrue(response.isError)
+            exp.fulfill()
+        }
+        .responseObject(queue: .global(qos: .default)) { response in
+            XCTAssertNotNil(response.error)
             XCTAssertTrue(response.isError)
             exp.fulfill()
         }
         .responseObject { response in
+            XCTAssertNotNil(response.error)
             XCTAssertTrue(response.isError)
             exp.fulfill()
         }
         .responseDecodable(type: DecodableObj.self, decoder: JSONDecoder()) { response in
+            XCTAssertNotNil(response.error)
             XCTAssertTrue(response.isError)
             exp.fulfill()
         }
