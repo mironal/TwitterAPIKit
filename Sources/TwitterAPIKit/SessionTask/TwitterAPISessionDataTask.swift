@@ -7,18 +7,11 @@ public protocol TwitterAPISessionDataTask: TwitterAPISessionTask {
         queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<Data>) -> Void
     ) -> Self
-}
 
-// MARK: - Default argument functions
-
-extension TwitterAPISessionDataTask {
     @discardableResult
-    public func responseData(
-        queue: DispatchQueue = .main,
+    func responseData(
         _ block: @escaping (TwitterAPIResponse<Data>) -> Void
-    ) -> Self {
-        return responseData(queue: queue, block)
-    }
+    ) -> Self
 }
 
 // MARK: - internal

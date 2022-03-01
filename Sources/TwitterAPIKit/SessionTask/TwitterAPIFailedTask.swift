@@ -30,6 +30,14 @@ public struct TwitterAPIFailedTask: TwitterAPISessionJSONTask, TwitterAPISession
         return self
     }
 
+    @discardableResult
+    public func responseData(
+        _ block: @escaping (TwitterAPIResponse<Data>) -> Void
+    ) -> TwitterAPIFailedTask {
+        return responseData(queue: .main, block)
+    }
+
+    @discardableResult
     public func responseObject(
         queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<Any>) -> Void
@@ -48,6 +56,14 @@ public struct TwitterAPIFailedTask: TwitterAPISessionJSONTask, TwitterAPISession
         return self
     }
 
+    @discardableResult
+    public func responseObject(
+        _ block: @escaping (TwitterAPIResponse<Any>) -> Void
+    ) -> TwitterAPIFailedTask {
+        return responseObject(queue: .main, block)
+    }
+
+    @discardableResult
     public func responseDecodable<T>(
         type: T.Type,
         decoder: JSONDecoder,
@@ -68,6 +84,48 @@ public struct TwitterAPIFailedTask: TwitterAPISessionJSONTask, TwitterAPISession
         return self
     }
 
+    @discardableResult
+    public func responseDecodable<T>(
+        type: T.Type,
+        decoder: JSONDecoder,
+        _ block: @escaping (TwitterAPIResponse<T>) -> Void
+    ) -> TwitterAPIFailedTask where T: Decodable {
+        return responseDecodable(
+            type: type,
+            decoder: decoder,
+            queue: .main,
+            block
+        )
+    }
+
+    @discardableResult
+    public func responseDecodable<T>(
+        type: T.Type,
+        queue: DispatchQueue,
+        _ block: @escaping (TwitterAPIResponse<T>) -> Void
+    ) -> TwitterAPIFailedTask where T: Decodable {
+        return responseDecodable(
+            type: type,
+            decoder: TwitterAPIKit.defaultJSONDecoder,
+            queue: queue,
+            block
+        )
+    }
+
+    @discardableResult
+    public func responseDecodable<T>(
+        type: T.Type,
+        _ block: @escaping (TwitterAPIResponse<T>) -> Void
+    ) -> TwitterAPIFailedTask where T: Decodable {
+        return responseDecodable(
+            type: type,
+            decoder: TwitterAPIKit.defaultJSONDecoder,
+            queue: .main,
+            block
+        )
+    }
+
+    @discardableResult
     public func streamResponse(queue: DispatchQueue, _ block: @escaping (TwitterAPIResponse<Data>) -> Void)
         -> TwitterAPIFailedTask
     {

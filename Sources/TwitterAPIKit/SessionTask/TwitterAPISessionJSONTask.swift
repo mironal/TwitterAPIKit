@@ -9,42 +9,35 @@ public protocol TwitterAPISessionJSONTask: TwitterAPISessionDataTask {
     ) -> Self
 
     @discardableResult
+    func responseObject(
+        _ block: @escaping (TwitterAPIResponse<Any>) -> Void
+    ) -> Self
+
+    @discardableResult
     func responseDecodable<T: Decodable>(
         type: T.Type,
         decoder: JSONDecoder,
         queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<T>) -> Void
     ) -> Self
-}
-
-// MARK: - Default argument functions
-
-extension TwitterAPISessionJSONTask {
 
     @discardableResult
-    public func responseObject(
-        queue: DispatchQueue = .main,
-        _ block: @escaping (TwitterAPIResponse<Any>) -> Void
-    ) -> Self {
-        return responseObject(queue: queue, block)
-    }
-
-    @discardableResult
-    public func responseDecodable<T: Decodable>(
+    func responseDecodable<T: Decodable>(
         type: T.Type,
         decoder: JSONDecoder,
-        queue: DispatchQueue = .main,
         _ block: @escaping (TwitterAPIResponse<T>) -> Void
-    ) -> Self {
-        return responseDecodable(type: type, decoder: decoder, queue: queue, block)
-    }
+    ) -> Self
 
     @discardableResult
-    public func responseDecodable<T: Decodable>(
+    func responseDecodable<T: Decodable>(
         type: T.Type,
-        queue: DispatchQueue = .main,
+        queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<T>) -> Void
-    ) -> Self {
-        return responseDecodable(type: type, decoder: TwitterAPIKit.defaultJSONDecoder, queue: queue, block)
-    }
+    ) -> Self
+
+    @discardableResult
+    func responseDecodable<T: Decodable>(
+        type: T.Type,
+        _ block: @escaping (TwitterAPIResponse<T>) -> Void
+    ) -> Self
 }

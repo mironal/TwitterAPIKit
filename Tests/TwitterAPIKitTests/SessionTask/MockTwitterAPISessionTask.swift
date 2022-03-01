@@ -58,4 +58,8 @@ class MockTwitterAPISessionDataTask: MockTwitterAPISessionTask, TwitterAPISessio
         }
         return self
     }
+
+    func responseData(_ block: @escaping (TwitterAPIResponse<Data>) -> Void) -> Self {
+        return responseData(queue: .main, block)
+    }
 }

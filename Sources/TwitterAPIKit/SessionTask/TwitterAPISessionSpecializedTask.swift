@@ -57,6 +57,15 @@ public struct TwitterAPISessionSpecializedTask<Success>: TwitterAPISessionSpecia
         return self
     }
 
+    @discardableResult
+    public func responseData(
+        _ block: @escaping (TwitterAPIResponse<Data>) -> Void
+    ) -> TwitterAPISessionSpecializedTask<
+        Success
+    > {
+        return responseData(queue: .main, block)
+    }
+
     public func cancel() {
         innerTask.cancel()
     }
