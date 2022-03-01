@@ -14,9 +14,10 @@ public protocol TwitterAPISessionDataTask: TwitterAPISessionTask {
 extension TwitterAPISessionDataTask {
     @discardableResult
     public func responseData(
+        queue: DispatchQueue = .main,
         _ block: @escaping (TwitterAPIResponse<Data>) -> Void
     ) -> Self {
-        return responseData(queue: .main, block)
+        return responseData(queue: queue, block)
     }
 }
 
