@@ -28,6 +28,15 @@ public enum BodyContentType: String {
 public enum MultipartFormDataPart {
     case value(name: String, value: Any)  // value is stringified with "String(describing:)"
     case data(name: String, value: Data, filename: String, mimeType: String)
+
+    var name: String {
+        switch self {
+        case .value(let name, _):
+            return name
+        case .data(let name, _, _, _):
+            return name
+        }
+    }
 }
 
 public protocol TwitterAPIRequest {
@@ -112,17 +121,25 @@ extension TwitterAPIRequest {
                 let contentType = "\(BodyContentType.multipartFormData.rawValue); boundary=\(boundary)"
                 request.setValue(contentType, forHTTPHeaderField: "Content-Type")
 
-                request.httpBody = try multipartFormData(boundary: boundary, parts: parts)
+                request.httpBody = try multipartFormData(
+                    boundary: boundary, parts: parts.sorted(by: { $0.name < $1.name }))
                 request.setValue(
                     String(request.httpBody?.count ?? 0), forHTTPHeaderField: "Content-Length")
             case .json:
-                request.setValue(bodyContentType.rawValue, forHTTPHeaderField: "Content-Type")
+
+                let param = bodyParameters
+                guard JSONSerialization.isValidJSONObject(param) else {
+                    throw TwitterAPIKitError.requestFailed(reason: .jsonSerializationFailed(obj: param))
+                }
                 do {
                     request.httpBody = try JSONSerialization.data(
-                        withJSONObject: bodyParameters, options: []
+                        withJSONObject: param, options: []
                     )
-                } catch let error {
-                    throw TwitterAPIKitError.requestFailed(reason: .jsonSerializationFailed(error: error))
+                    request.setValue(bodyContentType.rawValue, forHTTPHeaderField: "Content-Type")
+
+                } catch {
+                    // This path probably won't pass because it is pre-checked with `isValidJSONObject`.
+                    throw TwitterAPIKitError.requestFailed(reason: .jsonSerializationFailed(obj: param))
                 }
             }
         }
