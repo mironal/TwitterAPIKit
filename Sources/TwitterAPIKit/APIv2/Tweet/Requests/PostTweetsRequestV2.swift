@@ -6,6 +6,10 @@ open class PostTweetsRequestV2: TwitterAPIRequest {
     public struct Geo {
         public let placeID: String
 
+        public init(placeID: String) {
+            self.placeID = placeID
+        }
+
         func bind(param: inout [String: Any]) {
             var p = [String: Any]()
 
@@ -19,11 +23,19 @@ open class PostTweetsRequestV2: TwitterAPIRequest {
         public let mediaIDs: [String]
         public let taggedUserIDs: [String]?
 
+        public init(
+            mediaIDs: [String],
+            taggedUserIDs: [String]? = .none
+        ) {
+            self.mediaIDs = mediaIDs
+            self.taggedUserIDs = taggedUserIDs
+        }
+
         func bind(param: inout [String: Any]) {
             var p = [String: Any]()
 
-            p["media_ids"] = mediaIDs.joined(separator: ",")
-            taggedUserIDs.map { $0.joined(separator: ",") }.map { p["tagged_user_ids"] = $0 }
+            p["media_ids"] = mediaIDs
+            taggedUserIDs.map { p["tagged_user_ids"] = $0 }
 
             param["media"] = p
         }
@@ -33,11 +45,19 @@ open class PostTweetsRequestV2: TwitterAPIRequest {
         public let durationMinutes: Int
         public let options: [String]
 
+        public init(
+            durationMinutes: Int,
+            options: [String]
+        ) {
+            self.durationMinutes = durationMinutes
+            self.options = options
+        }
+
         func bind(param: inout [String: Any]) {
             var p = [String: Any]()
 
             p["duration_minutes"] = durationMinutes
-            p["options"] = options.joined(separator: ",")
+            p["options"] = options
 
             param["poll"] = p
         }
@@ -47,10 +67,18 @@ open class PostTweetsRequestV2: TwitterAPIRequest {
         public let excludeReplyUserIDs: [String]?
         public let inReplyToTweetID: String
 
+        public init(
+            excludeReplyUserIDs: [String]? = .none,
+            inReplyToTweetID: String
+        ) {
+            self.excludeReplyUserIDs = excludeReplyUserIDs
+            self.inReplyToTweetID = inReplyToTweetID
+        }
+
         func bind(param: inout [String: Any]) {
             var p = [String: Any]()
 
-            excludeReplyUserIDs.map { $0.joined(separator: ",") }.map { p["exclude_reply_user_ids"] = $0 }
+            excludeReplyUserIDs.map { p["exclude_reply_user_ids"] = $0 }
             p["in_reply_to_tweet_id"] = inReplyToTweetID
 
             param["reply"] = p
