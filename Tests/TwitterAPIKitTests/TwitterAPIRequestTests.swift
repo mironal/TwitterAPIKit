@@ -79,7 +79,7 @@ class TwitterAPIRequestTests: XCTestCase {
             let urlReq = try req.buildRequest(environment: env)
 
             XCTAssertEqual(urlReq.httpMethod, "GET")
-            XCTAssertEqual(urlReq.url?.query, "key=value,%F0%9F%A5%93")
+            XCTAssertEqual(urlReq.url?.query, "key=value%2C%F0%9F%A5%93")
             XCTAssertNil(urlReq.httpBody)
         }
 
@@ -127,9 +127,27 @@ class TwitterAPIRequestTests: XCTestCase {
             let urlReq = try req.buildRequest(environment: env)
 
             XCTAssertEqual(urlReq.httpMethod, "DELETE")
-            XCTAssertEqual(urlReq.url?.query, "key=value,%F0%9F%A5%93")
+            XCTAssertEqual(urlReq.url?.query, "key=value%2C%F0%9F%A5%93")
             XCTAssertNil(urlReq.httpBody)
         }
+    }
+
+    func testURLQueryPercentEncode() throws {
+
+        let req = MockTwitterAPIRequest(
+            method: .get,
+            parameters: [
+                "☃": "1970-01-01T00:01:00Z",
+                "key": "v a l u e",
+                "キー": "値",
+            ]
+        )
+
+        let urlReq = try req.buildRequest(environment: env)
+
+        XCTAssertEqual(
+            urlReq.url?.query, #"key=v%20a%20l%20u%20e&%E2%98%83=1970-01-01T00%3A01%3A00Z&%E3%82%AD%E3%83%BC=%E5%80%A4"#
+        )
     }
 
     func testBodyAndQueryParameter() throws {
@@ -146,7 +164,7 @@ class TwitterAPIRequestTests: XCTestCase {
         let urlReq = try req.buildRequest(environment: env)
 
         XCTAssertEqual(urlReq.httpMethod, "POST")
-        XCTAssertEqual(urlReq.url?.query, "key=value,%F0%9F%A5%93")
+        XCTAssertEqual(urlReq.url?.query, "key=value%2C%F0%9F%A5%93")
         XCTAssertEqual(String(data: urlReq.httpBody!, encoding: .utf8)!, "body=%E3%81%82")
     }
 

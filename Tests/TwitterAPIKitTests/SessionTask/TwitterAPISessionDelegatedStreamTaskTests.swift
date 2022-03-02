@@ -24,15 +24,16 @@ class TwitterAPISessionDelegatedStreamTaskTests: XCTestCase {
         DispatchQueue.main.async {
             task.append(chunk: Data("aaaa\r\nbbbb".utf8))
             task.append(chunk: Data("🥓🥓\r\nあ".utf8))
-
             task.complete(error: nil)
         }
 
         let exp = expectation(description: "")
-        exp.expectedFulfillmentCount = 4
+        exp.expectedFulfillmentCount = 8
 
         var count = 0
         task.streamResponse { response in
+
+            XCTAssertTrue(Thread.isMainThread)
 
             switch count {
             case 0:
@@ -48,6 +49,9 @@ class TwitterAPISessionDelegatedStreamTaskTests: XCTestCase {
             }
 
             count += 1
+            exp.fulfill()
+        }.streamResponse(queue: .global(qos: .default)) { _ in
+            XCTAssertFalse(Thread.isMainThread)
             exp.fulfill()
         }
 

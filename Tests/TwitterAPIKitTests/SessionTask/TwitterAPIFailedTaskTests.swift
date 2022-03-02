@@ -20,25 +20,76 @@ class TwitterAPIFailedTaskTests: XCTestCase {
         XCTAssertNil(task.httpResponse)
 
         let exp = expectation(description: "")
-        exp.expectedFulfillmentCount = 4
+        exp.expectedFulfillmentCount = 8
         task.responseData { response in
             XCTAssertNotNil(response.error)
             XCTAssertTrue(response.isError)
+            dispatchPrecondition(condition: .onQueue(.main))
             exp.fulfill()
         }
-        .responseObject(queue: .global(qos: .default)) { response in
+        .responseData(queue: .global(qos: .utility)) { response in
             XCTAssertNotNil(response.error)
             XCTAssertTrue(response.isError)
+            dispatchPrecondition(condition: .onQueue(.global(qos: .utility)))
             exp.fulfill()
         }
         .responseObject { response in
             XCTAssertNotNil(response.error)
             XCTAssertTrue(response.isError)
+            dispatchPrecondition(condition: .onQueue(.main))
+            exp.fulfill()
+        }
+        .responseObject(queue: .global(qos: .default)) { response in
+            XCTAssertNotNil(response.error)
+            XCTAssertTrue(response.isError)
+            dispatchPrecondition(condition: .onQueue(.global(qos: .default)))
+            exp.fulfill()
+        }
+        .responseDecodable(type: DecodableObj.self) { response in
+            XCTAssertNotNil(response.error)
+            XCTAssertTrue(response.isError)
+            dispatchPrecondition(condition: .onQueue(.main))
+            exp.fulfill()
+        }
+        .responseDecodable(type: DecodableObj.self, queue: .global(qos: .default)) { response in
+            XCTAssertNotNil(response.error)
+            XCTAssertTrue(response.isError)
+            dispatchPrecondition(condition: .onQueue(.global(qos: .default)))
             exp.fulfill()
         }
         .responseDecodable(type: DecodableObj.self, decoder: JSONDecoder()) { response in
             XCTAssertNotNil(response.error)
             XCTAssertTrue(response.isError)
+            dispatchPrecondition(condition: .onQueue(.main))
+            exp.fulfill()
+        }
+        .responseDecodable(type: DecodableObj.self, decoder: JSONDecoder(), queue: .global(qos: .userInteractive)) {
+            response in
+
+            XCTAssertNotNil(response.error)
+            XCTAssertTrue(response.isError)
+            dispatchPrecondition(condition: .onQueue(.global(qos: .userInteractive)))
+            exp.fulfill()
+        }
+
+        wait(for: [exp], timeout: 10)
+    }
+
+    func testStream() throws {
+        let task = TwitterAPIFailedTask(.responseFailed(reason: .invalidResponse(error: nil)))
+
+        let exp = expectation(description: "")
+        exp.expectedFulfillmentCount = 2
+        task.streamResponse { response in
+            XCTAssertNotNil(response.error)
+            XCTAssertTrue(response.isError)
+            dispatchPrecondition(condition: .onQueue(.main))
+            exp.fulfill()
+        }
+        .streamResponse(queue: .global(qos: .utility)) { response in
+            XCTAssertNotNil(response.error)
+            XCTAssertTrue(response.isError)
+            dispatchPrecondition(condition: .onQueue(.global(qos: .utility)))
             exp.fulfill()
         }
 

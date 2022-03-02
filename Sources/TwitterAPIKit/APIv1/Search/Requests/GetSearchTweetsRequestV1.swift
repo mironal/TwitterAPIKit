@@ -38,7 +38,7 @@ open class GetSearchTweetsRequestV1: TwitterAPIRequest {
         locale.map { p["locale"] = $0 }
         geocode.map { p["geocode"] = $0 }
         sinceID.map { p["since_id"] = $0 }
-        resultType.map { p["result_type"] = $0 }
+        resultType.map { p["result_type"] = $0.rawValue }
         includeEntities.map { p["include_entities"] = $0 }
         return p
     }
