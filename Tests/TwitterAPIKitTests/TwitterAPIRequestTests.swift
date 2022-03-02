@@ -132,6 +132,24 @@ class TwitterAPIRequestTests: XCTestCase {
         }
     }
 
+    func testURLQueryPercentEncode() throws {
+
+        let req = MockTwitterAPIRequest(
+            method: .get,
+            parameters: [
+                "☃": "1970-01-01T00:01:00Z",
+                "key": "v a l u e",
+                "キー": "値",
+            ]
+        )
+
+        let urlReq = try req.buildRequest(environment: env)
+
+        XCTAssertEqual(
+            urlReq.url?.query, #"key=v%20a%20l%20u%20e&%E2%98%83=1970-01-01T00%3A01%3A00Z&%E3%82%AD%E3%83%BC=%E5%80%A4"#
+        )
+    }
+
     func testBodyAndQueryParameter() throws {
         let req = MockTwitterAPIQueryAndBodyRequest(
             method: .post,

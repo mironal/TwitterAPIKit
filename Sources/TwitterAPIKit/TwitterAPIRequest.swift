@@ -90,7 +90,10 @@ extension TwitterAPIRequest {
             throw TwitterAPIKitError.requestFailed(reason: .invalidURL(url: ""))
         }
         if !queryParameters.isEmpty {
-            urlComponent.queryItems = queryParameters.map { .init(name: $0, value: "\($1)") }
+            urlComponent.percentEncodedQueryItems =
+                queryParameters
+                .sorted(by: { a, b in a.key < b.key })
+                .map { .init(name: $0.urlEncodedString, value: "\($1)".urlEncodedString) }
         }
 
         var request = URLRequest(url: urlComponent.url!)
