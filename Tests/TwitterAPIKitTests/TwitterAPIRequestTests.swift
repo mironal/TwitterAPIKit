@@ -79,7 +79,7 @@ class TwitterAPIRequestTests: XCTestCase {
             let urlReq = try req.buildRequest(environment: env)
 
             XCTAssertEqual(urlReq.httpMethod, "GET")
-            XCTAssertEqual(urlReq.url?.query, "key=value,%F0%9F%A5%93")
+            XCTAssertEqual(urlReq.url?.query, "key=value%2C%F0%9F%A5%93")
             XCTAssertNil(urlReq.httpBody)
         }
 
@@ -127,7 +127,7 @@ class TwitterAPIRequestTests: XCTestCase {
             let urlReq = try req.buildRequest(environment: env)
 
             XCTAssertEqual(urlReq.httpMethod, "DELETE")
-            XCTAssertEqual(urlReq.url?.query, "key=value,%F0%9F%A5%93")
+            XCTAssertEqual(urlReq.url?.query, "key=value%2C%F0%9F%A5%93")
             XCTAssertNil(urlReq.httpBody)
         }
     }
@@ -164,7 +164,7 @@ class TwitterAPIRequestTests: XCTestCase {
         let urlReq = try req.buildRequest(environment: env)
 
         XCTAssertEqual(urlReq.httpMethod, "POST")
-        XCTAssertEqual(urlReq.url?.query, "key=value,%F0%9F%A5%93")
+        XCTAssertEqual(urlReq.url?.query, "key=value%2C%F0%9F%A5%93")
         XCTAssertEqual(String(data: urlReq.httpBody!, encoding: .utf8)!, "body=%E3%81%82")
     }
 
