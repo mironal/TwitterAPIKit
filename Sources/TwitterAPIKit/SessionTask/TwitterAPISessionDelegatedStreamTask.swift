@@ -10,18 +10,27 @@ public class TwitterAPISessionDelegatedStreamTask: TwitterAPISessionStreamTask, 
         return task.httpResponse
     }
     private let task: TwitterAPISessionTask
-    private var dataBlocks = [(TwitterAPIResponse<Data>) -> Void]()
+    private var dataBlocks = [(queue: DispatchQueue, block: (TwitterAPIResponse<Data>) -> Void)]()
+    private lazy var taskQueue = DispatchQueue(label: "TwitterAPISessionDelegatedStreamTask_\(taskIdentifier)")
 
     init(task: TwitterAPISessionTask) {
         self.task = task
     }
 
-    public func streamResponse(queue: DispatchQueue, _ block: @escaping (TwitterAPIResponse<Data>) -> Void) -> Self {
-        dataBlocks.append { data in
-            queue.async {
-                block(data)
-            }
-        }
+    @discardableResult
+    public func streamResponse(
+        queue: DispatchQueue,
+        _ block: @escaping (TwitterAPIResponse<Data>) -> Void
+    ) -> Self {
+        dataBlocks.append((queue: queue, block: block))
+        return self
+    }
+
+    @discardableResult
+    public func streamResponse(
+        _ block: @escaping (TwitterAPIResponse<Data>) -> Void
+    ) -> Self {
+        dataBlocks.append((queue: .main, block: block))
         return self
     }
 
@@ -30,19 +39,24 @@ public class TwitterAPISessionDelegatedStreamTask: TwitterAPISessionStreamTask, 
     }
 
     func append(chunk: Data) {
-        for data in chunk.split(separator: chunkSeparator) {
-            notify(result: .success(data))
+        taskQueue.async { [weak self] in
+            guard let self = self else { return }
+            for data in chunk.split(separator: chunkSeparator) {
+                self.notify(result: .success(data))
+            }
         }
     }
 
     func complete(error: Error?) {
         if let error = error {
-            notify(result: .failure(.responseFailed(reason: .invalidResponse(error: error))))
+            taskQueue.async { [weak self] in
+                guard let self = self else { return }
+                self.notify(result: .failure(.responseFailed(reason: .invalidResponse(error: error))))
+            }
         }
     }
 
     private func notify(result: Result<Data, TwitterAPIKitError>) {
-
         let response = TwitterAPIResponse(
             request: currentRequest,
             response: httpResponse,
@@ -50,6 +64,11 @@ public class TwitterAPISessionDelegatedStreamTask: TwitterAPISessionStreamTask, 
             result: result,
             rateLimit: nil
         )
-        dataBlocks.forEach { $0(response) }
+
+        dataBlocks.forEach { (queue, block) in
+            queue.async {
+                block(response)
+            }
+        }
     }
 }
