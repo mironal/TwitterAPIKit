@@ -74,4 +74,25 @@ class TwitterAPIFailedTaskTests: XCTestCase {
 
         wait(for: [exp], timeout: 10)
     }
+
+    func testStream() throws {
+        let task = TwitterAPIFailedTask(.responseFailed(reason: .invalidResponse(error: nil)))
+
+        let exp = expectation(description: "")
+        exp.expectedFulfillmentCount = 2
+        task.streamResponse { response in
+            XCTAssertNotNil(response.error)
+            XCTAssertTrue(response.isError)
+            dispatchPrecondition(condition: .onQueue(.main))
+            exp.fulfill()
+        }
+        .streamResponse(queue: .global(qos: .utility)) { response in
+            XCTAssertNotNil(response.error)
+            XCTAssertTrue(response.isError)
+            dispatchPrecondition(condition: .onQueue(.global(qos: .utility)))
+            exp.fulfill()
+        }
+
+        wait(for: [exp], timeout: 10)
+    }
 }
