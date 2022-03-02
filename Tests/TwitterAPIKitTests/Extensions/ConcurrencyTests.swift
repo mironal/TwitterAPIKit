@@ -20,14 +20,15 @@ import XCTest
                 task: mockTask
             )
 
-            DispatchQueue.global(qos: .background).async {
+            DispatchQueue.global(qos: .default).async {
                 task.append(chunk: Data("{\"key\"".utf8))
-                Thread.sleep(forTimeInterval: 0.1)
+                Thread.sleep(forTimeInterval: 0.01)
                 task.append(chunk: Data(":\"value\"}".utf8))
 
                 mockTask.httpResponse = .init(
                     url: URL(string: "http://example.com")!, statusCode: 200, httpVersion: "1.1", headerFields: [:])
 
+                Thread.sleep(forTimeInterval: 0.01)
                 task.complete(error: nil)
             }
 
@@ -52,6 +53,80 @@ import XCTest
 
         }
 
+        func testCancel() async throws {
+            let mockTask = MockTwitterAPISessionTask(taskIdentifier: 1)
+
+            let task = TwitterAPISessionDelegatedJSONTask(
+                task: mockTask
+            )
+
+            DispatchQueue.global(qos: .default).async {
+                task.append(chunk: Data("{\"key\"".utf8))
+                Thread.sleep(forTimeInterval: 0.01)
+                task.append(chunk: Data(":\"value\"}".utf8))
+
+                Thread.sleep(forTimeInterval: 0.01)
+                // emurate cancel
+                task.cancel()
+                task.complete(error: URLError(.cancelled))
+            }
+
+            async let response = task.responseData
+            async let responseObj = task.responseObject
+            async let responseDecodable = task.responseDecodable(type: DecodableObj.self)
+
+            do {
+                let error = await response.error
+                XCTAssertTrue(error!.isCancelled)
+            }
+
+            do {
+                let error = await responseObj.error
+                XCTAssertTrue(error!.isCancelled)
+            }
+
+            do {
+                let error = await responseDecodable.error
+                XCTAssertTrue(error!.isCancelled)
+            }
+
+            XCTAssertTrue(mockTask.cancelled)
+        }
+
+        func testTaskCancel() async throws {
+
+            let mockTask = MockTwitterAPISessionTask(taskIdentifier: 1)
+
+            let task = TwitterAPISessionDelegatedJSONTask(
+                task: mockTask
+            )
+
+            let asyncTask = Task { () -> [TwitterAPIResponse<Void>] in
+                async let r0 = task.responseData.map { _ in () }
+                async let r1 = task.responseObject.map { _ in () }
+                async let r2 = task.responseDecodable(type: DecodableObj.self).map { _ in () }
+                return await [r0, r1, r2]
+            }
+
+            DispatchQueue.global(qos: .default).async {
+                task.append(chunk: Data("{\"key\"".utf8))
+                Thread.sleep(forTimeInterval: 0.01)
+                task.append(chunk: Data(":\"value\"}".utf8))
+
+                Thread.sleep(forTimeInterval: 0.01)
+                asyncTask.cancel()
+                task.complete(error: URLError(.cancelled))
+            }
+
+            let rs = await asyncTask.value
+            XCTAssertTrue(mockTask.cancelled)
+            XCTAssertTrue(asyncTask.isCancelled)
+            XCTAssertEqual(rs.count, 3)
+            for r in rs {
+                XCTAssertTrue(r.error!.isCancelled)
+            }
+        }
+
         func testStream() async throws {
             let mockTask = MockTwitterAPISessionTask(
                 taskIdentifier: 1,
@@ -62,15 +137,16 @@ import XCTest
 
             let task = TwitterAPISessionDelegatedStreamTask(task: mockTask)
 
-            DispatchQueue.main.async {
+            let stream = task.streamResponse(queue: .main)
+            DispatchQueue.global(qos: .default).async {
                 task.append(chunk: Data("aaaa\r\nbbbb".utf8))
+                Thread.sleep(forTimeInterval: 0.01)
                 task.append(chunk: Data("🥓🥓\r\nあ".utf8))
-
-                task.complete(error: nil)
             }
 
             var count = 0
-            for await response in task.streamResponse(queue: .main).prefix(4) {
+            for await response in stream {
+
                 switch count {
                 case 0:
                     XCTAssertEqual(response.success.map { String(data: $0, encoding: .utf8) }, "aaaa")
@@ -84,8 +160,38 @@ import XCTest
                     XCTFail()
                 }
                 count += 1
+                if count == 4 {
+                    break
+                }
             }
             XCTAssertEqual(count, 4)
+        }
+
+        func testStreamCancel() async throws {
+
+            let mockTask = MockTwitterAPISessionTask(
+                taskIdentifier: 1,
+                currentRequest: nil,
+                originalRequest: nil,
+                httpResponse: nil
+            )
+
+            let task = TwitterAPISessionDelegatedStreamTask(task: mockTask)
+            let asyncTask = Task {
+                for await resp in task.streamResponse(queue: .main) {
+                    XCTAssertFalse(resp.isError)
+                }
+            }
+
+            task.append(chunk: Data("aaaa\r\nbbbb".utf8))
+
+            DispatchQueue.global(qos: .default).asyncAfter(deadline: .now() + .milliseconds(1)) {
+                asyncTask.cancel()
+            }
+
+            await asyncTask.value
+            XCTAssertTrue(mockTask.cancelled)
+            XCTAssertTrue(asyncTask.isCancelled)
         }
     }
 #endif

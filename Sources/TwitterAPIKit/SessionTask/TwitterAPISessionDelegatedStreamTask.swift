@@ -17,7 +17,11 @@ public class TwitterAPISessionDelegatedStreamTask: TwitterAPISessionStreamTask, 
     }
 
     public func streamResponse(queue: DispatchQueue, _ block: @escaping (TwitterAPIResponse<Data>) -> Void) -> Self {
-        dataBlocks.append(block)
+        dataBlocks.append { data in
+            queue.async {
+                block(data)
+            }
+        }
         return self
     }
 

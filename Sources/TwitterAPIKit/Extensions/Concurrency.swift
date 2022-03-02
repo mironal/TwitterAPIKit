@@ -86,6 +86,9 @@ extension TwitterAPISessionStreamTask {
         return AsyncStream { continuation in
             streamResponse(queue: queue) { response in
                 continuation.yield(response)
+                if response.isError {
+                    continuation.finish()
+                }
             }
             continuation.onTermination = { @Sendable _ in
                 cancel()

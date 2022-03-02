@@ -125,10 +125,14 @@ class TwitterAPISessionTests: XCTestCase {
         }
 
         let exp = expectation(description: "")
-        exp.expectedFulfillmentCount = 2
-        session.send(streamRequest: GetTwitterReqeust()).streamResponse(queue: .global(qos: .default)) { response in
-            exp.fulfill()
-        }
+        exp.expectedFulfillmentCount = 4
+        session.send(streamRequest: GetTwitterReqeust())
+            .streamResponse(queue: .global(qos: .default)) { response in
+                exp.fulfill()
+            }.streamResponse { response in
+                XCTAssertTrue(Thread.isMainThread)
+                exp.fulfill()
+            }
         wait(for: [exp], timeout: 10)
     }
 
