@@ -126,9 +126,10 @@ public struct TwitterAPIFailedTask: TwitterAPISessionJSONTask, TwitterAPISession
     }
 
     @discardableResult
-    public func streamResponse(queue: DispatchQueue, _ block: @escaping (TwitterAPIResponse<Data>) -> Void)
-        -> TwitterAPIFailedTask
-    {
+    public func streamResponse(
+        queue: DispatchQueue,
+        _ block: @escaping (TwitterAPIResponse<Data>) -> Void
+    ) -> TwitterAPIFailedTask {
         queue.async {
             let response = TwitterAPIResponse<Data>(
                 request: nil,
@@ -139,6 +140,12 @@ public struct TwitterAPIFailedTask: TwitterAPISessionJSONTask, TwitterAPISession
             block(response)
         }
         return self
+    }
+    @discardableResult
+    public func streamResponse(
+        _ block: @escaping (TwitterAPIResponse<Data>) -> Void
+    ) -> TwitterAPIFailedTask {
+        return streamResponse(queue: .main, block)
     }
 
     public func cancel() {}
