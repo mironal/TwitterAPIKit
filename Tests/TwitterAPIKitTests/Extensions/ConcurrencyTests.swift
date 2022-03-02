@@ -35,6 +35,7 @@ import XCTest
             async let response = task.responseData
             async let responseObj = task.responseObject
             async let responseDecodable = task.responseDecodable(type: DecodableObj.self)
+            async let aResponse = task.specialized { _ in "a" }.responseObject
 
             do {
                 let data = await response.success
@@ -51,6 +52,10 @@ import XCTest
                 XCTAssertEqual(obj, .init(key: "value"))
             }
 
+            do {
+                let a = await aResponse.success
+                XCTAssertEqual(a, "a")
+            }
         }
 
         func testCancel() async throws {
@@ -74,6 +79,7 @@ import XCTest
             async let response = task.responseData
             async let responseObj = task.responseObject
             async let responseDecodable = task.responseDecodable(type: DecodableObj.self)
+            async let aResponse = task.specialized { _ in "a" }.responseObject
 
             do {
                 let error = await response.error
@@ -87,6 +93,11 @@ import XCTest
 
             do {
                 let error = await responseDecodable.error
+                XCTAssertTrue(error!.isCancelled)
+            }
+
+            do {
+                let error = await aResponse.error
                 XCTAssertTrue(error!.isCancelled)
             }
 
@@ -105,7 +116,8 @@ import XCTest
                 async let r0 = task.responseData.map { _ in () }
                 async let r1 = task.responseObject.map { _ in () }
                 async let r2 = task.responseDecodable(type: DecodableObj.self).map { _ in () }
-                return await [r0, r1, r2]
+                async let r3 = task.specialized { _ in () }.responseObject
+                return await [r0, r1, r2, r3]
             }
 
             DispatchQueue.global(qos: .default).async {
@@ -121,7 +133,7 @@ import XCTest
             let rs = await asyncTask.value
             XCTAssertTrue(mockTask.cancelled)
             XCTAssertTrue(asyncTask.isCancelled)
-            XCTAssertEqual(rs.count, 3)
+            XCTAssertEqual(rs.count, 4)
             for r in rs {
                 XCTAssertTrue(r.error!.isCancelled)
             }
