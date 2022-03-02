@@ -22,13 +22,11 @@ import XCTest
 
             DispatchQueue.global(qos: .default).async {
                 task.append(chunk: Data("{\"key\"".utf8))
-                Thread.sleep(forTimeInterval: 0.01)
                 task.append(chunk: Data(":\"value\"}".utf8))
 
                 mockTask.httpResponse = .init(
                     url: URL(string: "http://example.com")!, statusCode: 200, httpVersion: "1.1", headerFields: [:])
 
-                Thread.sleep(forTimeInterval: 0.01)
                 task.complete(error: nil)
             }
 
@@ -67,10 +65,8 @@ import XCTest
 
             DispatchQueue.global(qos: .default).async {
                 task.append(chunk: Data("{\"key\"".utf8))
-                Thread.sleep(forTimeInterval: 0.01)
                 task.append(chunk: Data(":\"value\"}".utf8))
 
-                Thread.sleep(forTimeInterval: 0.01)
                 // emurate cancel
                 task.cancel()
                 task.complete(error: URLError(.cancelled))
@@ -122,10 +118,8 @@ import XCTest
 
             DispatchQueue.global(qos: .default).async {
                 task.append(chunk: Data("{\"key\"".utf8))
-                Thread.sleep(forTimeInterval: 0.01)
                 task.append(chunk: Data(":\"value\"}".utf8))
 
-                Thread.sleep(forTimeInterval: 0.01)
                 asyncTask.cancel()
                 task.complete(error: URLError(.cancelled))
             }
@@ -152,7 +146,6 @@ import XCTest
             let stream = task.streamResponse(queue: .main)
             DispatchQueue.global(qos: .default).async {
                 task.append(chunk: Data("aaaa\r\nbbbb".utf8))
-                Thread.sleep(forTimeInterval: 0.01)
                 task.append(chunk: Data("🥓🥓\r\nあ".utf8))
             }
 
@@ -189,21 +182,65 @@ import XCTest
             )
 
             let task = TwitterAPISessionDelegatedStreamTask(task: mockTask)
+            let stream = task.streamResponse(queue: .main)
             let asyncTask = Task {
-                for await resp in task.streamResponse(queue: .main) {
-                    XCTAssertFalse(resp.isError)
+                for await resp in stream {
+                    XCTFail(resp.prettyString)
                 }
             }
 
-            task.append(chunk: Data("aaaa\r\nbbbb".utf8))
-
             DispatchQueue.global(qos: .default).asyncAfter(deadline: .now() + .milliseconds(1)) {
                 asyncTask.cancel()
+                task.append(chunk: Data("aaaa\r\nbbbb".utf8))
+            }
+
+            await asyncTask.value
+
+            XCTAssertTrue(asyncTask.isCancelled)
+            XCTAssertTrue(mockTask.cancelled)
+        }
+
+        func testStreamError() async throws {
+
+            let mockTask = MockTwitterAPISessionTask(
+                taskIdentifier: 1,
+                currentRequest: nil,
+                originalRequest: nil,
+                httpResponse: nil
+            )
+
+            let task = TwitterAPISessionDelegatedStreamTask(task: mockTask)
+            let stream = task.streamResponse(queue: .main).map({ resp in resp.map { String(data: $0, encoding: .utf8)! }
+            })
+            let asyncTask = Task {
+                var count = 0
+                for await resp in stream {
+
+                    switch count {
+                    case 0:
+                        XCTAssertEqual(resp.success, "aaaa")
+                        XCTAssertFalse(resp.isError)
+                    case 1:
+                        XCTAssertEqual(resp.success, "bbbb")
+                        XCTAssertFalse(resp.isError)
+                    case 2:
+                        XCTAssertTrue(resp.isError)
+                    default:
+                        XCTFail()
+                    }
+                    count += 1
+                }
+            }
+
+            DispatchQueue.global(qos: .default).asyncAfter(deadline: .now() + .milliseconds(1)) {
+                task.append(chunk: Data("aaaa\r\nbbbb".utf8))
+                task.complete(error: URLError(.badServerResponse))
+                task.append(chunk: Data("ccc\r\n".utf8))
             }
 
             await asyncTask.value
             XCTAssertTrue(mockTask.cancelled)
-            XCTAssertTrue(asyncTask.isCancelled)
+            XCTAssertFalse(asyncTask.isCancelled)
         }
     }
 #endif
