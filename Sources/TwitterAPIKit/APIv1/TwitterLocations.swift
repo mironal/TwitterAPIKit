@@ -4,6 +4,11 @@ public struct TwitterCoordinateV1 {
     var lat: Double
     var long: Double
 
+    public init(lat: Double, long: Double) {
+        self.lat = lat
+        self.long = long
+    }
+
     func bind(param: inout [String: Any]) {
         param["lat"] = lat
         param["long"] = long
