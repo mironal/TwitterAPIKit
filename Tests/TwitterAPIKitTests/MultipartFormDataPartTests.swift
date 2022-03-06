@@ -28,10 +28,11 @@ class MultipartFormDataPartTests: XCTestCase {
         let c = MultipartFormDataPart.data(name: "n", value: data, filename: "ff", mimeType: "m")
         let d = MultipartFormDataPart.data(name: "n", value: data, filename: "f", mimeType: "mm")
         let e = MultipartFormDataPart.data(name: "n", value: Data(repeating: 1, count: 1), filename: "f", mimeType: "m")
+        let f = MultipartFormDataPart.value(name: "n", value: data)
 
         let a1 = MultipartFormDataPart.data(name: "n", value: Data(), filename: "f", mimeType: "m")
 
-        [a, b, c, d, e].combinations(ofCount: 2).forEach { combo in
+        [a, b, c, d, e, f].combinations(ofCount: 2).forEach { combo in
             XCTAssertNotEqual(combo[0], combo[1])
         }
 
