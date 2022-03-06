@@ -1,5 +1,6 @@
 import Foundation
 
+/// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload-append
 open class UploadMediaAppendRequestV1: TwitterAPIRequest {
 
     public let command: String = "APPEND"
