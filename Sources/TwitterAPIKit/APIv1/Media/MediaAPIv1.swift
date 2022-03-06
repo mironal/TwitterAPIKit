@@ -92,9 +92,9 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
         return session.send(request)
     }
 
-    func uploadMediaAppendSplitChunks(_ request: UploadMediaAppendRequestV1) -> [TwitterAPISessionSpecializedTask<
-        String
-    >] {
+    func uploadMediaAppendSplitChunks(
+        _ request: UploadMediaAppendRequestV1
+    ) -> [TwitterAPISessionSpecializedTask<String>] {
         return uploadMediaAppendSplitChunks(request, maxBytes: 5_242_880 /* 5MB */)
     }
 
@@ -102,11 +102,12 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
         _ request: UploadMediaAppendRequestV1, maxBytes: Int
     ) -> [TwitterAPISessionSpecializedTask<String>] {
 
-        let tasks = request.segments(maxBytes: maxBytes).map { req in
-            uploadMediaAppend(req).specialized { _ in
-                req.mediaID
+        let tasks = request.segments(maxBytes: maxBytes)
+            .map { req in
+                uploadMediaAppend(req).specialized { _ in
+                    req.mediaID
+                }
             }
-        }
 
         return tasks
     }
