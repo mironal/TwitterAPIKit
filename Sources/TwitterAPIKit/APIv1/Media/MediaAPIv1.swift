@@ -102,26 +102,11 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
         _ request: UploadMediaAppendRequestV1, maxBytes: Int
     ) -> [TwitterAPISessionSpecializedTask<String>] {
 
-        // Split media data
-
-        let totalDataSize = request.media.count
-
-        var tasks = [TwitterAPISessionSpecializedTask<String>]()
-
-        var nextRequest = request
-        repeat {
-            let start = nextRequest.segmentIndex * maxBytes
-            let len = min(totalDataSize - nextRequest.segmentIndex * maxBytes, maxBytes)
-
-            let task = uploadMediaAppend(nextRequest.subdata(in: start..<(start + len)))
-                .specialized { _ in
-                    return request.mediaID
-                }
-
-            tasks.append(task)
-
-            nextRequest = nextRequest.nextSegment()
-        } while (nextRequest.segmentIndex * maxBytes) < totalDataSize
+        let tasks = request.segments(maxBytes: maxBytes).map { req in
+            uploadMediaAppend(req).specialized { _ in
+                req.mediaID
+            }
+        }
 
         return tasks
     }
