@@ -98,9 +98,9 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
         return uploadMediaAppendSplitChunks(request, maxBytes: 5_242_880 /* 5MB */)
     }
 
-    func uploadMediaAppendSplitChunks(_ request: UploadMediaAppendRequestV1, maxBytes: Int)
-        -> [TwitterAPISessionSpecializedTask<String>]
-    {
+    func uploadMediaAppendSplitChunks(
+        _ request: UploadMediaAppendRequestV1, maxBytes: Int
+    ) -> [TwitterAPISessionSpecializedTask<String>] {
 
         // Split media data
 

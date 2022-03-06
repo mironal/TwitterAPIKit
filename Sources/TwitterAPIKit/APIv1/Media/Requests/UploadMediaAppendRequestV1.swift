@@ -47,13 +47,35 @@ open class UploadMediaAppendRequestV1: TwitterAPIRequest {
         filename: String,
         mimeType: String,
         media: Data,
-        segmentIndex: Int
+        segmentIndex: Int = 0
     ) {
         self.mediaID = mediaID
         self.filename = filename
         self.mimeType = mimeType
         self.media = media
         self.segmentIndex = segmentIndex
+    }
+
+    open func segments(maxBytes: Int) -> [UploadMediaAppendRequestV1] {
+
+        var requests = [UploadMediaAppendRequestV1]()
+        let totalDataSize = media.count
+        var currentSegmentIndex = 0
+        repeat {
+            currentSegmentIndex = segmentIndex + requests.count
+            let start = currentSegmentIndex * maxBytes
+            let len = min(totalDataSize - start, maxBytes)
+            let req = UploadMediaAppendRequestV1(
+                mediaID: mediaID,
+                filename: filename,
+                mimeType: mimeType,
+                media: media.subdata(in: start..<(start + len)),
+                segmentIndex: currentSegmentIndex
+            )
+            requests.append(req)
+        } while ((currentSegmentIndex + 1) * maxBytes) < totalDataSize
+
+        return requests
     }
 
     open func nextSegment(_ inc: Int = 1) -> UploadMediaAppendRequestV1 {
