@@ -153,7 +153,7 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
                     mimeType: parameters.mediaType,
                     media: parameters.media,
                     segmentIndex: 0
-                )
+                ), maxBytes: parameters.uploadChunkSize ?? 5_242_880
             ).responseObject(queue: .processQueue) { [weak self] responses in
 
                 guard let self = self else { return }
