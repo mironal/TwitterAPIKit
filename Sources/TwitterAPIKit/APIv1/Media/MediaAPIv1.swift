@@ -92,36 +92,22 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
         return session.send(request)
     }
 
-    func uploadMediaAppendSplitChunks(_ request: UploadMediaAppendRequestV1) -> [TwitterAPISessionSpecializedTask<
-        String
-    >] {
+    func uploadMediaAppendSplitChunks(
+        _ request: UploadMediaAppendRequestV1
+    ) -> [TwitterAPISessionSpecializedTask<String>] {
         return uploadMediaAppendSplitChunks(request, maxBytes: 5_242_880 /* 5MB */)
     }
 
-    func uploadMediaAppendSplitChunks(_ request: UploadMediaAppendRequestV1, maxBytes: Int)
-        -> [TwitterAPISessionSpecializedTask<String>]
-    {
+    func uploadMediaAppendSplitChunks(
+        _ request: UploadMediaAppendRequestV1, maxBytes: Int
+    ) -> [TwitterAPISessionSpecializedTask<String>] {
 
-        // Split media data
-
-        let totalDataSize = request.media.count
-
-        var tasks = [TwitterAPISessionSpecializedTask<String>]()
-
-        var nextRequest = request
-        repeat {
-            let start = nextRequest.segmentIndex * maxBytes
-            let len = min(totalDataSize - nextRequest.segmentIndex * maxBytes, maxBytes)
-
-            let task = uploadMediaAppend(nextRequest.subdata(in: start..<(start + len)))
-                .specialized { _ in
-                    return request.mediaID
+        let tasks = request.segments(maxBytes: maxBytes)
+            .map { req in
+                uploadMediaAppend(req).specialized { _ in
+                    req.mediaID
                 }
-
-            tasks.append(task)
-
-            nextRequest = nextRequest.nextSegment()
-        } while (nextRequest.segmentIndex * maxBytes) < totalDataSize
+            }
 
         return tasks
     }
@@ -167,7 +153,7 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
                     mimeType: parameters.mediaType,
                     media: parameters.media,
                     segmentIndex: 0
-                )
+                ), maxBytes: parameters.uploadChunkSize ?? 5_242_880
             ).responseObject(queue: .processQueue) { [weak self] responses in
 
                 guard let self = self else { return }

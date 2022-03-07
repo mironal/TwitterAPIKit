@@ -39,6 +39,25 @@ public enum MultipartFormDataPart {
     }
 }
 
+extension MultipartFormDataPart: Equatable {
+    public static func == (lhs: MultipartFormDataPart, rhs: MultipartFormDataPart) -> Bool {
+        switch (lhs, rhs) {
+        case let (.value(name: ln, value: lv), .value(name: rn, value: rv)):
+            return ln == rn && type(of: lv) == type(of: rv) && String(describing: lv) == String(describing: rv)
+        case let (
+            .data(name: ln, value: lv, filename: lf, mimeType: lm),
+            .data(name: rn, value: rv, filename: rf, mimeType: rm)
+        ):
+            return ln == rn
+                && lv == rv
+                && lf == rf
+                && lm == rm
+        default:
+            return false
+        }
+    }
+}
+
 public protocol TwitterAPIRequest {
     var method: HTTPMethod { get }
     var baseURLType: TwitterBaseURLType { get }

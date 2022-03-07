@@ -6,6 +6,8 @@ public struct UploadMediaRequestParameters {
     public let filename: String
     public let mediaCategory: String?
     public let additionalOwners: [String]?
+    /// Byte
+    public let uploadChunkSize: Int?
 
     /// filename can be any value. ex) hoge.mp4
     public init(
@@ -13,13 +15,15 @@ public struct UploadMediaRequestParameters {
         mediaType: String,
         filename: String,
         mediaCategory: String? = .none,
-        additionalOwners: [String]? = .none
+        additionalOwners: [String]? = .none,
+        uploadChunkSize: Int? = .none
     ) {
         self.media = media
         self.mediaType = mediaType
         self.mediaCategory = mediaCategory
         self.additionalOwners = additionalOwners
         self.filename = filename
+        self.uploadChunkSize = uploadChunkSize
     }
 }
 

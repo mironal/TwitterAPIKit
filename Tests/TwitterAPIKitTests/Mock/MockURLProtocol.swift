@@ -13,12 +13,12 @@ class MockURLProtocol: URLProtocol {
         return request
     }
 
-    override func startLoading() {
+    static func cleanup() {
+        MockURLProtocol.requestHandler = nil
+        MockURLProtocol.requestAssert = nil
+    }
 
-        defer {
-            MockURLProtocol.requestHandler = nil
-            MockURLProtocol.requestAssert = nil
-        }
+    override func startLoading() {
 
         let handler: ((URLRequest) throws -> (HTTPURLResponse, Data?))
         if let h = MockURLProtocol.requestHandler {
