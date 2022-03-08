@@ -1,0 +1,49 @@
+{#
+Run:
+
+sourcery --sources Sources/TwitterAPIKit/Some/Resource/Requests/ --sources Sources/TwitterAPIKit/TwitterAPIRequest.swift --templates test-template.stencil --output Some/Test/Dir
+
+and edit generated test code.
+#}
+{% for type in types.implementing.TwitterAPIRequest %}
+// sourcery:file:{{ type.name }}Test.swift
+import TwitterAPIKit
+import XCTest
+
+class {{ type.name }}Test: XCTestCase {
+    override func setUpWithError() throws {
+    }
+
+    override func tearDownWithError() throws {
+    }
+
+    func test() throws {
+        let req = {{type.name}}(
+        {% for param in type.methods[0].parameters %}
+            {% if param.typeName.isOptional %} 
+            {{param.name}}: {{param.defaultValue}}{{ ',' if not forloop.last }}
+            {% elif param.typeName.name == "String" %}
+            {{param.name}}: "_{{param.name}}_"{{ ',' if not forloop.last }}
+            {% else %}
+            {{param.name}}: .init(){{ ',' if not forloop.last }}
+            {% endif %}
+                
+        {% endfor %}
+        )
+
+        {% if type.name | hasPrefix: "Post" %}
+        XCTAssertEqual(req.method, .post)
+        {% elif type.name | hasPrefix: "Delete" %}
+        XCTAssertEqual(req.method, .delete)
+        {% else %}
+        XCTAssertEqual(req.method, .get)
+        {% endif %}
+        XCTAssertEqual(req.baseURLType, .api)
+        XCTAssertEqual(req.path, "")
+        XCTAssertEqual(req.bodyContentType, .wwwFormUrlEncoded)
+        AssertEqualAnyDict(req.parameters, [:])
+    }
+}
+// sourcery:end
+{% endfor %}
+
