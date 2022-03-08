@@ -32,4 +32,12 @@ class GetUsersBlockingRequestV2Test: XCTestCase {
                 "user.fields": "profile_image_url,protected,public_metrics",
             ])
     }
+
+    func testDefaultArg() throws {
+        let req = GetUsersBlockingRequestV2(
+            id: "_id_"
+        )
+
+        AssertEqualAnyDict(req.parameters, [:])
+    }
 }

@@ -32,4 +32,12 @@ class GetUsersMutingRequestV2Test: XCTestCase {
                 "user.fields": "created_at,username,verified",
             ])
     }
+
+    func testDefaultArg() throws {
+        let req = GetUsersMutingRequestV2(
+            id: "_id_"
+        )
+
+        AssertEqualAnyDict(req.parameters, [:])
+    }
 }

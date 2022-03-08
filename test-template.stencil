@@ -43,6 +43,23 @@ class {{ type.name }}Test: XCTestCase {
         XCTAssertEqual(req.bodyContentType, .wwwFormUrlEncoded)
         AssertEqualAnyDict(req.parameters, [:])
     }
+    {% map type.methods[0].parameters into result %}{{maploop.item.defaultValue}}{% endmap %}
+    {% if result|join %}
+
+    func testDefaultArg() throws {
+        let req = {{type.name}}(
+        {% for param in type.methods[0].parameters where param.defaultValue == nil %}
+            {% if param.typeName.name == "String" %}
+            {{param.name}}: "_{{param.name}}_"{{ ',' if not forloop.last }}
+            {% else %}
+            {{param.name}}: .init(){{ ',' if not forloop.last }}
+            {% endif %}
+        {% endfor %}
+        )
+
+        AssertEqualAnyDict(req.parameters, [:])
+    }
+    {% endif %}
 }
 // sourcery:end
 {% endfor %}
