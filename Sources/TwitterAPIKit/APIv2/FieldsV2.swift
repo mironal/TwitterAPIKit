@@ -25,6 +25,7 @@ public enum TwitterTweetFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case source
     case text
     case withheld
+    case other(String)
 
     public var stringValue: String {
 
@@ -69,6 +70,8 @@ public enum TwitterTweetFieldsV2: TwitterAPIv2RequestParameter, Hashable {
             return "text"
         case .withheld:
             return "withheld"
+        case .other(let other):
+            return other
         }
     }
 }
