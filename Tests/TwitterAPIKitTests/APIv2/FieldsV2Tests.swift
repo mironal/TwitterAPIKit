@@ -38,7 +38,7 @@ class FieldsV2Tests: XCTestCase {
             .text,
             .withheld,
             .other("~~~"),
-        ]
+        ].shuffled()
 
         XCTAssertEqual(
             allCases.commaSeparatedString,
@@ -63,11 +63,30 @@ class FieldsV2Tests: XCTestCase {
             .verified,
             .withheld,
             .other("~~"),
-        ]
+        ].shuffled()
 
         XCTAssertEqual(
             allCases.commaSeparatedString,
             "created_at,description,entities,id,location,name,pinned_tweet_id,profile_image_url,protected,public_metrics,url,username,verified,withheld,~~"
+        )
+    }
+
+    func testTwitterPlaceFieldsV2() throws {
+        let allCases: [TwitterPlaceFieldsV2] = [
+            .containedWithin,
+            .country,
+            .countryCode,
+            .fullName,
+            .geo,
+            .id,
+            .name,
+            .placeType,
+            .other("~~~"),
+        ].shuffled()
+
+        XCTAssertEqual(
+            allCases.commaSeparatedString,
+            "contained_within,country,country_code,full_name,geo,id,name,place_type,~~~"
         )
     }
 }

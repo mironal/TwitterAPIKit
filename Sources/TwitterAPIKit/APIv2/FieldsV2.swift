@@ -153,6 +153,7 @@ public enum TwitterPlaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case id
     case name
     case placeType
+    case other(String)
 
     public var stringValue: String {
         switch self {
@@ -172,6 +173,8 @@ public enum TwitterPlaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
             return "name"
         case .placeType:
             return "place_type"
+        case .other(let other):
+            return other
         }
     }
 }
