@@ -154,4 +154,31 @@ class FieldsV2Tests: XCTestCase {
         )
     }
 
+    func testTwitterSpaceFieldsV2() throws {
+        let allCases: [TwitterSpaceFieldsV2] = [
+            .hostIDs,
+            .createdAt,
+            .creatorID,
+            .lang,
+            .invitedUserIDs,
+            .participantCount,
+            .speakerIDs,
+            .startedAt,
+            .endedAt,
+            .subscriberCount,
+            .topicIDs,
+            .title,
+            .updatedAt,
+            .scheduledStart,
+            .isTicketed,
+            .other("~~"),
+        ].shuffled()
+
+        // curl https://api.twitter.com/2/openapi.json | jq '.components.parameters.SpaceFieldsParameter.schema.items.enum | sort | join(",")'
+        // Note: missing ended_at,subscriber_count,topic_ids in ↑
+        XCTAssertEqual(
+            allCases.commaSeparatedString,
+            "created_at,creator_id,ended_at,host_ids,invited_user_ids,is_ticketed,lang,participant_count,scheduled_start,speaker_ids,started_at,subscriber_count,title,topic_ids,updated_at,~~"
+        )
+    }
 }

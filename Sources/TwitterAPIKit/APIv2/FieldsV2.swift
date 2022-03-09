@@ -299,7 +299,6 @@ public enum TwitterSpaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case hostIDs
     case createdAt
     case creatorID
-    case id
     case lang
     case invitedUserIDs
     case participantCount
@@ -308,7 +307,6 @@ public enum TwitterSpaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case endedAt
     case subscriberCount
     case topicIDs
-    case state
     case title
     case updatedAt
     case scheduledStart
@@ -320,7 +318,6 @@ public enum TwitterSpaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
         case .hostIDs: return "host_ids"
         case .createdAt: return "created_at"
         case .creatorID: return "creator_id"
-        case .id: return "id"
         case .lang: return "lang"
         case .invitedUserIDs: return "invited_user_ids"
         case .participantCount: return "participant_count"
@@ -329,7 +326,6 @@ public enum TwitterSpaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
         case .endedAt: return "ended_at"
         case .subscriberCount: return "subscriber_count"
         case .topicIDs: return "topic_ids"
-        case .state: return "state"
         case .title: return "title"
         case .updatedAt: return "updated_at"
         case .scheduledStart: return "scheduled_start"
