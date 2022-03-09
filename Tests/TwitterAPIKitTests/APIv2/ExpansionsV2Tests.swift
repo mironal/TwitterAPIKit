@@ -56,4 +56,21 @@ class ExpansionsV2Tests: XCTestCase {
             "owner_id,~~~"
         )
     }
+
+    func testTwitterSpaceExpansionsV2() throws {
+        let allCases: [TwitterSpaceExpansionsV2] = [
+            .invitedUserIDs,
+            .speakerIDs,
+            .creatorID,
+            .hostIDs,
+            .other("~~~"),
+        ]
+
+        // curl https://api.twitter.com/2/openapi.json | jq '.components.parameters.SpaceExpansionsParameter.schema.items.enum | sort | join(",")'
+        XCTAssertEqual(
+            allCases.commaSeparatedString,
+            "creator_id,host_ids,invited_user_ids,speaker_ids,~~~"
+        )
+    }
+
 }
