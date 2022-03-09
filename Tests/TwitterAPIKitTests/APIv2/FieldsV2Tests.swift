@@ -181,4 +181,20 @@ class FieldsV2Tests: XCTestCase {
             "created_at,creator_id,ended_at,host_ids,invited_user_ids,is_ticketed,lang,participant_count,scheduled_start,speaker_ids,started_at,subscriber_count,title,topic_ids,updated_at,~~"
         )
     }
+
+    func testTwitterTopicFieldsV2() throws {
+        let allCases: [TwitterTopicFieldsV2] = [
+            .id,
+            .name,
+            .description,
+            .other("~"),
+        ].shuffled()
+
+        // Not found in https://api.twitter.com/2/openapi.json
+
+        XCTAssertEqual(
+            allCases.commaSeparatedString,
+            "description,id,name,~"
+        )
+    }
 }
