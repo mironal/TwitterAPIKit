@@ -43,4 +43,17 @@ class ExpansionsV2Tests: XCTestCase {
             "pinned_tweet_id,~~~"
         )
     }
+
+    func testTwitterListExpansionsV2() throws {
+        let allCases: [TwitterListExpansionsV2] = [
+            .ownerID,
+            .other("~~~"),
+        ]
+
+        // curl https://api.twitter.com/2/openapi.json | jq '.components.parameters.ListExpansionsParameter.schema.items.enum | sort | join(",")'
+        XCTAssertEqual(
+            allCases.commaSeparatedString,
+            "owner_id,~~~"
+        )
+    }
 }
