@@ -130,7 +130,24 @@ class FieldsV2Tests: XCTestCase {
             allCases.commaSeparatedString,
             "alt_text,duration_ms,height,media_key,non_public_metrics,organic_metrics,preview_image_url,promoted_metrics,public_metrics,type,url,width,~~~"
         )
+    }
 
+    func testTwitterListFieldsV2() throws {
+        let allCases: [TwitterListFieldsV2] = [
+            .createdAt,
+            .followerCount,
+            .memberCount,
+            .`private`,
+            .description,
+            .ownerID,
+            .other("~"),
+        ].shuffled()
+
+        // id and name are not included because they are default.
+        XCTAssertEqual(
+            allCases.commaSeparatedString,
+            "created_at,description,follower_count,member_count,owner_id,private,~"
+        )
     }
 
 }
