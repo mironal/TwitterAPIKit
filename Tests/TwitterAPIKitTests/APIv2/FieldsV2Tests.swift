@@ -89,4 +89,20 @@ class FieldsV2Tests: XCTestCase {
             "contained_within,country,country_code,full_name,geo,id,name,place_type,~~~"
         )
     }
+
+    func testTwitterPollFieldsV2() throws {
+        let allCases: [TwitterPollFieldsV2] = [
+            .durationMinutes,
+            .endDatetime,
+            .id,
+            .options,
+            .votingStatus,
+            .other("~~"),
+        ].shuffled()
+
+        XCTAssertEqual(
+            allCases.commaSeparatedString,
+            "duration_minutes,end_datetime,id,options,voting_status,~~"
+        )
+    }
 }

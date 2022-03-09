@@ -192,6 +192,7 @@ public enum TwitterPollFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case id
     case options
     case votingStatus
+    case other(String)
 
     public var stringValue: String {
         switch self {
@@ -205,6 +206,8 @@ public enum TwitterPollFieldsV2: TwitterAPIv2RequestParameter, Hashable {
             return "options"
         case .votingStatus:
             return "voting_status"
+        case .other(let other):
+            return other
         }
     }
 }
