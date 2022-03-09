@@ -98,6 +98,7 @@ public enum TwitterUserFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case username
     case verified
     case withheld
+    case other(String)
 
     public var stringValue: String {
         switch self {
@@ -129,6 +130,8 @@ public enum TwitterUserFieldsV2: TwitterAPIv2RequestParameter, Hashable {
             return "verified"
         case .withheld:
             return "withheld"
+        case .other(let other):
+            return other
         }
     }
 }
