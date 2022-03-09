@@ -267,6 +267,8 @@ public enum TwitterListFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case memberCount
     case `private`
     case description
+    case id
+    case name
     case ownerID
     case other(String)
 
@@ -277,6 +279,8 @@ public enum TwitterListFieldsV2: TwitterAPIv2RequestParameter, Hashable {
         case .memberCount: return "member_count"
         case .private: return "private"
         case .description: return "description"
+        case .id: return "id"
+        case .name: return "name"
         case .ownerID: return "owner_id"
         case .other(let string): return string
         }

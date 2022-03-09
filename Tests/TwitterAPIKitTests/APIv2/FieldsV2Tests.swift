@@ -4,16 +4,11 @@ import XCTest
 
 class FieldsV2Tests: XCTestCase {
 
-    // https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/tweet
-    // Select Model -> Select Table in Dev tool -> exec ↓ code
-    // [...$0.rows].slice(1).map(tr => { return tr.cells[0].textContent.replace("(default)", "").trim()}).sort().join(",")
-
     override func setUpWithError() throws {
     }
 
     override func tearDownWithError() throws {
     }
-
     func testTwitterTweetFieldsV2() throws {
 
         let allCases: [TwitterTweetFieldsV2] = [
@@ -40,6 +35,7 @@ class FieldsV2Tests: XCTestCase {
             .other("~~~"),
         ].shuffled()
 
+        // curl https://api.twitter.com/2/openapi.json | jq '.components.parameters.TweetFieldsParameter.schema.items.enum | sort | join(",")'
         XCTAssertEqual(
             allCases.commaSeparatedString,
             "attachments,author_id,context_annotations,conversation_id,created_at,entities,geo,id,in_reply_to_user_id,lang,non_public_metrics,organic_metrics,possibly_sensitive,promoted_metrics,public_metrics,referenced_tweets,reply_settings,source,text,withheld,~~~"
@@ -65,6 +61,7 @@ class FieldsV2Tests: XCTestCase {
             .other("~~"),
         ].shuffled()
 
+        // curl https://api.twitter.com/2/openapi.json | jq '.components.parameters.UserFieldsParameter.schema.items.enum | sort | join(",")'
         XCTAssertEqual(
             allCases.commaSeparatedString,
             "created_at,description,entities,id,location,name,pinned_tweet_id,profile_image_url,protected,public_metrics,url,username,verified,withheld,~~"
@@ -84,6 +81,7 @@ class FieldsV2Tests: XCTestCase {
             .other("~~~"),
         ].shuffled()
 
+        // curl https://api.twitter.com/2/openapi.json | jq '.components.parameters.PlaceFieldsParameter.schema.items.enum | sort | join(",")'
         XCTAssertEqual(
             allCases.commaSeparatedString,
             "contained_within,country,country_code,full_name,geo,id,name,place_type,~~~"
@@ -100,6 +98,7 @@ class FieldsV2Tests: XCTestCase {
             .other("~~"),
         ].shuffled()
 
+        // curl https://api.twitter.com/2/openapi.json | jq '.components.parameters.PollFieldsParameter.schema.items.enum | sort | join(",")'
         XCTAssertEqual(
             allCases.commaSeparatedString,
             "duration_minutes,end_datetime,id,options,voting_status,~~"
@@ -124,6 +123,8 @@ class FieldsV2Tests: XCTestCase {
 
         ].shuffled()
 
+        // curl https://api.twitter.com/2/openapi.json | jq '.components.parameters.MediaFieldsParameter.schema.items.enum | sort | join(",")'
+
         // Note: `url` is missing in https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/media
         // https://twittercommunity.com/t/documentation-for-media-object-missing-url-field/163062
         XCTAssertEqual(
@@ -139,14 +140,17 @@ class FieldsV2Tests: XCTestCase {
             .memberCount,
             .`private`,
             .description,
+            .id,
+            .name,
             .ownerID,
             .other("~"),
         ].shuffled()
 
-        // id and name are not included because they are default.
+        // curl https://api.twitter.com/2/openapi.json | jq '.components.parameters.ListFieldsParameter.schema.items.enum | sort | join(",")'
+
         XCTAssertEqual(
             allCases.commaSeparatedString,
-            "created_at,description,follower_count,member_count,owner_id,private,~"
+            "created_at,description,follower_count,id,member_count,name,owner_id,private,~"
         )
     }
 
