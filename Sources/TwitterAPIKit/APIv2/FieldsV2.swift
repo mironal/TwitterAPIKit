@@ -25,6 +25,7 @@ public enum TwitterTweetFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case source
     case text
     case withheld
+    case other(String)
 
     public var stringValue: String {
 
@@ -69,6 +70,8 @@ public enum TwitterTweetFieldsV2: TwitterAPIv2RequestParameter, Hashable {
             return "text"
         case .withheld:
             return "withheld"
+        case .other(let other):
+            return other
         }
     }
 }
@@ -95,6 +98,7 @@ public enum TwitterUserFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case username
     case verified
     case withheld
+    case other(String)
 
     public var stringValue: String {
         switch self {
@@ -126,6 +130,8 @@ public enum TwitterUserFieldsV2: TwitterAPIv2RequestParameter, Hashable {
             return "verified"
         case .withheld:
             return "withheld"
+        case .other(let other):
+            return other
         }
     }
 }
@@ -147,6 +153,7 @@ public enum TwitterPlaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case id
     case name
     case placeType
+    case other(String)
 
     public var stringValue: String {
         switch self {
@@ -166,6 +173,8 @@ public enum TwitterPlaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
             return "name"
         case .placeType:
             return "place_type"
+        case .other(let other):
+            return other
         }
     }
 }
@@ -183,6 +192,7 @@ public enum TwitterPollFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case id
     case options
     case votingStatus
+    case other(String)
 
     public var stringValue: String {
         switch self {
@@ -196,6 +206,8 @@ public enum TwitterPollFieldsV2: TwitterAPIv2RequestParameter, Hashable {
             return "options"
         case .votingStatus:
             return "voting_status"
+        case .other(let other):
+            return other
         }
     }
 }
@@ -219,7 +231,7 @@ public enum TwitterMediaFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case nonPublicMetrics
     case organicMetrics
     case promotedMetrics
-    case altTex
+    case altText
     case other(String)
 
     public var stringValue: String {
@@ -235,7 +247,7 @@ public enum TwitterMediaFieldsV2: TwitterAPIv2RequestParameter, Hashable {
         case .nonPublicMetrics: return "non_public_metrics"
         case .organicMetrics: return "organic_metrics"
         case .promotedMetrics: return "promoted_metrics"
-        case .altTex: return "alt_tex"
+        case .altText: return "alt_text"
         case .other(let string): return string
         }
     }
@@ -255,6 +267,8 @@ public enum TwitterListFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case memberCount
     case `private`
     case description
+    case id
+    case name
     case ownerID
     case other(String)
 
@@ -265,6 +279,8 @@ public enum TwitterListFieldsV2: TwitterAPIv2RequestParameter, Hashable {
         case .memberCount: return "member_count"
         case .private: return "private"
         case .description: return "description"
+        case .id: return "id"
+        case .name: return "name"
         case .ownerID: return "owner_id"
         case .other(let string): return string
         }
@@ -283,7 +299,6 @@ public enum TwitterSpaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case hostIDs
     case createdAt
     case creatorID
-    case id
     case lang
     case invitedUserIDs
     case participantCount
@@ -292,7 +307,6 @@ public enum TwitterSpaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case endedAt
     case subscriberCount
     case topicIDs
-    case state
     case title
     case updatedAt
     case scheduledStart
@@ -304,7 +318,6 @@ public enum TwitterSpaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
         case .hostIDs: return "host_ids"
         case .createdAt: return "created_at"
         case .creatorID: return "creator_id"
-        case .id: return "id"
         case .lang: return "lang"
         case .invitedUserIDs: return "invited_user_ids"
         case .participantCount: return "participant_count"
@@ -313,7 +326,6 @@ public enum TwitterSpaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
         case .endedAt: return "ended_at"
         case .subscriberCount: return "subscriber_count"
         case .topicIDs: return "topic_ids"
-        case .state: return "state"
         case .title: return "title"
         case .updatedAt: return "updated_at"
         case .scheduledStart: return "scheduled_start"
