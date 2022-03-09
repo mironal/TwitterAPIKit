@@ -105,4 +105,32 @@ class FieldsV2Tests: XCTestCase {
             "duration_minutes,end_datetime,id,options,voting_status,~~"
         )
     }
+
+    func testTwitterMediaFieldsV2() throws {
+        let allCases: [TwitterMediaFieldsV2] = [
+            .durationMs,
+            .height,
+            .mediaKey,
+            .previewImageUrl,
+            .type,
+            .url,
+            .width,
+            .publicMetrics,
+            .nonPublicMetrics,
+            .organicMetrics,
+            .promotedMetrics,
+            .altText,
+            .other("~~~"),
+
+        ].shuffled()
+
+        // Note: `url` is missing in https://developer.twitter.com/en/docs/twitter-api/data-dictionary/object-model/media
+        // https://twittercommunity.com/t/documentation-for-media-object-missing-url-field/163062
+        XCTAssertEqual(
+            allCases.commaSeparatedString,
+            "alt_text,duration_ms,height,media_key,non_public_metrics,organic_metrics,preview_image_url,promoted_metrics,public_metrics,type,url,width,~~~"
+        )
+
+    }
+
 }

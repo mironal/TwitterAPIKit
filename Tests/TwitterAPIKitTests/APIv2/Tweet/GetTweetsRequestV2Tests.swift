@@ -25,7 +25,7 @@ class GetTweetsRequestV2Tests: XCTestCase {
             let tweet = GetTweetsRequestV2(
                 ids: ["1234"],
                 expansions: [.attachmentsMediaKeys],
-                mediaFields: [.url, .altTex],
+                mediaFields: [.url, .altText],
                 placeFields: [.name, .id],
                 pollFields: [.id],
                 tweetFields: [.text, .id],
@@ -37,7 +37,7 @@ class GetTweetsRequestV2Tests: XCTestCase {
                 [
                     "ids": "1234",
                     "expansions": "attachments.media_keys",
-                    "media.fields": "alt_tex,url",
+                    "media.fields": "alt_text,url",
                     "place.fields": "id,name",
                     "poll.fields": "id",
                     "tweet.fields": "id,text",

@@ -231,7 +231,7 @@ public enum TwitterMediaFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case nonPublicMetrics
     case organicMetrics
     case promotedMetrics
-    case altTex
+    case altText
     case other(String)
 
     public var stringValue: String {
@@ -247,7 +247,7 @@ public enum TwitterMediaFieldsV2: TwitterAPIv2RequestParameter, Hashable {
         case .nonPublicMetrics: return "non_public_metrics"
         case .organicMetrics: return "organic_metrics"
         case .promotedMetrics: return "promoted_metrics"
-        case .altTex: return "alt_tex"
+        case .altText: return "alt_text"
         case .other(let string): return string
         }
     }
