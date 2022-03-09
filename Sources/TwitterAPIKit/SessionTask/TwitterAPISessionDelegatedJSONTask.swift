@@ -60,7 +60,7 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
         taskQueue.resume()
     }
 
-    private func getResult() -> Result<(data: Data, rateLimit: TwitterRateLimit), TwitterAPIKitError> {
+    private func getResult() -> Result<(data: Data, rateLimit: TwitterRateLimit?), TwitterAPIKitError> {
 
         guard completed, let data = self.data else {
             fatalError("Request not completed yet.")
