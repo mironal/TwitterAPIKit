@@ -24,6 +24,10 @@ class {{ type.name }}Test: XCTestCase {
             {{param.name}}: {{param.defaultValue}}{{ ',' if not forloop.last }}
             {% elif param.typeName.name == "String" %}
             {{param.name}}: "_{{param.name}}_"{{ ',' if not forloop.last }}
+            {% elif param.typeName.name == "Int" %}
+            {{param.name}}: 1{{ ',' if not forloop.last }}
+            {% elif param.type.kind == "enum" %}
+            {{param.name}}: .{{param.type.cases.first.name}}{{ ',' if not forloop.last }}
             {% else %}
             {{param.name}}: .init(){{ ',' if not forloop.last }}
             {% endif %}
@@ -51,6 +55,10 @@ class {{ type.name }}Test: XCTestCase {
         {% for param in type.methods[0].parameters where param.defaultValue == nil %}
             {% if param.typeName.name == "String" %}
             {{param.name}}: "_{{param.name}}_"{{ ',' if not forloop.last }}
+            {% elif param.typeName.name == "Int" %}
+            {{param.name}}: 1{{ ',' if not forloop.last }}
+            {% elif param.type.kind == "enum" %}
+            {{param.name}}: .{{param.type.cases.first.name}}{{ ',' if not forloop.last }}
             {% else %}
             {{param.name}}: .init(){{ ',' if not forloop.last }}
             {% endif %}
