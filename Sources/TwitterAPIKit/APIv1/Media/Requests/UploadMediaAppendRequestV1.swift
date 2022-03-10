@@ -1,5 +1,6 @@
 import Foundation
 
+/// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload-append
 open class UploadMediaAppendRequestV1: TwitterAPIRequest {
 
     public let command: String = "APPEND"
@@ -46,7 +47,7 @@ open class UploadMediaAppendRequestV1: TwitterAPIRequest {
         filename: String,
         mimeType: String,
         media: Data,
-        segmentIndex: Int
+        segmentIndex: Int = 0
     ) {
         self.mediaID = mediaID
         self.filename = filename
@@ -55,23 +56,25 @@ open class UploadMediaAppendRequestV1: TwitterAPIRequest {
         self.segmentIndex = segmentIndex
     }
 
-    open func nextSegment(_ inc: Int = 1) -> UploadMediaAppendRequestV1 {
-        return .init(
-            mediaID: mediaID,
-            filename: filename,
-            mimeType: mimeType,
-            media: media,
-            segmentIndex: segmentIndex + inc
-        )
-    }
+    open func segments(maxBytes: Int) -> [UploadMediaAppendRequestV1] {
 
-    open func subdata(in range: Range<Data.Index>) -> UploadMediaAppendRequestV1 {
-        return .init(
-            mediaID: mediaID,
-            filename: filename,
-            mimeType: mimeType,
-            media: media.subdata(in: range),
-            segmentIndex: segmentIndex
-        )
+        var requests = [UploadMediaAppendRequestV1]()
+        let totalDataSize = media.count
+        var currentSegmentIndex = 0
+        repeat {
+            currentSegmentIndex = segmentIndex + requests.count
+            let start = currentSegmentIndex * maxBytes
+            let len = min(totalDataSize - start, maxBytes)
+            let req = UploadMediaAppendRequestV1(
+                mediaID: mediaID,
+                filename: filename,
+                mimeType: mimeType,
+                media: media.subdata(in: start..<(start + len)),
+                segmentIndex: currentSegmentIndex
+            )
+            requests.append(req)
+        } while ((currentSegmentIndex + 1) * maxBytes) < totalDataSize
+
+        return requests
     }
 }

@@ -54,7 +54,7 @@ public protocol TwitterAPIv2RequestParameter {
     var stringValue: String { get }
 }
 
-extension Set where Element: TwitterAPIv2RequestParameter {
+extension Collection where Element: TwitterAPIv2RequestParameter {
     var commaSeparatedString: String {
         return map { $0.stringValue }.sorted().joined(separator: ",")
     }

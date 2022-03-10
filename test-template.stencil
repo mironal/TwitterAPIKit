@@ -1,0 +1,84 @@
+{#
+Run:
+
+sourcery --sources Sources/TwitterAPIKit/Some/Resource/Requests/ --sources Sources/TwitterAPIKit/TwitterAPIRequest.swift --templates test-template.stencil --output Some/Test/Dir
+
+and edit generated test code.
+#}
+{% macro argLine param %}
+            {% if param.typeName.name == "String" %}
+            {{param.name}}: "_{{param.name}}_"{{ ',' if not forloop.last }}
+            {% elif param.typeName.name == "Int" %}
+            {{param.name}}: 1{{ ',' if not forloop.last }}
+            {% elif param.type.kind == "enum" %}
+            {{param.name}}: .{{param.type.cases.first.name}}{{ ',' if not forloop.last }}
+            {% elif param.typeName.isArray %}
+            {% if param.typeName.name == "[String]" %}
+            {{param.name}}: ["a", "b"]{{ ',' if not forloop.last }}
+            {% else %}
+            {{param.name}}: []{{ ',' if not forloop.last }}
+            {% endif %}
+            {% elif param.typeName.unwrappedTypeName|hasPrefix: "Set<" %}
+            {{param.name}}: []{{ ',' if not forloop.last }}
+            {% elif param.typeName.isOptional %}
+            {{param.name}}: {{param.defaultValue}}{{ ',' if not forloop.last }}
+            {% else %}
+            {{param.name}}: .init(){{ ',' if not forloop.last }} // Unkown
+            {% endif %}
+{% endmacro %}
+{% for type in types.implementing.TwitterAPIRequest %}
+// sourcery:file:{{ type.name }}Test.swift
+import TwitterAPIKit
+import XCTest
+
+class {{ type.name }}Test: XCTestCase {
+    override func setUpWithError() throws {
+    }
+
+    override func tearDownWithError() throws {
+    }
+
+    func test() throws {
+        let req = {{type.name}}(
+        {% for param in type.methods[0].parameters %}
+            {% call argLine param %}
+        {% endfor %}
+        )
+
+        {% if type.name | hasPrefix: "Post" %}
+        XCTAssertEqual(req.method, .post)
+        {% elif type.name | hasPrefix: "Delete" %}
+        XCTAssertEqual(req.method, .delete)
+        {% elif type.name | hasPrefix: "Put" %}
+        XCTAssertEqual(req.method, .put)
+        {% else %}
+        XCTAssertEqual(req.method, .get)
+        {% endif %}
+        XCTAssertEqual(req.baseURLType, .api)
+        XCTAssertEqual(req.path, "")
+        XCTAssertEqual(req.bodyContentType, .wwwFormUrlEncoded)
+        AssertEqualAnyDict(
+            req.parameters,
+            [:]
+        )
+    }
+    {% map type.methods[0].parameters into result %}{{maploop.item.defaultValue}}{% endmap %}
+    {% if result|join %}
+
+    func testDefaultArg() throws {
+        let req = {{type.name}}(
+        {% for param in type.methods[0].parameters where param.defaultValue == nil %}
+            {% call argLine param %}
+        {% endfor %}
+        )
+
+        AssertEqualAnyDict(
+            req.parameters,
+            [:]
+        )
+    }
+    {% endif %}
+}
+// sourcery:end
+{% endfor %}
+
