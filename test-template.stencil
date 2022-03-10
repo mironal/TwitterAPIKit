@@ -5,6 +5,27 @@ sourcery --sources Sources/TwitterAPIKit/Some/Resource/Requests/ --sources Sourc
 
 and edit generated test code.
 #}
+{% macro argLine param %}
+            {% if param.typeName.name == "String" %}
+            {{param.name}}: "_{{param.name}}_"{{ ',' if not forloop.last }}
+            {% elif param.typeName.name == "Int" %}
+            {{param.name}}: 1{{ ',' if not forloop.last }}
+            {% elif param.type.kind == "enum" %}
+            {{param.name}}: .{{param.type.cases.first.name}}{{ ',' if not forloop.last }}
+            {% elif param.typeName.isArray %}
+            {% if param.typeName.name == "[String]" %}
+            {{param.name}}: ["a", "b"]{{ ',' if not forloop.last }}
+            {% else %}
+            {{param.name}}: []{{ ',' if not forloop.last }}
+            {% endif %}
+            {% elif param.typeName.unwrappedTypeName|hasPrefix: "Set<" %}
+            {{param.name}}: []{{ ',' if not forloop.last }}
+            {% elif param.typeName.isOptional %}
+            {{param.name}}: {{param.defaultValue}}{{ ',' if not forloop.last }}
+            {% else %}
+            {{param.name}}: .init(){{ ',' if not forloop.last }} // Unkown
+            {% endif %}
+{% endmacro %}
 {% for type in types.implementing.TwitterAPIRequest %}
 // sourcery:file:{{ type.name }}Test.swift
 import TwitterAPIKit
@@ -20,18 +41,7 @@ class {{ type.name }}Test: XCTestCase {
     func test() throws {
         let req = {{type.name}}(
         {% for param in type.methods[0].parameters %}
-            {% if param.typeName.isOptional %} 
-            {{param.name}}: {{param.defaultValue}}{{ ',' if not forloop.last }}
-            {% elif param.typeName.name == "String" %}
-            {{param.name}}: "_{{param.name}}_"{{ ',' if not forloop.last }}
-            {% elif param.typeName.name == "Int" %}
-            {{param.name}}: 1{{ ',' if not forloop.last }}
-            {% elif param.type.kind == "enum" %}
-            {{param.name}}: .{{param.type.cases.first.name}}{{ ',' if not forloop.last }}
-            {% else %}
-            {{param.name}}: .init(){{ ',' if not forloop.last }}
-            {% endif %}
-                
+            {% call argLine param %}
         {% endfor %}
         )
 
@@ -58,15 +68,7 @@ class {{ type.name }}Test: XCTestCase {
     func testDefaultArg() throws {
         let req = {{type.name}}(
         {% for param in type.methods[0].parameters where param.defaultValue == nil %}
-            {% if param.typeName.name == "String" %}
-            {{param.name}}: "_{{param.name}}_"{{ ',' if not forloop.last }}
-            {% elif param.typeName.name == "Int" %}
-            {{param.name}}: 1{{ ',' if not forloop.last }}
-            {% elif param.type.kind == "enum" %}
-            {{param.name}}: .{{param.type.cases.first.name}}{{ ',' if not forloop.last }}
-            {% else %}
-            {{param.name}}: .init(){{ ',' if not forloop.last }}
-            {% endif %}
+            {% call argLine param %}
         {% endfor %}
         )
 
