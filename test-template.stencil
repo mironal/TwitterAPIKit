@@ -39,13 +39,18 @@ class {{ type.name }}Test: XCTestCase {
         XCTAssertEqual(req.method, .post)
         {% elif type.name | hasPrefix: "Delete" %}
         XCTAssertEqual(req.method, .delete)
+        {% elif type.name | hasPrefix: "Put" %}
+        XCTAssertEqual(req.method, .put)
         {% else %}
         XCTAssertEqual(req.method, .get)
         {% endif %}
         XCTAssertEqual(req.baseURLType, .api)
         XCTAssertEqual(req.path, "")
         XCTAssertEqual(req.bodyContentType, .wwwFormUrlEncoded)
-        AssertEqualAnyDict(req.parameters, [:])
+        AssertEqualAnyDict(
+            req.parameters,
+            [:]
+        )
     }
     {% map type.methods[0].parameters into result %}{{maploop.item.defaultValue}}{% endmap %}
     {% if result|join %}
@@ -65,7 +70,10 @@ class {{ type.name }}Test: XCTestCase {
         {% endfor %}
         )
 
-        AssertEqualAnyDict(req.parameters, [:])
+        AssertEqualAnyDict(
+            req.parameters,
+            [:]
+        )
     }
     {% endif %}
 }
