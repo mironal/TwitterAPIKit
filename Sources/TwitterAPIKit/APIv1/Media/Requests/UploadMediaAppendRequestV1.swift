@@ -77,24 +77,4 @@ open class UploadMediaAppendRequestV1: TwitterAPIRequest {
 
         return requests
     }
-
-    open func nextSegment(_ inc: Int = 1) -> UploadMediaAppendRequestV1 {
-        return .init(
-            mediaID: mediaID,
-            filename: filename,
-            mimeType: mimeType,
-            media: media,
-            segmentIndex: segmentIndex + inc
-        )
-    }
-
-    open func subdata(in range: Range<Data.Index>) -> UploadMediaAppendRequestV1 {
-        return .init(
-            mediaID: mediaID,
-            filename: filename,
-            mimeType: mimeType,
-            media: media.subdata(in: range),
-            segmentIndex: segmentIndex
-        )
-    }
 }
