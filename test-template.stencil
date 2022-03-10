@@ -20,7 +20,9 @@ class {{ type.name }}Test: XCTestCase {
     func test() throws {
         let req = {{type.name}}(
         {% for param in type.methods[0].parameters %}
-            {% if param.typeName.isOptional %} 
+            {% if param.typeName.unwrappedTypeName | hasPrefix: "Set<" %}
+            {{param.name}}: []{{ ',' if not forloop.last }}
+            {% elif param.typeName.isOptional %}
             {{param.name}}: {{param.defaultValue}}{{ ',' if not forloop.last }}
             {% elif param.typeName.name == "String" %}
             {{param.name}}: "_{{param.name}}_"{{ ',' if not forloop.last }}
@@ -28,6 +30,8 @@ class {{ type.name }}Test: XCTestCase {
             {{param.name}}: 1{{ ',' if not forloop.last }}
             {% elif param.type.kind == "enum" %}
             {{param.name}}: .{{param.type.cases.first.name}}{{ ',' if not forloop.last }}
+            {% elif param.typeName.isArray %}
+            {{param.name}}: []{{ ',' if not forloop.last }}
             {% else %}
             {{param.name}}: .init(){{ ',' if not forloop.last }}
             {% endif %}
@@ -64,6 +68,8 @@ class {{ type.name }}Test: XCTestCase {
             {{param.name}}: 1{{ ',' if not forloop.last }}
             {% elif param.type.kind == "enum" %}
             {{param.name}}: .{{param.type.cases.first.name}}{{ ',' if not forloop.last }}
+            {% elif param.typeName.isArray %}
+            {{param.name}}: []{{ ',' if not forloop.last }}
             {% else %}
             {{param.name}}: .init(){{ ',' if not forloop.last }}
             {% endif %}
