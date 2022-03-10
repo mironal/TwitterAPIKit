@@ -21,19 +21,17 @@ jobs:
       - name: Build tools
         if: steps.cache-spm.outputs.cache-hit != 'true'
         run: swift build -c release --package-path BuildTools
-      - name: Build
-        run: swift build
-  lint:
-    runs-on: macos-latest
-    needs: build
-    steps:
       - name: Lint
         run: |
           swift run -c release --skip-build --package-path BuildTools swift-format --version
           swift run -c release --skip-build --package-path BuildTools swift-format lint -p --strict --recursive ./Sources ./Tests ./scripts
+      - name: Build
+        run: swift build
+
   test:
     runs-on: macos-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Run tests
         run: |
           swift test --enable-code-coverage
