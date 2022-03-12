@@ -27,7 +27,7 @@ and edit generated test code.
             {% endif %}
 {% endmacro %}
 {% for type in types.implementing.TwitterAPIRequest %}
-// sourcery:file:{{ type.name }}Test.swift
+// sourcery:file:{{ type.name }}Tests.swift
 import TwitterAPIKit
 import XCTest
 
