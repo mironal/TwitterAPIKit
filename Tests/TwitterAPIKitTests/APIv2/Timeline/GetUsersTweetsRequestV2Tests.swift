@@ -2,31 +2,62 @@ import TwitterAPIKit
 import XCTest
 
 class GetUsersTweetsRequestV2Tests: XCTestCase {
-
     override func setUpWithError() throws {
-
     }
 
     override func tearDownWithError() throws {
     }
 
-    func testExample() throws {
-        let user = GetUsersTweetsRequestV2(
-            id: "_id_",
-            endTime: Date(timeIntervalSince1970: 60),
+    func test() throws {
+        let req = GetUsersTweetsRequestV2(
+            id: "_i_",
+            endTime: Date(timeIntervalSince1970: 10),
             exclude: .replies,
-            startTime: Date(timeIntervalSince1970: 0)
+            expansions: [.authorID],
+            maxResults: 100,
+            mediaFields: [.publicMetrics],
+            paginationToken: "_p_",
+            placeFields: [.containedWithin],
+            pollFields: [.options],
+            sinceID: "_s_",
+            startTime: Date(timeIntervalSince1970: 1),
+            tweetFields: [.entities],
+            untilID: "_u_",
+            userFields: [.protected]
         )
 
-        XCTAssertEqual(user.method, .get)
-        XCTAssertEqual(user.path, "/2/users/_id_/tweets")
+        XCTAssertEqual(req.method, .get)
+        XCTAssertEqual(req.baseURLType, .api)
+        XCTAssertEqual(req.path, "/2/users/_i_/tweets")
+        XCTAssertEqual(req.bodyContentType, .wwwFormUrlEncoded)
+        AssertEqualAnyDict(
+            req.parameters,
+            [
+                "end_time": "1970-01-01T00:00:10Z",
+                "exclude": "replies",
+                "expansions": "author_id",
+                "max_results": 100,
+                "media.fields": "public_metrics",
+                "pagination_token": "_p_",
+                "place.fields": "contained_within",
+                "poll.fields": "options",
+                "since_id": "_s_",
+                "start_time": "1970-01-01T00:00:01Z",
+                "tweet.fields": "entities",
+                "until_id": "_u_",
+                "user.fields": "protected",
+            ]
+        )
+    }
+
+    func testDefaultArg() throws {
+        let req = GetUsersTweetsRequestV2(
+            id: "_i_"
+        )
 
         AssertEqualAnyDict(
-            user.parameters,
-            [
-                "exclude": "replies",
-                "end_time": "1970-01-01T00:01:00Z",
-                "start_time": "1970-01-01T00:00:00Z",
-            ])
+            req.parameters,
+            [:]
+        )
     }
 }

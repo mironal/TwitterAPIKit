@@ -6,10 +6,12 @@ sourcery --sources Sources/TwitterAPIKit/Some/Resource/Requests/ --sources Sourc
 and edit generated test code.
 #}
 {% macro argLine param %}
-            {% if param.typeName.name == "String" %}
-            {{param.name}}: "_{{param.name}}_"{{ ',' if not forloop.last }}
-            {% elif param.typeName.name == "Int" %}
+            {% if param.typeName.unwrappedTypeName == "String" %}
+            {{param.name}}: "_{{param.name[0]}}_"{{ ',' if not forloop.last }}
+            {% elif param.typeName.unwrappedTypeName == "Int" %}
             {{param.name}}: 1{{ ',' if not forloop.last }}
+            {% elif param.typeName.unwrappedTypeName == "Date" %}
+            {{param.name}}: Date(timeIntervalSince1970: 0){{ ',' if not forloop.last }}
             {% elif param.type.kind == "enum" %}
             {{param.name}}: .{{param.type.cases.first.name}}{{ ',' if not forloop.last }}
             {% elif param.typeName.isArray %}
@@ -59,7 +61,19 @@ class {{ type.name }}Tests: XCTestCase {
         XCTAssertEqual(req.bodyContentType, .wwwFormUrlEncoded)
         AssertEqualAnyDict(
             req.parameters,
-            [:]
+            [
+        {% for variable in type.variables|instance|stored%}
+            {% if variable.name | hasSuffix: "Fields" %}
+                "{{variable.name|camelToSnakeCase|replace: "_", "."}}": ""{{ ',' if not forloop.last }}
+            {% elif variable.typeName.unwrappedTypeName == "Int" %}
+                "{{variable.name|camelToSnakeCase}}": 1{{ ',' if not forloop.last }}
+            {% elif variable.typeName.unwrappedTypeName == "String" %}
+                "{{variable.name|camelToSnakeCase}}": "_{{variable.name[0]}}_"{{ ',' if not forloop.last }}
+            {% else %}
+                "{{variable.name|camelToSnakeCase}}": "{{variable.typeName.unwrappedTypeName}}"{{ ',' if not forloop.last }}
+            {%endif%}
+        {% endfor %}
+            ]
         )
     }
     {% map type.methods[0].parameters into result %}{{maploop.item.defaultValue}}{% endmap %}
