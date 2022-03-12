@@ -31,7 +31,7 @@ and edit generated test code.
 import TwitterAPIKit
 import XCTest
 
-class {{ type.name }}Test: XCTestCase {
+class {{ type.name }}Tests: XCTestCase {
     override func setUpWithError() throws {
     }
 
