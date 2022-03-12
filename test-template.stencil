@@ -64,8 +64,12 @@ class {{ type.name }}Tests: XCTestCase {
             [
         {% for variable in type.variables|instance|stored%}
             {% if variable.name | hasSuffix: "Fields" %}
-                "{{variable.name|camelToSnakeCase|replace: "_", "."}}": []{{ ',' if not forloop.last }}
-            {%else%}
+                "{{variable.name|camelToSnakeCase|replace: "_", "."}}": ""{{ ',' if not forloop.last }}
+            {% elif variable.typeName.unwrappedTypeName == "Int" %}
+                "{{variable.name|camelToSnakeCase}}": 1{{ ',' if not forloop.last }}
+            {% elif variable.typeName.unwrappedTypeName == "String" %}
+                "{{variable.name|camelToSnakeCase}}": "_{{variable.name[0]}}_"{{ ',' if not forloop.last }}
+            {% else %}
                 "{{variable.name|camelToSnakeCase}}": "{{variable.typeName.unwrappedTypeName}}"{{ ',' if not forloop.last }}
             {%endif%}
         {% endfor %}
