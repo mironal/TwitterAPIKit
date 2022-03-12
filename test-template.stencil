@@ -6,10 +6,12 @@ sourcery --sources Sources/TwitterAPIKit/Some/Resource/Requests/ --sources Sourc
 and edit generated test code.
 #}
 {% macro argLine param %}
-            {% if param.typeName.name == "String" %}
+            {% if param.typeName.unwrappedTypeName == "String" %}
             {{param.name}}: "_{{param.name}}_"{{ ',' if not forloop.last }}
-            {% elif param.typeName.name == "Int" %}
+            {% elif param.typeName.unwrappedTypeName == "Int" %}
             {{param.name}}: 1{{ ',' if not forloop.last }}
+            {% elif param.typeName.unwrappedTypeName == "Date" %}
+            {{param.name}}: Date(timeIntervalSince1970: 0){{ ',' if not forloop.last }}
             {% elif param.type.kind == "enum" %}
             {{param.name}}: .{{param.type.cases.first.name}}{{ ',' if not forloop.last }}
             {% elif param.typeName.isArray %}
