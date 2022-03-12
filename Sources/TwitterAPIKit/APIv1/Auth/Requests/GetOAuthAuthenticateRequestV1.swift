@@ -4,7 +4,7 @@ import Foundation
 open class GetOAuthAuthenticateRequestV1: TwitterAPIRequest {
 
     public let oauthToken: String
-    public let forceLogin: String?
+    public let forceLogin: Bool?
     public let screenName: String?
 
     public var method: HTTPMethod {
@@ -25,7 +25,7 @@ open class GetOAuthAuthenticateRequestV1: TwitterAPIRequest {
 
     public init(
         oauthToken: String,
-        forceLogin: String? = .none,
+        forceLogin: Bool? = .none,
         screenName: String? = .none
     ) {
         self.oauthToken = oauthToken
