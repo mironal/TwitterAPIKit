@@ -10,6 +10,8 @@ and edit generated test code.
             {{param.name}}: "_{{param.name[0]}}_"{{ ',' if not forloop.last }}
             {% elif param.typeName.unwrappedTypeName == "Int" %}
             {{param.name}}: 1{{ ',' if not forloop.last }}
+            {% elif param.typeName.unwrappedTypeName == "Bool" %}
+            {{param.name}}: true{{ ',' if not forloop.last }}
             {% elif param.typeName.unwrappedTypeName == "Date" %}
             {{param.name}}: Date(timeIntervalSince1970: 0){{ ',' if not forloop.last }}
             {% elif param.type.kind == "enum" %}
@@ -22,6 +24,10 @@ and edit generated test code.
             {% endif %}
             {% elif param.typeName.unwrappedTypeName|hasPrefix: "Set<" %}
             {{param.name}}: []{{ ',' if not forloop.last }}
+            {% elif param.typeName.unwrappedTypeName|hasPrefix: "TwitterUserIdentifierV1" %}
+            {{param.name}}: .userID("uid"){{ ',' if not forloop.last }}
+            {% elif param.typeName.unwrappedTypeName|hasPrefix: "TwitterUsersIdentifierV1" %}
+            {{param.name}}: userIDs["uid1", "uid2"]{{ ',' if not forloop.last }}
             {% elif param.typeName.isOptional %}
             {{param.name}}: {{param.defaultValue}}{{ ',' if not forloop.last }}
             {% else %}
