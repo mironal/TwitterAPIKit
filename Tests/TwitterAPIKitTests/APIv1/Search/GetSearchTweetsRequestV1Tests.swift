@@ -43,4 +43,16 @@ class GetSearchTweetsRequestV1Tests: XCTestCase {
             ])
     }
 
+    func testDefaultArg() throws {
+        let req = GetSearchTweetsRequestV1(
+            q: "_q_"
+        )
+
+        AssertEqualAnyDict(
+            req.parameters,
+            [
+                "q": "_q_"
+            ]
+        )
+    }
 }
