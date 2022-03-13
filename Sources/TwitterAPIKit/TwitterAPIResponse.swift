@@ -39,6 +39,18 @@ extension TwitterAPIResponse {
         )
     }
 
+    public func flatMap<NewSuccess>(_ transform: (Success) -> Result<NewSuccess, TwitterAPIKitError>)
+        -> TwitterAPIResponse<NewSuccess>
+    {
+        return .init(
+            request: request,
+            response: response,
+            data: data,
+            result: result.flatMap(transform),
+            rateLimit: rateLimit
+        )
+    }
+
     public func tryMap<NewSuccess>(_ transform: (Success) throws -> NewSuccess) -> TwitterAPIResponse<NewSuccess> {
         let nextResult: Result<NewSuccess, TwitterAPIKitError> = result.flatMap { data in
             let r: Result<NewSuccess, Error> = .init {

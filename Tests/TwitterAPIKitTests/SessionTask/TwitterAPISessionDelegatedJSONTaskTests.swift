@@ -29,6 +29,10 @@ class TwitterAPISessionDelegatedJSONTaskTests: XCTestCase {
         _ = task.responseData(queue: .global(qos: .background)) { response in
 
             XCTAssertEqual(response.success, Data("{\"key\":\"value\"}".utf8))
+            XCTAssertNotNil(response.rateLimit)
+            XCTAssertEqual(response.rateLimit?.limit, 15)
+            XCTAssertEqual(response.rateLimit?.remaining, 1)
+            XCTAssertEqual(response.rateLimit?.reset, 1_647_099_944)
 
             XCTAssertFalse(Thread.isMainThread)
             exp.fulfill()
@@ -61,7 +65,15 @@ class TwitterAPISessionDelegatedJSONTaskTests: XCTestCase {
             task.append(chunk: Data(":\"value\"}".utf8))
 
             mockTask.httpResponse = .init(
-                url: URL(string: "http://example.com")!, statusCode: 200, httpVersion: "1.1", headerFields: [:])
+                url: URL(string: "http://example.com")!,
+                statusCode: 200,
+                httpVersion: "1.1",
+                headerFields: [
+                    "x-rate-limit-limit": "15",
+                    "x-rate-limit-remaining": "1",
+                    "x-rate-limit-reset": "1647099944",
+                ]
+            )
 
             task.complete(error: nil)
         }
@@ -81,6 +93,11 @@ class TwitterAPISessionDelegatedJSONTaskTests: XCTestCase {
 
         _ = task.responseData(queue: .global(qos: .background)) { response in
             XCTAssertTrue(response.isError)
+            XCTAssertNotNil(response.rateLimit)
+            XCTAssertEqual(response.rateLimit?.limit, 100)
+            XCTAssertEqual(response.rateLimit?.remaining, 2)
+            XCTAssertEqual(response.rateLimit?.reset, 1_647_099_945)
+
             exp.fulfill()
         }.responseObject(queue: .global(qos: .background)) { response in
             XCTAssertTrue(response.isError)
@@ -96,7 +113,15 @@ class TwitterAPISessionDelegatedJSONTaskTests: XCTestCase {
 
             // Status code is 400
             mockTask.httpResponse = .init(
-                url: URL(string: "http://example.com")!, statusCode: 400, httpVersion: "1.1", headerFields: [:])
+                url: URL(string: "http://example.com")!,
+                statusCode: 400,
+                httpVersion: "1.1",
+                headerFields: [
+                    "x-rate-limit-limit": "100",
+                    "x-rate-limit-remaining": "2",
+                    "x-rate-limit-reset": "1647099945",
+                ]
+            )
 
             task.complete(error: nil)
         }

@@ -46,4 +46,31 @@ extension Data {
         }
         return chunks
     }
+
+    func serialize() -> Result<Any, TwitterAPIKitError> {
+        do {
+            let jsonObj = try JSONSerialization.jsonObject(with: self, options: [])
+            return .success(jsonObj)
+        } catch let error {
+            return .failure(
+                .responseSerializeFailed(
+                    reason: .jsonSerializationFailed(error: error)
+                )
+            )
+        }
+    }
+
+    func decode<T: Decodable>(
+        _ type: T.Type,
+        decoder: JSONDecoder
+    ) -> Result<T, TwitterAPIKitError> {
+        let result: Result<T, Error> = .init {
+            return try decoder.decode(type, from: self)
+        }
+        return result.mapError { error in
+            return .responseSerializeFailed(
+                reason: .jsonDecodeFailed(error: error)
+            )
+        }
+    }
 }
