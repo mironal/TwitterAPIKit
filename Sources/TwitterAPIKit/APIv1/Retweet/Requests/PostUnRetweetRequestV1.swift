@@ -10,7 +10,7 @@ open class PostUnRetweetRequestV1: TwitterAPIRequest {
     }
 
     public var path: String {
-        return "1.1/statuses/unretweet/\(id).json"
+        return "/1.1/statuses/unretweet/\(id).json"
     }
 
     open var parameters: [String: Any] {
