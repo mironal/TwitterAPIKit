@@ -119,6 +119,211 @@ class UploadMediaUtilTests: XCTestCase {
         wait(for: [exp], timeout: 10)
     }
 
+    func testInitError() throws {
+
+        let config = URLSessionConfiguration.default
+        config.protocolClasses = [MockURLProtocol.self]
+
+        let client = TwitterAPIKit(
+            .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+            configuration: config
+        )
+
+        var requestCount = 0
+        MockURLProtocol.requestHandler = { request in
+            defer {
+                requestCount += 1
+            }
+            let requestData = request.httpBodyStream.flatMap {
+                try? Data(reading: $0)
+            }
+            let requestBodyString = requestData.flatMap {
+                String(data: $0, encoding: .utf8)
+            }
+            let data = Data("{}".utf8)
+            var statusCode = 200
+            switch requestCount {
+            case 0:  // INIT
+                XCTAssertEqual(request.url?.absoluteString, "https://upload.twitter.com/1.1/media/upload.json")
+                XCTAssertTrue(requestBodyString!.contains("command=INIT"))
+
+                statusCode = 404
+
+            default:
+                XCTFail()
+            }
+
+            return (
+                HTTPURLResponse(url: request.url!, statusCode: statusCode, httpVersion: "2.0", headerFields: [:])!,
+                data
+            )
+        }
+
+        let exp = expectation(description: "")
+        let data = Data([1, 2, 3])
+        client.v1.media.uploadMedia(.init(media: data, mediaType: "m", filename: "f", uploadChunkSize: 2)) { response in
+
+            XCTAssertTrue(response.isError)
+
+            if case .responseFailed(reason: .unacceptableStatusCode(statusCode: 404, error: _, rateLimit: _)) = response
+                .error
+            {
+
+            } else {
+                XCTFail(response.prettyString)
+            }
+
+            exp.fulfill()
+        }
+
+        wait(for: [exp], timeout: 10)
+    }
+
+    func testAppendError() throws {
+
+        let config = URLSessionConfiguration.default
+        config.protocolClasses = [MockURLProtocol.self]
+
+        let client = TwitterAPIKit(
+            .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+            configuration: config
+        )
+
+        var requestCount = 0
+        MockURLProtocol.requestHandler = { request in
+            defer {
+                requestCount += 1
+            }
+            let requestData = request.httpBodyStream.flatMap {
+                try? Data(reading: $0)
+            }
+            let requestBodyString = requestData.flatMap {
+                String(data: $0, encoding: .utf8)
+            }
+            var data = Data()
+            var statusCode = 200
+            switch requestCount {
+            case 0:  // INIT
+                XCTAssertEqual(request.url?.absoluteString, "https://upload.twitter.com/1.1/media/upload.json")
+                XCTAssertTrue(requestBodyString!.contains("command=INIT"))
+
+                data = try! JSONSerialization.data(
+                    withJSONObject: [
+                        "media_id_string": "123",
+                        "expires_after_secs": 1000,
+                    ], options: [])
+
+            case 1:  // APPEND
+                XCTAssertEqual(request.url?.absoluteString, "https://upload.twitter.com/1.1/media/upload.json")
+                XCTAssertTrue(requestBodyString!.contains("\r\nAPPEND\r\n"))
+                statusCode = 400
+            case 2:  // APPEND
+                XCTAssertEqual(request.url?.absoluteString, "https://upload.twitter.com/1.1/media/upload.json")
+                XCTAssertTrue(requestBodyString!.contains("\r\nAPPEND\r\n"))
+                statusCode = 200
+            default:
+                XCTFail()
+            }
+
+            return (
+                HTTPURLResponse(url: request.url!, statusCode: statusCode, httpVersion: "2.0", headerFields: [:])!,
+                data
+            )
+        }
+
+        let exp = expectation(description: "")
+        let data = Data([1, 2, 3])
+        client.v1.media.uploadMedia(.init(media: data, mediaType: "m", filename: "f", uploadChunkSize: 2)) { response in
+
+            XCTAssertTrue(response.isError)
+
+            if case .responseFailed(reason: .unacceptableStatusCode(statusCode: 400, error: _, rateLimit: _)) = response
+                .error
+            {
+
+            } else {
+                XCTFail(response.prettyString)
+            }
+
+            exp.fulfill()
+        }
+
+        wait(for: [exp], timeout: 10)
+    }
+
+    func testFinalizeError() throws {
+
+        let config = URLSessionConfiguration.default
+        config.protocolClasses = [MockURLProtocol.self]
+
+        let client = TwitterAPIKit(
+            .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+            configuration: config
+        )
+
+        var statusCode = 200
+        var requestCount = 0
+        MockURLProtocol.requestHandler = { request in
+            defer {
+                requestCount += 1
+            }
+            let requestData = request.httpBodyStream.flatMap {
+                try? Data(reading: $0)
+            }
+            let requestBodyString = requestData.flatMap {
+                String(data: $0, encoding: .utf8)
+            }
+            var data = Data()
+            switch requestCount {
+            case 0:  // INIT
+                XCTAssertEqual(request.url?.absoluteString, "https://upload.twitter.com/1.1/media/upload.json")
+                XCTAssertTrue(requestBodyString!.contains("command=INIT"))
+
+                data = try! JSONSerialization.data(
+                    withJSONObject: [
+                        "media_id_string": "123",
+                        "expires_after_secs": 1000,
+                    ], options: [])
+
+            case 1:  // APPEND
+                XCTAssertEqual(request.url?.absoluteString, "https://upload.twitter.com/1.1/media/upload.json")
+                XCTAssertTrue(requestBodyString!.contains("\r\nAPPEND\r\n"))
+            case 2:  // APPEND
+                XCTAssertEqual(request.url?.absoluteString, "https://upload.twitter.com/1.1/media/upload.json")
+                XCTAssertTrue(requestBodyString!.contains("\r\nAPPEND\r\n"))
+            case 3:  // FINALIZE
+                XCTAssertEqual(request.url?.absoluteString, "https://upload.twitter.com/1.1/media/upload.json")
+                XCTAssertTrue(requestBodyString!.contains("command=FINALIZE"))
+                statusCode = 500
+            default:
+                XCTFail()
+            }
+
+            return (
+                HTTPURLResponse(url: request.url!, statusCode: statusCode, httpVersion: "2.0", headerFields: [:])!,
+                data
+            )
+        }
+
+        let exp = expectation(description: "")
+        let data = Data([1, 2, 3])
+        client.v1.media.uploadMedia(.init(media: data, mediaType: "m", filename: "f", uploadChunkSize: 2)) { response in
+
+            XCTAssertTrue(response.isError)
+
+            if case .responseFailed(reason: .unacceptableStatusCode(statusCode: 500, error: _, rateLimit: _)) = response
+                .error
+            {
+
+            } else {
+                XCTFail(response.prettyString)
+            }
+            exp.fulfill()
+        }
+
+        wait(for: [exp], timeout: 10)
+    }
+
     func testWithProcessingError() throws {
 
         let config = URLSessionConfiguration.default
