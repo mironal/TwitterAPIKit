@@ -243,8 +243,6 @@ import XCTest
             }
 
             await asyncTask.value
-            XCTAssertTrue(mockTask.cancelled)
-            XCTAssertFalse(asyncTask.isCancelled)
         }
     }
 #endif
