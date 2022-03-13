@@ -20,6 +20,8 @@ class UploadMediaUtilTests: XCTestCase {
             configuration: config
         )
 
+        let processingSuccess = Bool.random()
+
         var requestCount = 0
         MockURLProtocol.requestHandler = { request in
             defer {
@@ -72,10 +74,10 @@ class UploadMediaUtilTests: XCTestCase {
                 data = try! JSONSerialization.data(
                     withJSONObject: [
                         "media_id_string": "123",
-                        "check_after_secs": 0,
                         "processing_info": [
                             "state": "in_progress",
                             "progress_percent": 99,
+                            "check_after_secs": 0,
                         ],
                     ], options: []
                 )
@@ -85,19 +87,35 @@ class UploadMediaUtilTests: XCTestCase {
                 XCTAssertEqual(request.url?.path, "/1.1/media/upload.json")
                 XCTAssertTrue(request.url!.query!.contains("command=STATUS"))
 
-                data = try! JSONSerialization.data(
-                    withJSONObject: [
-                        "media_id_string": "123",
-                        "expires_after_secs": 99,
-                        "video": [
-                            "video_type": "video/mp4"
-                        ],
-                        "processing_info": [
-                            "state": "succeeded",
-                            "progress_percent": 100,
-                        ],
-                    ], options: []
-                )
+                if processingSuccess {
+                    data = try! JSONSerialization.data(
+                        withJSONObject: [
+                            "media_id_string": "123",
+                            "video": [
+                                "video_type": "video/mp4"
+                            ],
+                            "processing_info": [
+                                "state": "succeeded",
+                                "progress_percent": 100,
+                            ],
+                        ], options: []
+                    )
+                } else {
+                    data = try! JSONSerialization.data(
+                        withJSONObject: [
+                            "media_id_string": "123",
+                            "processing_info": [
+                                "state": "failed",
+                                "progress_percent": 99,
+                                "error": [
+                                    "code": 1,
+                                    "name": "InvalidMedia",
+                                    "message": "Unsupported video format",
+                                ],
+                            ],
+                        ], options: []
+                    )
+                }
             default:
                 XCTFail()
             }
@@ -111,8 +129,14 @@ class UploadMediaUtilTests: XCTestCase {
         let exp = expectation(description: "")
         let data = Data([1, 2, 3])
         client.v1.media.uploadMedia(.init(media: data, mediaType: "m", filename: "f", uploadChunkSize: 2)) { response in
-            XCTAssertFalse(response.isError)
-            XCTAssertEqual(response.success, "123")
+            if processingSuccess {
+
+                XCTAssertFalse(response.isError)
+                XCTAssertEqual(response.success, "123")
+            } else {
+                XCTAssertTrue(response.isError)
+                XCTAssertTrue(response.error!.isUploadMediaFailed)
+            }
             exp.fulfill()
         }
 
