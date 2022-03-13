@@ -43,6 +43,7 @@ public class TwitterAPISessionDelegatedStreamTask: TwitterAPISessionStreamTask, 
             guard let self = self else { return }
 
             guard let httpResponse = self.httpResponse else {
+                self.notify(result: .failure(.responseFailed(reason: .invalidResponse(error: nil))), rateLimit: nil)
                 return
             }
 

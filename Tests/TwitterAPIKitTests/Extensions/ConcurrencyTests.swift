@@ -138,7 +138,9 @@ import XCTest
                 taskIdentifier: 1,
                 currentRequest: nil,
                 originalRequest: nil,
-                httpResponse: nil
+                httpResponse: .init(
+                    url: URL(string: "http://example.com")!, statusCode: 200, httpVersion: "1.1", headerFields: [:]
+                )
             )
 
             let task = TwitterAPISessionDelegatedStreamTask(task: mockTask)
@@ -206,7 +208,9 @@ import XCTest
                 taskIdentifier: 1,
                 currentRequest: nil,
                 originalRequest: nil,
-                httpResponse: nil
+                httpResponse: .init(
+                    url: URL(string: "http://example.com")!, statusCode: 200, httpVersion: "1.1", headerFields: [:]
+                )
             )
 
             let task = TwitterAPISessionDelegatedStreamTask(task: mockTask)
