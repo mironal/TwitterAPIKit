@@ -236,16 +236,17 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
                         throw TwitterAPIKitError.uploadMediaFailed(reason: .processingFailed(error: error))
                     case .unknown:
                         throw TwitterAPIKitError.unkonwn(
-                            error: NSError(domain: "TwitterAPIKit", code: 0, userInfo: [:]))
+                            error: NSError(domain: "TwitterAPIKit", code: 0, userInfo: [:])
+                        )
                     }
                 } catch let error as TwitterAPIKitError {
                     completionHandler(
-                        response.mapError { _ in return error }
+                        response.flatMap { _ in .failure(error) }
                     )
                     return
                 } catch let error {
                     completionHandler(
-                        response.mapError { _ in return TwitterAPIKitError.unkonwn(error: error) }
+                        response.flatMap { _ in .failure(.unkonwn(error: error)) }
                     )
                 }
             }

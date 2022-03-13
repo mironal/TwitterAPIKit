@@ -10,6 +10,30 @@ class TwitterAPISessionDelegatedStreamTaskTests: XCTestCase {
     override func tearDownWithError() throws {
     }
 
+    func testProps() throws {
+        let cReq = URLRequest(url: URL(string: "http://example.com/current")!)
+        let oReq = URLRequest(url: URL(string: "http://example.com/original")!)
+        let resp = HTTPURLResponse(
+            url: URL(string: "https://example.com")!,
+            statusCode: 200,
+            httpVersion: "1.1",
+            headerFields: [:]
+        )
+        let mockTask = MockTwitterAPISessionTask(
+            taskIdentifier: 1,
+            currentRequest: cReq,
+            originalRequest: oReq,
+            httpResponse: resp
+        )
+
+        let task = TwitterAPISessionDelegatedStreamTask(task: mockTask)
+
+        XCTAssertEqual(mockTask.currentRequest, cReq)
+        XCTAssertEqual(mockTask.originalRequest, oReq)
+        XCTAssertEqual(task.httpResponse, resp)
+
+    }
+
     func test() throws {
 
         let mockTask = MockTwitterAPISessionTask(
@@ -132,6 +156,49 @@ class TwitterAPISessionDelegatedStreamTaskTests: XCTestCase {
 
         wait(for: [exp], timeout: 100)
         XCTAssertEqual(count, 1)
+    }
+
+    func testNilResponse() throws {
+
+        let mockTask = MockTwitterAPISessionTask(
+            taskIdentifier: 1,
+            currentRequest: nil,
+            originalRequest: nil,
+            httpResponse: nil
+        )
+
+        let task = TwitterAPISessionDelegatedStreamTask(task: mockTask)
+
+        DispatchQueue.main.async {
+            task.append(chunk: Data("aaaa\r\nbbbb".utf8))
+        }
+
+        let exp = expectation(description: "")
+        exp.expectedFulfillmentCount = 2
+
+        var count = 0
+        task.streamResponse { response in
+
+            XCTAssertTrue(Thread.isMainThread)
+
+            switch count {
+            case 0:
+                XCTAssertTrue(response.isError)
+                XCTAssertTrue(response.error!.isResponseFailed)
+            default:
+                XCTFail()
+            }
+
+            count += 1
+            exp.fulfill()
+        }.streamResponse(queue: .global(qos: .default)) { _ in
+            XCTAssertFalse(Thread.isMainThread)
+            exp.fulfill()
+        }
+
+        wait(for: [exp], timeout: 10)
+        XCTAssertEqual(count, 1)
+
     }
 
     func testError() throws {

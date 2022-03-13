@@ -84,7 +84,10 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
                 request: currentRequest,
                 response: httpResponse,
                 data: data,
-                result: .failure(.responseFailed(reason: .invalidResponse(error: error))),
+                result: .failure(
+                    .responseFailed(
+                        reason: .unacceptableStatusCode(
+                            statusCode: httpResponse.statusCode, error: .init(data: data), rateLimit: rateLimit))),
                 rateLimit: rateLimit
             )
         }
