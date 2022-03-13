@@ -13,12 +13,12 @@ public enum TwitterUsersIdentifierV1 {
 // MARK: - extensions
 
 extension TwitterUserIdentifierV1 {
-    func bind(param: inout [String: Any]) {
+    func bind(param: inout [String: Any], userIDKey: String = "user_id", screenNameKey: String = "screen_name") {
         switch self {
         case .userID(let string):
-            param["user_id"] = string
+            param[userIDKey] = string
         case .screenName(let string):
-            param["screen_name"] = string
+            param[screenNameKey] = string
         }
     }
 }

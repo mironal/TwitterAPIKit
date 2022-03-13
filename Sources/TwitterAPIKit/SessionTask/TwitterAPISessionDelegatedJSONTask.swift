@@ -60,51 +60,58 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
         taskQueue.resume()
     }
 
-    private func getResult() -> Result<(data: Data, rateLimit: TwitterRateLimit?), TwitterAPIKitError> {
+    private func getResponse() -> TwitterAPIResponse<Data> {
 
         guard completed, let data = self.data else {
             fatalError("Request not completed yet.")
         }
 
         guard error == nil, let httpResponse = httpResponse else {
-            return .failure(.responseFailed(reason: .invalidResponse(error: error)))
+            return TwitterAPIResponse(
+                request: currentRequest,
+                response: httpResponse,
+                data: data,
+                result: .failure(.responseFailed(reason: .invalidResponse(error: error))),
+                rateLimit: nil
+            )
         }
 
         let rateLimit = TwitterRateLimit(header: httpResponse.allHeaderFields)
 
         guard 200..<300 ~= httpResponse.statusCode else {
-            return .failure(
-                .responseFailed(
-                    reason: .unacceptableStatusCode(
-                        statusCode: httpResponse.statusCode,
-                        error: TwitterAPIErrorResponse(data: data),
-                        rateLimit: rateLimit
-                    )
-                )
+
+            return TwitterAPIResponse(
+                request: currentRequest,
+                response: httpResponse,
+                data: data,
+                result: .failure(
+                    .responseFailed(
+                        reason: .unacceptableStatusCode(
+                            statusCode: httpResponse.statusCode, error: .init(data: data), rateLimit: rateLimit))),
+                rateLimit: rateLimit
             )
         }
 
-        return .success((data: data, rateLimit: rateLimit))
+        return TwitterAPIResponse(
+            request: currentRequest,
+            response: httpResponse,
+            data: data,
+            result: .success(data),
+            rateLimit: rateLimit
+        )
     }
 
     private func registerResponseBlock<T>(
         queue: DispatchQueue,
-        map mapResult: @escaping (Result<Data, TwitterAPIKitError>) -> Result<T, TwitterAPIKitError>,
+        flatMap transform: @escaping (Data) -> Result<T, TwitterAPIKitError>,
         response block: @escaping ((TwitterAPIResponse<T>) -> Void)
     ) -> Self {
 
         group.enter()
         taskQueue.async { [weak self] in
             guard let self = self else { return }
-            let result = self.getResult()
 
-            let response = TwitterAPIResponse(
-                request: self.currentRequest,
-                response: self.httpResponse,
-                data: self.data,
-                result: mapResult(result.map { $0.data }),
-                rateLimit: result.success?.rateLimit
-            )
+            let response = self.getResponse().flatMap(transform)
 
             queue.async { [weak self] in
                 guard let self = self else { return }
@@ -117,7 +124,7 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
     }
 
     public func responseData(queue: DispatchQueue, _ block: @escaping (TwitterAPIResponse<Data>) -> Void) -> Self {
-        return registerResponseBlock(queue: queue, map: { $0 }, response: block)
+        return registerResponseBlock(queue: queue, flatMap: { .success($0) }, response: block)
     }
 
     public func responseData(_ block: @escaping (TwitterAPIResponse<Data>) -> Void) -> Self {
@@ -128,7 +135,11 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
         queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<Any>) -> Void
     ) -> Self {
-        return registerResponseBlock(queue: queue, map: { $0.serialize() }, response: block)
+        return registerResponseBlock(
+            queue: queue,
+            flatMap: { $0.serialize() },
+            response: block
+        )
     }
 
     public func responseObject(_ block: @escaping (TwitterAPIResponse<Any>) -> Void) -> Self {
@@ -141,7 +152,11 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
         queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<T>) -> Void
     ) -> Self where T: Decodable {
-        return registerResponseBlock(queue: queue, map: { $0.decode(type, decodar: decoder) }, response: block)
+        return registerResponseBlock(
+            queue: queue,
+            flatMap: { $0.decode(type, decoder: decoder) },
+            response: block
+        )
     }
 
     public func responseDecodable<T>(

@@ -41,8 +41,32 @@ public class TwitterAPISessionDelegatedStreamTask: TwitterAPISessionStreamTask, 
     func append(chunk: Data) {
         taskQueue.async { [weak self] in
             guard let self = self else { return }
+
+            guard let httpResponse = self.httpResponse else {
+                self.notify(result: .failure(.responseFailed(reason: .invalidResponse(error: nil))), rateLimit: nil)
+                return
+            }
+
+            let rateLimit = TwitterRateLimit(header: httpResponse.allHeaderFields)
+
+            guard httpResponse.statusCode < 300 else {
+
+                let error = TwitterAPIErrorResponse(data: chunk)
+                self.notify(
+                    result: .failure(
+                        .responseFailed(
+                            reason: .unacceptableStatusCode(
+                                statusCode: httpResponse.statusCode,
+                                error: error,
+                                rateLimit: rateLimit
+                            )
+                        )), rateLimit: rateLimit)
+
+                return
+            }
+
             for data in chunk.split(separator: chunkSeparator) {
-                self.notify(result: .success(data))
+                self.notify(result: .success(data), rateLimit: rateLimit)
             }
         }
     }
@@ -51,18 +75,18 @@ public class TwitterAPISessionDelegatedStreamTask: TwitterAPISessionStreamTask, 
         if let error = error {
             taskQueue.async { [weak self] in
                 guard let self = self else { return }
-                self.notify(result: .failure(.responseFailed(reason: .invalidResponse(error: error))))
+                self.notify(result: .failure(.responseFailed(reason: .invalidResponse(error: error))), rateLimit: nil)
             }
         }
     }
 
-    private func notify(result: Result<Data, TwitterAPIKitError>) {
+    private func notify(result: Result<Data, TwitterAPIKitError>, rateLimit: TwitterRateLimit?) {
         let response = TwitterAPIResponse(
             request: currentRequest,
             response: httpResponse,
             data: result.success,
             result: result,
-            rateLimit: nil
+            rateLimit: rateLimit
         )
 
         dataBlocks.forEach { (queue, block) in
