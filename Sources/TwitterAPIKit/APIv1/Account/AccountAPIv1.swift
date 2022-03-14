@@ -30,7 +30,7 @@ public protocol AccountAPIv1 {
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/manage-account-settings/api-reference/post-account-update_profile_banner
     func postProfileBanner(
         _ request: PostAccountUpdateProfileBannerRequestV1
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionDataTask
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/manage-account-settings/api-reference/post-account-update_profile_image
     func postProfileImage(
@@ -70,7 +70,7 @@ extension TwitterAPIKit.TwitterAPIImplV1: AccountAPIv1 {
 
     public func postProfileBanner(
         _ request: PostAccountUpdateProfileBannerRequestV1
-    ) -> TwitterAPISessionJSONTask {
+    ) -> TwitterAPISessionDataTask {
         return session.send(request)
     }
 
