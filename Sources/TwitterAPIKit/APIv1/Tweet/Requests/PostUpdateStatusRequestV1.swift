@@ -39,8 +39,8 @@ open class PostStatusesUpdateRequestV1: TwitterAPIRequest {
         placeID.map { p["place_id"] = $0 }
         displayCoordinates.map { p["display_coordinates"] = $0 }
         trimUser.map { p["trim_user"] = $0 }
-        enableDMcommands.map { p["enable_d_mcommands"] = $0 }
-        failDMcommands.map { p["fail_d_mcommands"] = $0 }
+        enableDMcommands.map { p["enable_dmcommands"] = $0 }
+        failDMcommands.map { p["fail_dmcommands"] = $0 }
         cardUri.map { p["card_uri"] = $0 }
         return p
     }

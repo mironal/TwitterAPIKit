@@ -10,7 +10,7 @@ open class PostRetweetRequestV1: TwitterAPIRequest {
     }
 
     public var path: String {
-        return "1.1/statuses/retweet/\(id).json"
+        return "/1.1/statuses/retweet/\(id).json"
     }
 
     open var parameters: [String: Any] {
