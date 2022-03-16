@@ -12,6 +12,8 @@ Please see this issue for the progress of the API implementation.
 - [API v1](https://github.com/mironal/TwitterAPIKit/issues/5)
 - [API v2](https://github.com/mironal/TwitterAPIKit/issues/6)
 
+Issue やコメントは日本語でも大丈夫です。
+
 ---
 
 ## Motivation
