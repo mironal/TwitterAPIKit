@@ -203,4 +203,10 @@ class TwitterAPISessionDelegatedJSONTaskTests: XCTestCase {
         wait(for: [exp], timeout: 10)
         XCTAssertTrue(mockTask.cancelled)
     }
+
+    func testEXC_BAD_INSTRUCTION() throws {
+        // EXC_BAD_INSTRUCTION will occur if the Dispatch Queue is released while suspended.
+        let mockTask = MockTwitterAPISessionTask(taskIdentifier: 1)
+        _ = TwitterAPISessionDelegatedJSONTask(task: mockTask)
+    }
 }

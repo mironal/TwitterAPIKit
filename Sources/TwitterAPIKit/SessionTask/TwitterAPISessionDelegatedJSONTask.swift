@@ -45,6 +45,13 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
         taskQueue.suspend()
     }
 
+    deinit {
+        // EXC_BAD_INSTRUCTION will occur if the Dispatch Queue is released while suspended.
+        if !completed {
+            taskQueue.resume()
+        }
+    }
+
     func append(chunk: Data) {
         dataChunk.append(chunk)
     }
