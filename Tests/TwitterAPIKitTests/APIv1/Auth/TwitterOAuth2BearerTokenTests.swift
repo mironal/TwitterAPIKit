@@ -17,4 +17,14 @@ class TwitterOAuth2BearerTokenTests: XCTestCase {
         XCTAssertEqual(token.tokenType, "bearer")
         XCTAssertEqual(token.accessToken, "token")
     }
+
+    func testNil() throws {
+        let data = Data("{}".utf8)
+        XCTAssertNil(try TwitterOAuth2BearerToken(jsonData: data))
+    }
+
+    func testThrow() throws {
+        let data = Data("".utf8)
+        XCTAssertThrowsError(try TwitterOAuth2BearerToken(jsonData: data))
+    }
 }

@@ -31,4 +31,9 @@ class TwitterOAuthAccessTokenV1Tests: XCTestCase {
         XCTAssertEqual(token.userID, "uid")
         XCTAssertEqual(token.screenName, "name")
     }
+
+    func testNil() throws {
+        let data = Data("".utf8)
+        XCTAssertNil(TwitterOAuthAccessTokenV1(queryStringData: data))
+    }
 }

@@ -26,4 +26,9 @@ class TwitterOAuthTokenV1Tests: XCTestCase {
         XCTAssertEqual(token.oauthTokenSecret, "secret")
         XCTAssertTrue(token.oauthCallbackConfirmed!)
     }
+
+    func testNil() {
+        let data = Data("".utf8)
+        XCTAssertNil(TwitterOAuthTokenV1(queryStringData: data))
+    }
 }
