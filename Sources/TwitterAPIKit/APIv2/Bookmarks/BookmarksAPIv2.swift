@@ -6,11 +6,20 @@ public protocol BookmarksAPIv2 {
     func getBookmarks(
         _ request: GetUsersBookmarksRequestV2
     ) -> TwitterAPISessionJSONTask
+
+    /// https://developer.twitter.com/en/docs/twitter-api/tweets/bookmarks/api-reference/post-users-id-bookmarks
+    func createBookmark(
+        _ request: PostUsersBookmarksRequestV2
+    ) -> TwitterAPISessionJSONTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV2: BookmarksAPIv2 {
 
     func getBookmarks(_ request: GetUsersBookmarksRequestV2) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
+
+    func createBookmark(_ request: PostUsersBookmarksRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }
