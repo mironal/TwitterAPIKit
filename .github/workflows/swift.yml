@@ -20,7 +20,7 @@ jobs:
             ${{ runner.os }}-spm-
       - name: Build tools
         if: steps.cache-spm.outputs.cache-hit != 'true'
-        run: swift build -c release --package-path BuildTools
+        run: swift run -c release --package-path BuildTools swift-format lint -p --strict --recursive ./Sources ./Tests ./scripts
       - name: Lint
         run: |
           swift run -c release --skip-build --package-path BuildTools swift-format --version
