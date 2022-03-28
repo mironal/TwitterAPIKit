@@ -4,7 +4,7 @@ public struct TwitterOAuth2BearerToken {
     public let tokenType: String
     public let accessToken: String
 
-    init?(jsonData: Data) throws {
+    public init?(jsonData: Data) throws {
         // {"token_type":"bearer","access_token":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%2FAAAAAAAAAAAAAAAAAAAA%3DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"}
 
         let json = try JSONSerialization.jsonObject(with: jsonData, options: [])

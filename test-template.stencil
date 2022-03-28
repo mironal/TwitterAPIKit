@@ -28,6 +28,8 @@ and edit generated test code.
             {{param.name}}: .userID("uid"){{ ',' if not forloop.last }}
             {% elif param.typeName.unwrappedTypeName|hasPrefix: "TwitterUsersIdentifierV1" %}
             {{param.name}}: .userIDs(["uid1", "uid2"]){{ ',' if not forloop.last }}
+            {% elif param.typeName.unwrappedTypeName|hasPrefix: "TwitterListIdentifierV1" %}
+            {{param.name}}: .listID("lid"){{ ',' if not forloop.last }}
             {% elif param.typeName.isOptional %}
             {{param.name}}: {{param.defaultValue}}{{ ',' if not forloop.last }}
             {% else %}

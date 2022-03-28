@@ -11,6 +11,11 @@ public protocol TweetAPIv2 {
         _ request: GetTweetRequestV2
     ) -> TwitterAPISessionJSONTask
 
+    /// https://developer.twitter.com/en/docs/twitter-api/tweets/quote-tweets/api-reference/get-tweets-id-quote_tweets
+    func getQuoteTweets(
+        _ request: GetTweetsQuoteTweetsRequestV2
+    ) -> TwitterAPISessionJSONTask
+
     /// https://developer.twitter.com/en/docs/twitter-api/tweets/manage-tweets/api-reference/delete-tweets-id
     func deleteTweet(
         _ request: DeleteTweetRequestV2
@@ -34,6 +39,10 @@ extension TwitterAPIKit.TwitterAPIImplV2: TweetAPIv2 {
     }
 
     public func getTweet(_ request: GetTweetRequestV2) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
+
+    func getQuoteTweets(_ request: GetTweetsQuoteTweetsRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 

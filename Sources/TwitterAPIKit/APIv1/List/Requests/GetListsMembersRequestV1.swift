@@ -21,7 +21,7 @@ open class GetListsMembersRequestV1: TwitterAPIRequest {
         var p = [String: Any]()
         list.bind(param: &p)
         count.map { p["count"] = $0 }
-        cursor.map { p["count"] = $0 }
+        cursor.map { p["cursor"] = $0 }
         includeEntities.map { p["include_entities"] = $0 }
         skipStatus.map { p["skip_status"] = $0 }
         return p
