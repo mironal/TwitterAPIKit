@@ -73,6 +73,7 @@ open class TwitterAPISession {
             urlRequest.setValue(basicAuth, forHTTPHeaderField: "Authorization")
         case let .bearer(token):
             urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        case .none: break
         }
 
         return urlRequest

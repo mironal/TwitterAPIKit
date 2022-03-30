@@ -227,6 +227,7 @@ extension TwitterAPIRequest {
 extension TwitterAPIEnvironment {
     fileprivate func baseURL(for type: TwitterBaseURLType) -> URL {
         switch type {
+        case .twitter: return twitterURL
         case .api: return apiURL
         case .upload: return uploadURL
         }

@@ -2,6 +2,8 @@ import Foundation
 
 public protocol OAuth20API {
 
+    // MARK: - OAuth 2.0 Bearer Token
+
     /// https://developer.twitter.com/en/docs/authentication/api-reference/token
     func postOAuth2BearerTokenData(
         _ request: PostOAuth2TokenRequestV1
@@ -20,9 +22,33 @@ public protocol OAuth20API {
     func postInvalidateOAuth2BearerToken(
         _ request: PostOAuth2InvalidateTokenRequestV1
     ) -> TwitterAPISessionJSONTask
+
+    // MARK: - OAuth 2.0 Authorization Code Flow with PKCE
+
+    /// Create OAuth 2.0  Authorize URL
+    func makeOAuth2AuthorizeURL(_ request: GetOAuth2AuthorizeRequestV1) -> URL?
+
+    func postOAuth2AccessTokenData(
+        _ request: PostOAuth2AccessTokenRequestV2
+    ) -> TwitterAPISessionDataTask
+
+    func postOAuth2AccessToken(
+        _ request: PostOAuth2AccessTokenRequestV2
+    ) -> TwitterAPISessionSpecializedTask<TwitterOAuth2AccessToken>
+
+    func postOAuth2RefreshTokenData(
+        _ request: PostOAuth2RefreshTokenRequestV2
+    ) -> TwitterAPISessionDataTask
+
+    func postOAuth2RefreshToken(
+        _ request: PostOAuth2RefreshTokenRequestV2
+    ) -> TwitterAPISessionSpecializedTask<TwitterOAuth2AccessToken>
 }
 
 extension TwitterAPIKit.TwitterAuthAPIImpl: OAuth20API {
+
+    // MARK: - OAuth 2.0 Bearer Token
+
     public func postOAuth2BearerTokenData(
         _ request: PostOAuth2TokenRequestV1
     ) -> TwitterAPISessionDataTask {
@@ -53,5 +79,37 @@ extension TwitterAPIKit.TwitterAuthAPIImpl: OAuth20API {
         _ request: PostOAuth2InvalidateTokenRequestV1
     ) -> TwitterAPISessionJSONTask {
         return session.send(request)
+    }
+
+    // MARK: - OAuth 2.0 Authorization Code Flow with PKCE
+
+    public func makeOAuth2AuthorizeURL(_ request: GetOAuth2AuthorizeRequestV1) -> URL? {
+        return try? request.buildRequest(environment: session.environment).url
+    }
+
+    public func postOAuth2AccessTokenData(
+        _ request: PostOAuth2AccessTokenRequestV2
+    ) -> TwitterAPISessionDataTask {
+        return session.send(request)
+    }
+
+    func postOAuth2AccessToken(
+        _ request: PostOAuth2AccessTokenRequestV2
+    ) -> TwitterAPISessionSpecializedTask<TwitterOAuth2AccessToken> {
+        return postOAuth2AccessTokenData(request)
+            .specialized { try TwitterOAuth2AccessToken.fromResponse(data: $0) }
+    }
+
+    func postOAuth2RefreshTokenData(
+        _ request: PostOAuth2RefreshTokenRequestV2
+    ) -> TwitterAPISessionDataTask {
+        return session.send(request)
+    }
+
+    func postOAuth2RefreshToken(_ request: PostOAuth2RefreshTokenRequestV2) -> TwitterAPISessionSpecializedTask<
+        TwitterOAuth2AccessToken
+    > {
+        return postOAuth2RefreshTokenData(request)
+            .specialized { try TwitterOAuth2AccessToken.fromResponse(data: $0) }
     }
 }
