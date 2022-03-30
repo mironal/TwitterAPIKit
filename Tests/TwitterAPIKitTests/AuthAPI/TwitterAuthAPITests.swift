@@ -1,9 +1,9 @@
 import TwitterAPIKit
 import XCTest
 
-class AuthAPIv1Tests: XCTestCase {
+class TwitterAuthAPITests: XCTestCase {
 
-    var client: AuthAPIv1!
+    var client: TwitterAuthAPI!
 
     override func setUpWithError() throws {
 
@@ -14,8 +14,7 @@ class AuthAPIv1Tests: XCTestCase {
             TwitterAPIKit(
                 .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
                 configuration: config
-            ).v1
-
+            ).auth
     }
 
     override func tearDownWithError() throws {
@@ -23,14 +22,18 @@ class AuthAPIv1Tests: XCTestCase {
     }
 
     func testMakeOAuthAuthorizeURL() throws {
-        let url = client.makeOAuthAuthorizeURL(.init(oauthToken: "token", forceLogin: true, screenName: "name"))
+        let url = client.oauth11a.makeOAuthAuthorizeURL(
+            .init(oauthToken: "token", forceLogin: true, screenName: "name")
+        )
         XCTAssertEqual(
             url?.absoluteString,
             "https://api.twitter.com/oauth/authorize?force_login=true&oauth_token=token&screen_name=name")
     }
 
     func testMakeOAuthAuthenticateURL() throws {
-        let url = client.makeOAuthAuthenticateURL(.init(oauthToken: "token", forceLogin: true, screenName: "name"))
+        let url = client.oauth11a.makeOAuthAuthenticateURL(
+            .init(oauthToken: "token", forceLogin: true, screenName: "name")
+        )
         XCTAssertEqual(
             url?.absoluteString,
             "https://api.twitter.com/oauth/authenticate?force_login=true&oauth_token=token&screen_name=name")

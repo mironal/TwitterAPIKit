@@ -39,6 +39,7 @@ open class TwitterAPIKit {
         return decoder
     }()
 
+    public let auth: TwitterAuthAPI
     public let v1: TwitterAPIv1
     public let v2: TwitterAPIv2
 
@@ -57,6 +58,7 @@ open class TwitterAPIKit {
             configuration: configuration,
             environment: environment
         )
+        self.auth = TwitterAuthAPIImpl(session: session)
         v1 = TwitterAPIImplV1(session: session)
         v2 = TwitterAPIImplV2(session: session)
     }
@@ -80,6 +82,13 @@ open class TwitterAPIKit {
 }
 
 extension TwitterAPIKit {
+
+    class TwitterAuthAPIImpl {
+        let session: TwitterAPISession
+        init(session: TwitterAPISession) {
+            self.session = session
+        }
+    }
 
     class TwitterAPIImplV1 {
         let session: TwitterAPISession
