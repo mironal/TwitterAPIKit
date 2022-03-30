@@ -11,7 +11,8 @@ class PostOAuth2RevokeTokenRequestV2Tests: XCTestCase {
     func test() throws {
         let req = PostOAuth2RevokeTokenRequestV2(
             token: "_t_",
-            clientID: "_c_"
+            clientID: "_c_",
+            tokenTypeHint: "hint"
         )
 
         XCTAssertEqual(req.method, .post)
@@ -23,6 +24,7 @@ class PostOAuth2RevokeTokenRequestV2Tests: XCTestCase {
             [
                 "token": "_t_",
                 "client_id": "_c_",
+                "token_type_hint": "hint",
             ]
         )
     }
