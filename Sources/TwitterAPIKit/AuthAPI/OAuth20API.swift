@@ -43,6 +43,10 @@ public protocol OAuth20API {
     func postOAuth2RefreshToken(
         _ request: PostOAuth2RefreshTokenRequestV2
     ) -> TwitterAPISessionSpecializedTask<TwitterOAuth2AccessToken>
+
+    func postOAuth2RevokeToken(
+        _ request: PostOAuth2RevokeTokenRequestV2
+    ) -> TwitterAPISessionDataTask
 }
 
 extension TwitterAPIKit.TwitterAuthAPIImpl: OAuth20API {
@@ -111,5 +115,11 @@ extension TwitterAPIKit.TwitterAuthAPIImpl: OAuth20API {
     > {
         return postOAuth2RefreshTokenData(request)
             .specialized { try TwitterOAuth2AccessToken.fromResponse(data: $0) }
+    }
+
+    func postOAuth2RevokeToken(
+        _ request: PostOAuth2RevokeTokenRequestV2
+    ) -> TwitterAPISessionDataTask {
+        return session.send(request)
     }
 }
