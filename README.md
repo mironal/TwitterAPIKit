@@ -191,18 +191,18 @@ This method is intended to be used when the library does not yet support Twitter
 ```swift
 // for CLI tool
 func runOAuthV1() {
-    client.v1.postOAuthRequestToken(.init(oauthCallback: "oob")).responseObject(queue: .main) { response in
+    client.auth.postOAuthRequestToken(.init(oauthCallback: "oob")).responseObject(queue: .main) { response in
         do {
             let success = try response.result.get()
             print("Token:", success)
 
-            let url = client.v1.makeOAuthAuthorizeURL(.init(oauthToken: success.oauthToken, forceLogin: true))!
+            let url = client.auth.makeOAuthAuthorizeURL(.init(oauthToken: success.oauthToken, forceLogin: true))!
             print("Enter this URL into your browser and enter the PIN code that will be displayed after authentication.")
             print(url)
 
             let pinCode = readLine()!
 
-            client.v1.postOAuthAccessToken(.init(oauthToken: success.oauthToken, oauthVerifier: pinCode))
+            client.auth.postOAuthAccessToken(.init(oauthToken: success.oauthToken, oauthVerifier: pinCode))
                 responseObject(queue: .main) { response in
                 do {
                     let success = try response.result.get()
@@ -241,7 +241,7 @@ func runOAuth2V1() {
         .basic(apiKey: "your consumer key", apiSecretKey: "your consumer secret")
     )
 
-    client.v1.postOAuth2BearerToken(.init()).responseObject(queue: .main) { response in
+    client.auth.postOAuth2BearerToken(.init()).responseObject(queue: .main) { response in
         do {
             let success = try response.result.get()
             print("Token:", success)
