@@ -38,4 +38,23 @@ class TwitterAuthAPITests: XCTestCase {
             url?.absoluteString,
             "https://api.twitter.com/oauth/authenticate?force_login=true&oauth_token=token&screen_name=name")
     }
+
+    func testMakeOAuth2AuthorizeURL() throws {
+        let url = client.oauth20.makeOAuth2AuthorizeURL(
+            .init(
+                clientID: "cid",
+                redirectURI: "callback",
+                state: "state",
+                codeChallenge: "challenge",
+                codeChallengeMethod: "plain",
+                scopes: [
+                    "users.read", "tweet.read",
+                ])
+        )
+
+        XCTAssertEqual(
+            url!.absoluteString,
+            "https://twitter.com/i/oauth2/authorize?client_id=cid&code_challenge=challenge&code_challenge_method=plain&redirect_uri=callback&response_type=code&scope=users.read%20tweet.read&state=state"
+        )
+    }
 }
