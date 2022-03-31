@@ -68,6 +68,8 @@ let client.v1.directMessage.someDM_APIs()
 
 - https://github.com/mironal/TwitterAPIKit-iOS-sample
 
+This sample project contains examples of how to authenticate with `OAuth 1.0a User Access Tokens (3-legged OAuth flow)` and `OAuth 2.0 Authorization Code Flow with PKCE`.
+
 ### Basic
 
 ```swift
