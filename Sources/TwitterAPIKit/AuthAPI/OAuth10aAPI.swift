@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol OAuth11aAPI {
+public protocol OAuth10aAPI {
     /// https://developer.twitter.com/en/docs/authentication/api-reference/request_token
     func postOAuthRequestTokenData(
         _ request: PostOAuthRequestTokenRequestV1
@@ -33,7 +33,7 @@ public protocol OAuth11aAPI {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAuthAPIImpl: OAuth11aAPI {
+extension TwitterAPIKit.TwitterAuthAPIImpl: OAuth10aAPI {
     public func postOAuthRequestTokenData(
         _ request: PostOAuthRequestTokenRequestV1
     ) -> TwitterAPISessionDataTask {

@@ -22,7 +22,7 @@ class TwitterAuthAPITests: XCTestCase {
     }
 
     func testMakeOAuthAuthorizeURL() throws {
-        let url = client.oauth11a.makeOAuthAuthorizeURL(
+        let url = client.oauth10a.makeOAuthAuthorizeURL(
             .init(oauthToken: "token", forceLogin: true, screenName: "name")
         )
         XCTAssertEqual(
@@ -31,7 +31,7 @@ class TwitterAuthAPITests: XCTestCase {
     }
 
     func testMakeOAuthAuthenticateURL() throws {
-        let url = client.oauth11a.makeOAuthAuthenticateURL(
+        let url = client.oauth10a.makeOAuthAuthenticateURL(
             .init(oauthToken: "token", forceLogin: true, screenName: "name")
         )
         XCTAssertEqual(
