@@ -183,7 +183,30 @@ class TwitterAPISessionTests: XCTestCase {
             exp.fulfill()
         }
         wait(for: [exp], timeout: 10)
+    }
 
+    func testNoneAuth() throws {
+        let config = URLSessionConfiguration.default
+        config.protocolClasses = [MockURLProtocol.self]
+
+        let session = TwitterAPISession(
+            auth: .none,
+            configuration: config,
+            environment: .init(
+                apiURL: URL(string: "https://api.example.com")!,
+                uploadURL: URL(string: "https://upload.example.com")!
+            )
+        )
+
+        MockURLProtocol.requestAssert = { request in
+            XCTAssertNil(request.allHTTPHeaderFields?["Authorization"])
+        }
+
+        let exp = expectation(description: "")
+        session.send(GetTwitterReqeust()).responseData(queue: .main) { _ in
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 10)
     }
 }
 
