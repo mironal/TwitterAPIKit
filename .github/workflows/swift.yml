@@ -18,10 +18,14 @@ jobs:
           key: ${{ runner.os }}-spm-${{ hashFiles('**/BuildTools/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-spm-
-      - name: Build tools
+      - uses: fwal/setup-swift@v1
+        with:
+          swift-version: "5.6"
+      - name: Build tools & Lint
         if: steps.cache-spm.outputs.cache-hit != 'true'
         run: swift run -c release --package-path BuildTools swift-format lint -p --strict --recursive ./Sources ./Tests ./scripts
       - name: Lint
+        if: steps.cache-spm.outputs.cache-hit == 'true'
         run: |
           swift run -c release --skip-build --package-path BuildTools swift-format --version
           swift run -c release --skip-build --package-path BuildTools swift-format lint -p --strict --recursive ./Sources ./Tests ./scripts
