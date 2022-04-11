@@ -4,7 +4,7 @@ import Foundation
     import CommonCrypto
 
     extension Data {
-        func hmac(key: Data) -> Data {
+        fileprivate func hmac(key: Data) -> Data {
 
             // Thanks: https://github.com/jernejstrasner/SwiftCrypto
 
@@ -35,9 +35,9 @@ import Foundation
     }
 
 #elseif canImport(Crypto)
+    import Crypto
     func createHMACSHA1(key: Data, message: Data) -> Data {
-        // TODO
-        return Data()
+        return Data(HMAC<Insecure.SHA1>.authenticationCode(for: message, using: SymmetricKey(data: key)))
     }
 #else
     #error("Crypto is not available in this environment.")

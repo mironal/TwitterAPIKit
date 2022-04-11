@@ -3,7 +3,6 @@
 
 import PackageDescription
 
-
 #if canImport(CommonCrypto)
 let dependencies: [Package.Dependency] = []
 let tDependencies: [Target.Dependency] = []
