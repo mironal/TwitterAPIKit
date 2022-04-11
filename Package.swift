@@ -3,10 +3,13 @@
 
 import PackageDescription
 
+// Currently, CommonCrypto and CryptoKit are not available under Linux.
+// If CommonCrypto is not available, swift-crypto should be used.
+
 #if canImport(CommonCrypto)
 let dependencies: [Package.Dependency] = []
 let tDependencies: [Target.Dependency] = []
-#else
+#else // for Linux
 let dependencies: [Package.Dependency] = [.package(url: "https://github.com/apple/swift-crypto.git", from: "2.0.0")]
 let tDependencies: [Target.Dependency] = [.product(name: "Crypto", package: "swift-crypto")]
 #endif
