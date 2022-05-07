@@ -1,6 +1,6 @@
 # TwitterAPIKit
 
-Swift library for the Twitter API v1 and v2 (Work in progress).
+Swift library for the Twitter API v1 and v2.
 
 [![Swift](https://github.com/mironal/TwitterAPIKit/actions/workflows/swift.yml/badge.svg)](https://github.com/mironal/TwitterAPIKit/actions/workflows/swift.yml)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmironal%2FTwitterAPIKit%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/mironal/TwitterAPIKit) [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmironal%2FTwitterAPIKit%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/mironal/TwitterAPIKit)
@@ -280,7 +280,7 @@ Task {
 
 ## TODO
 
-- [ ] Support API v1 endpoint : 83% completed (Commonly used APIs are 100% supported.)
+- [ ] Support API v1 endpoint : 85% completed (Commonly used APIs are 100% supported.)
 - [x] Support API v2 endpoint: 100% completed (Except for Lab)
 - [x] Swift Concurrency (Experimental)
 - [ ] Document
