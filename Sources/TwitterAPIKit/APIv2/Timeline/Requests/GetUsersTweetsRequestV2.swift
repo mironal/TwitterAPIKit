@@ -3,17 +3,9 @@ import Foundation
 /// https://developer.twitter.com/en/docs/twitter-api/tweets/timelines/api-reference/get-users-id-tweets
 open class GetUsersTweetsRequestV2: TwitterAPIRequest {
 
-    public enum Exclude: String {
-        case retweets
-        case replies
-        func bind(param: inout [String: Any]) {
-            param["exclude"] = rawValue
-        }
-    }
-
     public let id: String
     public let endTime: Date?
-    public let exclude: Exclude?
+    public let exclude: Set<TwitterTimelineExcludeV2>?
     public let expansions: Set<TwitterTweetExpansionsV2>?
     public let maxResults: Int?
     public let mediaFields: Set<TwitterMediaFieldsV2>?
@@ -55,7 +47,7 @@ open class GetUsersTweetsRequestV2: TwitterAPIRequest {
     public init(
         id: String,
         endTime: Date? = .none,
-        exclude: Exclude? = .none,
+        exclude: Set<TwitterTimelineExcludeV2>? = .none,
         expansions: Set<TwitterTweetExpansionsV2>? = .none,
         maxResults: Int? = .none,
         mediaFields: Set<TwitterMediaFieldsV2>? = .none,

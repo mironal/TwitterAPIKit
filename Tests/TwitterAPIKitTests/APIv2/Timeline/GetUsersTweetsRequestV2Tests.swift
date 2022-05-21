@@ -12,7 +12,7 @@ class GetUsersTweetsRequestV2Tests: XCTestCase {
         let req = GetUsersTweetsRequestV2(
             id: "_i_",
             endTime: Date(timeIntervalSince1970: 10),
-            exclude: .replies,
+            exclude: [.replies, .retweets],
             expansions: [.authorID],
             maxResults: 100,
             mediaFields: [.publicMetrics],
@@ -34,7 +34,7 @@ class GetUsersTweetsRequestV2Tests: XCTestCase {
             req.parameters,
             [
                 "end_time": "1970-01-01T00:00:10Z",
-                "exclude": "replies",
+                "exclude": "replies,retweets",
                 "expansions": "author_id",
                 "max_results": 100,
                 "media.fields": "public_metrics",
