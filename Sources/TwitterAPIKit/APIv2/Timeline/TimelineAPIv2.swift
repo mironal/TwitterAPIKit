@@ -11,6 +11,12 @@ public protocol TimelineAPIv2 {
     func getUserMensions(
         _ request: GetUsersMentionsRequestV2
     ) -> TwitterAPISessionJSONTask
+
+    /// a.k.a Home Timeline
+    /// https://developer.twitter.com/en/docs/twitter-api/tweets/timelines/api-reference/get-users-id-reverse-chronological
+    func getUserReverseChronological(
+        _ request: GetUsersTimelinesReverseChronologicalRequestV2
+    ) -> TwitterAPISessionJSONTask
 }
 
 extension TwitterAPIKit.TwitterAPIImplV2: TimelineAPIv2 {
@@ -23,6 +29,12 @@ extension TwitterAPIKit.TwitterAPIImplV2: TimelineAPIv2 {
 
     public func getUserMensions(
         _ request: GetUsersMentionsRequestV2
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
+
+    func getUserReverseChronological(
+        _ request: GetUsersTimelinesReverseChronologicalRequestV2
     ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
