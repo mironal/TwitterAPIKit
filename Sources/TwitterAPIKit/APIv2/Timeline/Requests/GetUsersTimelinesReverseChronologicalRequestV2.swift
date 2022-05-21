@@ -1,7 +1,7 @@
 import Foundation
 
-/// https://developer.twitter.com/en/docs/twitter-api/tweets/timelines/api-reference/get-users-id-tweets
-open class GetUsersTweetsRequestV2: TwitterAPIRequest {
+/// https://developer.twitter.com/en/docs/twitter-api/tweets/timelines/api-reference/get-users-id-reverse-chronological
+open class GetUsersTimelinesReverseChronologicalRequestV2: TwitterAPIRequest {
 
     public let id: String
     public let endTime: Date?
@@ -23,7 +23,7 @@ open class GetUsersTweetsRequestV2: TwitterAPIRequest {
     }
 
     public var path: String {
-        return "/2/users/\(id)/tweets"
+        return "/2/users/\(id)/timelines/reverse_chronological"
     }
 
     open var parameters: [String: Any] {
