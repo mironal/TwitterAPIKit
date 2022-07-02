@@ -33,7 +33,7 @@ public protocol OAuth10aAPI {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAuthAPIImpl: OAuth10aAPI {
+extension TwitterAPIClient.TwitterAuthAPIImpl: OAuth10aAPI {
     public func postOAuthRequestTokenData(
         _ request: PostOAuthRequestTokenRequestV1
     ) -> TwitterAPISessionDataTask {

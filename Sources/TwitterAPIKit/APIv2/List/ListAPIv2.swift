@@ -88,7 +88,7 @@ public protocol ListAPIv2 {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV2: ListAPIv2 {
+extension TwitterAPIClient.TwitterAPIImplV2: ListAPIv2 {
 
     func getListTweets(_ request: GetListsTweetsRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)

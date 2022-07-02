@@ -28,7 +28,7 @@ public protocol RetweetAPIv1 {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV1: RetweetAPIv1 {
+extension TwitterAPIClient.TwitterAPIImplV1: RetweetAPIv1 {
     public func postRetweet(
         _ request: PostRetweetRequestV1
     ) -> TwitterAPISessionJSONTask {

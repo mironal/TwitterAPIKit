@@ -41,7 +41,7 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
         self.task = task
 
         // Serial queue
-        taskQueue = DispatchQueue(label: "TwitterAPIKit.task.\(task.taskIdentifier)")
+        taskQueue = DispatchQueue(label: "TwitterAPIClient.task.\(task.taskIdentifier)")
         taskQueue.suspend()
     }
 
@@ -155,7 +155,7 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
 
     public func responseDecodable<T>(
         type: T.Type,
-        decoder: JSONDecoder = TwitterAPIKit.defaultJSONDecoder,
+        decoder: JSONDecoder = TwitterAPIClient.defaultJSONDecoder,
         queue: DispatchQueue,
         _ block: @escaping (TwitterAPIResponse<T>) -> Void
     ) -> Self where T: Decodable {
@@ -186,7 +186,7 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
     ) -> Self where T: Decodable {
         return responseDecodable(
             type: type,
-            decoder: TwitterAPIKit.defaultJSONDecoder,
+            decoder: TwitterAPIClient.defaultJSONDecoder,
             queue: queue,
             block
         )
@@ -198,7 +198,7 @@ public class TwitterAPISessionDelegatedJSONTask: TwitterAPISessionJSONTask, Twit
     ) -> Self where T: Decodable {
         return responseDecodable(
             type: type,
-            decoder: TwitterAPIKit.defaultJSONDecoder,
+            decoder: TwitterAPIClient.defaultJSONDecoder,
             queue: .main,
             block
         )

@@ -18,7 +18,7 @@ public protocol BookmarksAPIv2 {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV2: BookmarksAPIv2 {
+extension TwitterAPIClient.TwitterAPIImplV2: BookmarksAPIv2 {
 
     func getBookmarks(_ request: GetUsersBookmarksRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)

@@ -27,7 +27,7 @@ public struct UploadMediaRequestParameters {
     }
 }
 
-extension TwitterAPIKit {
+extension TwitterAPIClient {
 
     public struct UploadMediaInitResponse: Decodable {
         public let mediaID: String

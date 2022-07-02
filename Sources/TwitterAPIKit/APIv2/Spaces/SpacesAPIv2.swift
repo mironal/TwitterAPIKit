@@ -33,7 +33,7 @@ public protocol SpacesAPIv2 {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV2: SpacesAPIv2 {
+extension TwitterAPIClient.TwitterAPIImplV2: SpacesAPIv2 {
 
     func getSpace(_ request: GetSpaceRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)

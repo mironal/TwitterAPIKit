@@ -15,7 +15,7 @@ class UploadMediaUtilTests: XCTestCase {
         let config = URLSessionConfiguration.default
         config.protocolClasses = [MockURLProtocol.self]
 
-        let client = TwitterAPIKit(
+        let client = TwitterAPIClient(
             .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
             configuration: config
         )
@@ -124,7 +124,7 @@ class UploadMediaUtilTests: XCTestCase {
         let config = URLSessionConfiguration.default
         config.protocolClasses = [MockURLProtocol.self]
 
-        let client = TwitterAPIKit(
+        let client = TwitterAPIClient(
             .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
             configuration: config
         )
@@ -184,7 +184,7 @@ class UploadMediaUtilTests: XCTestCase {
         let config = URLSessionConfiguration.default
         config.protocolClasses = [MockURLProtocol.self]
 
-        let client = TwitterAPIKit(
+        let client = TwitterAPIClient(
             .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
             configuration: config
         )
@@ -256,7 +256,7 @@ class UploadMediaUtilTests: XCTestCase {
         let config = URLSessionConfiguration.default
         config.protocolClasses = [MockURLProtocol.self]
 
-        let client = TwitterAPIKit(
+        let client = TwitterAPIClient(
             .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
             configuration: config
         )
@@ -329,7 +329,7 @@ class UploadMediaUtilTests: XCTestCase {
         let config = URLSessionConfiguration.default
         config.protocolClasses = [MockURLProtocol.self]
 
-        let client = TwitterAPIKit(
+        let client = TwitterAPIClient(
             .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
             configuration: config
         )
@@ -439,7 +439,7 @@ class UploadMediaUtilTests: XCTestCase {
         let config = URLSessionConfiguration.default
         config.protocolClasses = [MockURLProtocol.self]
 
-        let client = TwitterAPIKit(
+        let client = TwitterAPIClient(
             .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
             configuration: config
         )

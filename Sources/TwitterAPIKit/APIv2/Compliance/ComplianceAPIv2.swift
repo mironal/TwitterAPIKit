@@ -18,7 +18,7 @@ public protocol ComplianceAPIv2 {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV2: ComplianceAPIv2 {
+extension TwitterAPIClient.TwitterAPIImplV2: ComplianceAPIv2 {
 
     func getComplianceJob(_ request: GetComplianceJobRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)

@@ -13,7 +13,7 @@ public protocol TweetCountAPIv2 {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV2: TweetCountAPIv2 {
+extension TwitterAPIClient.TwitterAPIImplV2: TweetCountAPIv2 {
     func getTweetCountRecent(
         _ request: GetTweetsCountsRecentRequestV2
     ) -> TwitterAPISessionJSONTask {

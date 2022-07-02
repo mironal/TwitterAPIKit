@@ -9,7 +9,7 @@ public protocol ApplicationAPIv1 {
 
 }
 
-extension TwitterAPIKit.TwitterAPIImplV1: ApplicationAPIv1 {
+extension TwitterAPIClient.TwitterAPIImplV1: ApplicationAPIv1 {
     func getRateLimit(_ request: GetApplicationRateLimitStatusRequestV1) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }

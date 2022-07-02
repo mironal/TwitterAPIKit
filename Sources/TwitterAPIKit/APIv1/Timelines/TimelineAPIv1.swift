@@ -20,7 +20,7 @@ public protocol TimelineAPIv1 {
 
 }
 
-extension TwitterAPIKit.TwitterAPIImplV1: TimelineAPIv1 {
+extension TwitterAPIClient.TwitterAPIImplV1: TimelineAPIv1 {
     public func getHomeTimeline(
         _ request: GetStatusesHomeTimelineRequestV1
     ) -> TwitterAPISessionJSONTask {

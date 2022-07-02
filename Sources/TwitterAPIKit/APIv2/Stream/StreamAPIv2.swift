@@ -23,7 +23,7 @@ public protocol StreamAPIv2 {
     ) -> TwitterAPISessionStreamTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV2: StreamAPIv2 {
+extension TwitterAPIClient.TwitterAPIImplV2: StreamAPIv2 {
 
     func sampleStream(_ request: GetTweetsSampleStreamRequestV2) -> TwitterAPISessionStreamTask {
         return session.send(streamRequest: request)

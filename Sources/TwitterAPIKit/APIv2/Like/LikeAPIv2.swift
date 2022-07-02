@@ -24,7 +24,7 @@ public protocol LikeAPIv2 {
 
 }
 
-extension TwitterAPIKit.TwitterAPIImplV2: LikeAPIv2 {
+extension TwitterAPIClient.TwitterAPIImplV2: LikeAPIv2 {
     public func getLikingUsers(
         _ request: GetTweetsLikingUsersRequestV2
     ) -> TwitterAPISessionJSONTask {

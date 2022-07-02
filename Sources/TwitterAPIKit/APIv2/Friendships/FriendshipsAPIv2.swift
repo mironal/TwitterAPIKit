@@ -22,7 +22,7 @@ public protocol FriendshipsAPIv2 {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV2: FriendshipsAPIv2 {
+extension TwitterAPIClient.TwitterAPIImplV2: FriendshipsAPIv2 {
 
     func getFollowing(_ request: GetUsersFollowingRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)

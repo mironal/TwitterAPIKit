@@ -35,7 +35,7 @@ Currently, scoping according to Twitter's App permissions is not yet implemented
 ```swift
 
 // The most common usage.
-let client = TwitterAPIKit(/* auth */)
+let client = TwitterAPIClient(/* auth */)
 
 client.v1.someV1API()
 client.v2.someV2API()
@@ -78,7 +78,7 @@ This sample project contains examples of how to authenticate with `OAuth 1.0a Us
     let oauthToken = ""
     let oauthTokenSecret = ""
 
-    let client = TwitterAPIKit(
+    let client = TwitterAPIClient(
         consumerKey: consumerKey,
         consumerSecret: consumerSecret,
         oauthToken: oauthToken,
@@ -172,7 +172,7 @@ This method is intended to be used when the library does not yet support Twitter
     let oauthToken = ""
     let oauthTokenSecret = ""
 
-    let client = TwitterAPIKit(
+    let client = TwitterAPIClient(
         consumerKey: consumerKey,
         consumerSecret: consumerSecret,
         oauthToken: oauthToken,
@@ -239,7 +239,7 @@ func runOAuthV1() {
 
 ```swift
 func runOAuth2V1() {
-    let client = TwitterAPIKit(
+    let client = TwitterAPIClient(
         .basic(apiKey: "your consumer key", apiSecretKey: "your consumer secret")
     )
 
@@ -255,7 +255,7 @@ func runOAuth2V1() {
 }
 
 func useBearerTokenV1() {
-    let client = TwitterAPIKit(.bearer("AAAAAAAAAAAAAAAAAAAAA"))
+    let client = TwitterAPIClient(.bearer("AAAAAAAAAAAAAAAAAAAAA"))
     client.v1.getUserTimeline(.init(target: .screenName("twitterapi"))).responseData { response in
         print(response.prettyString)
     }

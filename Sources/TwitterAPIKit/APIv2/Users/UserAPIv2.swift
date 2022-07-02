@@ -27,7 +27,7 @@ public protocol UserAPIv2 {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV2: UserAPIv2 {
+extension TwitterAPIClient.TwitterAPIImplV2: UserAPIv2 {
 
     func getUser(_ request: GetUserRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)

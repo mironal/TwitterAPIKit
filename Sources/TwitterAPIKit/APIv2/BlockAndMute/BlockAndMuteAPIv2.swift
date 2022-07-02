@@ -33,7 +33,7 @@ public protocol BlockAndMuteAPIv2 {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV2: BlockAndMuteAPIv2 {
+extension TwitterAPIClient.TwitterAPIImplV2: BlockAndMuteAPIv2 {
 
     func getBlockUsers(_ request: GetUsersBlockingRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)

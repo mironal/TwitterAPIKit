@@ -8,7 +8,7 @@ public protocol HelpAPIv1 {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV1: HelpAPIv1 {
+extension TwitterAPIClient.TwitterAPIImplV1: HelpAPIv1 {
     func getSupportedLanguages(
         _ request: GetHelpLanguagesRequestV1
     ) -> TwitterAPISessionJSONTask {

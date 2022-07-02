@@ -19,7 +19,7 @@ public protocol TrendAPIv1 {
 
 }
 
-extension TwitterAPIKit.TwitterAPIImplV1: TrendAPIv1 {
+extension TwitterAPIClient.TwitterAPIImplV1: TrendAPIv1 {
 
     public func getTrendsAvailable(
         _ request: GetTrendsAvailableRequestV1
