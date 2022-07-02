@@ -1,60 +1,45 @@
 import Foundation
 
-public protocol TweetAPIv2 {
+open class TweetAPIv2: TwitterAPIBase {
     /// https://developer.twitter.com/en/docs/twitter-api/tweets/lookup/api-reference/get-tweets
-    func getTweets(
+    public func getTweets(
         _ request: GetTweetsRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/tweets/lookup/api-reference/get-tweets-id
-    func getTweet(
+    public func getTweet(
         _ request: GetTweetRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/tweets/quote-tweets/api-reference/get-tweets-id-quote_tweets
-    func getQuoteTweets(
+    public func getQuoteTweets(
         _ request: GetTweetsQuoteTweetsRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/tweets/manage-tweets/api-reference/delete-tweets-id
-    func deleteTweet(
+    public func deleteTweet(
         _ request: DeleteTweetRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/tweets/manage-tweets/api-reference/post-tweets
-    func postTweet(
+    public func postTweet(
         _ request: PostTweetsRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/tweets/hide-replies/api-reference/put-tweets-id-hidden
-    func hideReply(
+    public func hideReply(
         _ request: PutTweetsHiddenRequestV2
-    ) -> TwitterAPISessionJSONTask
-}
-
-extension TwitterAPIClient.TwitterAPIImplV2: TweetAPIv2 {
-
-    public func getTweets(_ request: GetTweetsRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    public func getTweet(_ request: GetTweetRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func getQuoteTweets(_ request: GetTweetsQuoteTweetsRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func deleteTweet(_ request: DeleteTweetRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func postTweet(_ request: PostTweetsRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func hideReply(_ request: PutTweetsHiddenRequestV2) -> TwitterAPISessionJSONTask {
+    ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }

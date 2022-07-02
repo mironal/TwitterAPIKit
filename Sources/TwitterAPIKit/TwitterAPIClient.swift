@@ -29,7 +29,7 @@ open class TwitterAPIClient {
         )
         self.auth = TwitterAuthAPI(session: session)
         v1 = TwitterAPIv1(session: session)
-        v2 = TwitterAPIImplV2(session: session)
+        v2 = TwitterAPIv2(session: session)
     }
 
     convenience public init(

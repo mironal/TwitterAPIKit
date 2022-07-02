@@ -1,51 +1,38 @@
 import Foundation
 
-public protocol UserAPIv2 {
+open class UserAPIv2: TwitterAPIBase {
     /// https://developer.twitter.com/en/docs/twitter-api/users/lookup/api-reference/get-users-id
-    func getUser(
+    public func getUser(
         _ request: GetUserRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/users/lookup/api-reference/get-users
-    func getUsers(
+    public func getUsers(
         _ request: GetUsersRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/users/lookup/api-reference/get-users-by-username-username
-    func getUserByUsername(
+    public func getUserByUsername(
         _ request: GetUsersByUsernameRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/users/lookup/api-reference/get-users-by
-    func getUsersByUsernames(
+    public func getUsersByUsernames(
         _ request: GetUsersByRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/users/lookup/api-reference/get-users-me
-    func getMe(
+    public func getMe(
         _ request: GetUsersMeRequestV2
-    ) -> TwitterAPISessionJSONTask
-}
-
-extension TwitterAPIClient.TwitterAPIImplV2: UserAPIv2 {
-
-    func getUser(_ request: GetUserRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func getUsers(_ request: GetUsersRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func getUserByUsername(_ request: GetUsersByUsernameRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func getUsersByUsernames(_ request: GetUsersByRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func getMe(_ request: GetUsersMeRequestV2) -> TwitterAPISessionJSONTask {
+    ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }

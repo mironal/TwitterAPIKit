@@ -1,160 +1,123 @@
 import Foundation
 
-public protocol ListAPIv2 {
+open class ListAPIv2: TwitterAPIBase {
 
     /// https://developer.twitter.com/en/docs/twitter-api/lists/list-tweets/api-reference/get-lists-id-tweets
-    func getListTweets(
+    public func getListTweets(
         _ request: GetListsTweetsRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/lists/list-lookup/api-reference/get-lists-id
-    func getList(
+    public func getList(
         _ request: GetListRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/lists/list-lookup/api-reference/get-users-id-owned_lists
-    func getLists(
+    public func getLists(
         _ request: GetUsersOwnedListsRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/lists/list-follows/api-reference/post-users-id-followed-lists
-    func followList(
+    public func followList(
         _ request: PostUsersFollowedListsRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/lists/list-follows/api-reference/delete-users-id-followed-lists-list_id
-    func unfollowList(
+    public func unfollowList(
         _ request: DeleteUsersFollowedListsRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/lists/list-follows/api-reference/get-lists-id-followers
-    func listFollowers(
+    public func listFollowers(
         _ request: GetListsFollowersRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/lists/list-follows/api-reference/get-users-id-followed_lists
-    func followedLists(
+    public func followedLists(
         _ request: GetUsersFollowedListsRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/lists/list-members/api-reference/post-lists-id-members
-    func addListMember(
+    public func addListMember(
         _ request: PostListsMembersRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/lists/list-members/api-reference/delete-lists-id-members-user_id
-    func removeListMember(
+    public func removeListMember(
         _ request: DeleteListsMembersRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/lists/list-members/api-reference/get-users-id-list_memberships
-    func getListMemberships(
+    public func getListMemberships(
         _ request: GetUsersListMembershipsRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/lists/list-members/api-reference/get-lists-id-members
-    func getListMembers(
+    public func getListMembers(
         _ request: GetListsMembersRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/lists/manage-lists/api-reference/post-lists
-    func createList(
+    public func createList(
         _ request: PostListsRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/lists/manage-lists/api-reference/put-lists-id
-    func updateList(
+    public func updateList(
         _ request: PutListRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/lists/manage-lists/api-reference/delete-lists-id
-    func deleteList(
+    public func deleteList(
         _ request: DeleteListRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/lists/pinned-lists/api-reference/get-users-id-pinned_lists
-    func pinnedList(
+    public func pinnedList(
         _ request: GetUsersPinnedListsRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/lists/pinned-lists/api-reference/post-users-id-pinned-lists
-    func pinList(
+    public func pinList(
         _ request: PostUsersPinnedListsRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/lists/pinned-lists/api-reference/delete-users-id-pinned-lists-list_id
-    func unpinList(
+    public func unpinList(
         _ request: DeleteUsersPinnedListsRequestV2
-    ) -> TwitterAPISessionJSONTask
-}
-
-extension TwitterAPIClient.TwitterAPIImplV2: ListAPIv2 {
-
-    func getListTweets(_ request: GetListsTweetsRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func getList(_ request: GetListRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func getLists(_ request: GetUsersOwnedListsRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func followList(_ request: PostUsersFollowedListsRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func unfollowList(_ request: DeleteUsersFollowedListsRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func listFollowers(_ request: GetListsFollowersRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func followedLists(_ request: GetUsersFollowedListsRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func addListMember(_ request: PostListsMembersRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func removeListMember(_ request: DeleteListsMembersRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func getListMemberships(_ request: GetUsersListMembershipsRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func getListMembers(_ request: GetListsMembersRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func createList(_ request: PostListsRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func updateList(_ request: PutListRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func deleteList(_ request: DeleteListRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func pinnedList(_ request: GetUsersPinnedListsRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func pinList(_ request: PostUsersPinnedListsRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func unpinList(_ request: DeleteUsersPinnedListsRequestV2) -> TwitterAPISessionJSONTask {
+    ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }
