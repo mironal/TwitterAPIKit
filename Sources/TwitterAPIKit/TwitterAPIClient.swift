@@ -27,7 +27,7 @@ open class TwitterAPIClient {
             configuration: configuration,
             environment: environment
         )
-        self.auth = TwitterAuthAPIImpl(session: session)
+        self.auth = TwitterAuthAPI(session: session)
         v1 = TwitterAPIImplV1(session: session)
         v2 = TwitterAPIImplV2(session: session)
     }
@@ -50,14 +50,14 @@ open class TwitterAPIClient {
     }
 }
 
-extension TwitterAPIClient {
-
-    class TwitterAuthAPIImpl {
-        let session: TwitterAPISession
-        init(session: TwitterAPISession) {
-            self.session = session
-        }
+open class TwitterAPIBase {
+    public let session: TwitterAPISession
+    public init(session: TwitterAPISession) {
+        self.session = session
     }
+}
+
+extension TwitterAPIClient {
 
     class TwitterAPIImplV1 {
         let session: TwitterAPISession
