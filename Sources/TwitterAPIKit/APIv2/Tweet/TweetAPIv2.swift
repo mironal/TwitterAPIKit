@@ -32,7 +32,7 @@ public protocol TweetAPIv2 {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV2: TweetAPIv2 {
+extension TwitterAPIClient.TwitterAPIImplV2: TweetAPIv2 {
 
     public func getTweets(_ request: GetTweetsRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)

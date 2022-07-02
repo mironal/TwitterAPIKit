@@ -19,7 +19,7 @@ public protocol GeoAPIv1 {
 
 }
 
-extension TwitterAPIKit.TwitterAPIImplV1: GeoAPIv1 {
+extension TwitterAPIClient.TwitterAPIImplV1: GeoAPIv1 {
 
     public func getReverseGeocode(
         _ request: GetGeoReverseGeocodeRequestV1

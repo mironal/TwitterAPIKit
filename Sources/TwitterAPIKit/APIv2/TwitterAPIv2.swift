@@ -36,7 +36,7 @@ public protocol TwitterAPIResourceV2 {
     var user: UserAPIv2 { get }
 }
 
-extension TwitterAPIKit.TwitterAPIImplV2: TwitterAPIResourceV2 {
+extension TwitterAPIClient.TwitterAPIImplV2: TwitterAPIResourceV2 {
     var blockAndMute: BlockAndMuteAPIv2 { return self }
     var bookmarks: BookmarksAPIv2 { return self }
     var friendships: FriendshipsAPIv2 { return self }

@@ -23,7 +23,7 @@ public protocol UserAPIv1 {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV1: UserAPIv1 {
+extension TwitterAPIClient.TwitterAPIImplV1: UserAPIv1 {
 
     public func getUsers(
         _ request: GetUsersLookupRequestV1

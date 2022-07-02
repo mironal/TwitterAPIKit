@@ -14,7 +14,7 @@ public protocol SearchAPIv2 {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV2: SearchAPIv2 {
+extension TwitterAPIClient.TwitterAPIImplV2: SearchAPIv2 {
 
     func searchTweetsRecent(_ request: GetTweetsSearchRecentRequestV2) -> TwitterAPISessionJSONTask {
         return session.send(request)

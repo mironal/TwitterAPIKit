@@ -49,7 +49,7 @@ public protocol OAuth20API {
     ) -> TwitterAPISessionDataTask
 }
 
-extension TwitterAPIKit.TwitterAuthAPIImpl: OAuth20API {
+extension TwitterAPIClient.TwitterAuthAPIImpl: OAuth20API {
 
     // MARK: - OAuth 2.0 Bearer Token
 

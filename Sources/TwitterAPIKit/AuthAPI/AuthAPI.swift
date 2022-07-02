@@ -8,7 +8,7 @@ public protocol TwitterAuthAPIResource {
     var oauth20: OAuth20API { get }
 }
 
-extension TwitterAPIKit.TwitterAuthAPIImpl: TwitterAuthAPIResource {
+extension TwitterAPIClient.TwitterAuthAPIImpl: TwitterAuthAPIResource {
     var oauth10a: OAuth10aAPI { return self }
     var oauth20: OAuth20API { return self }
 }

@@ -40,7 +40,7 @@ public protocol TwitterAPIResourceV1 {
 
 }
 
-extension TwitterAPIKit.TwitterAPIImplV1: TwitterAPIResourceV1 {
+extension TwitterAPIClient.TwitterAPIImplV1: TwitterAPIResourceV1 {
     var account: AccountAPIv1 { return self }
     var application: ApplicationAPIv1 { return self }
     var blockAndMute: BlockAndMuteAPIv1 { return self }

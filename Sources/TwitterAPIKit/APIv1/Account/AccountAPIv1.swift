@@ -38,7 +38,7 @@ public protocol AccountAPIv1 {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV1: AccountAPIv1 {
+extension TwitterAPIClient.TwitterAPIImplV1: AccountAPIv1 {
     public func getAccountSetting(
         _ request: GetAccountSettingsRequestV1
     ) -> TwitterAPISessionJSONTask {

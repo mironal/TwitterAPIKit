@@ -36,7 +36,7 @@ public struct TwitterAPIEnvironment {
     }
 }
 
-open class TwitterAPIKit {
+open class TwitterAPIClient {
 
     public static var defaultJSONDecoder: JSONDecoder = {
         let decoder = JSONDecoder()
@@ -86,7 +86,7 @@ open class TwitterAPIKit {
     }
 }
 
-extension TwitterAPIKit {
+extension TwitterAPIClient {
 
     class TwitterAuthAPIImpl {
         let session: TwitterAPISession

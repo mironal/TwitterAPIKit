@@ -45,14 +45,14 @@ public protocol MediaAPIv1 {
         mediaID: String,
         initialWaitSec: Int,
         completionHandler: @escaping (
-            TwitterAPIResponse<TwitterAPIKit.UploadMediaStatusResponse>
+            TwitterAPIResponse<TwitterAPIClient.UploadMediaStatusResponse>
         ) -> Void
     )
 
     func waitMediaProcessing(
         mediaID: String,
         completionHandler: @escaping (
-            TwitterAPIResponse<TwitterAPIKit.UploadMediaStatusResponse>
+            TwitterAPIResponse<TwitterAPIClient.UploadMediaStatusResponse>
         ) -> Void
     )
 
@@ -72,7 +72,7 @@ public protocol MediaAPIv1 {
     ) -> TwitterAPISessionDataTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
+extension TwitterAPIClient.TwitterAPIImplV1: MediaAPIv1 {
 
     public func getUploadMediaStatus(
         _ request: GetUploadMediaStatusRequestV1
@@ -132,7 +132,7 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
                 additionalOwners: parameters.additionalOwners
             )
         ).responseDecodable(
-            type: TwitterAPIKit.UploadMediaInitResponse.self,
+            type: TwitterAPIClient.UploadMediaInitResponse.self,
             queue: .processQueue
         ) { [weak self] response in
 
@@ -164,11 +164,11 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
                 }
 
                 self.uploadMediaFinalize(.init(mediaID: mediaID))
-                    .responseDecodable(type: TwitterAPIKit.UploadMediaFinalizeResponse.self, queue: .processQueue) {
+                    .responseDecodable(type: TwitterAPIClient.UploadMediaFinalizeResponse.self, queue: .processQueue) {
                         [weak self] response in
                         guard let self = self else { return }
 
-                        var finalizeResult: TwitterAPIKit.UploadMediaFinalizeResponse
+                        var finalizeResult: TwitterAPIClient.UploadMediaFinalizeResponse
                         do {
                             finalizeResult = try response.result.get()
                         } catch {
@@ -196,7 +196,7 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
         mediaID: String,
         initialWaitSec: Int,
         completionHandler: @escaping (
-            TwitterAPIResponse<TwitterAPIKit.UploadMediaStatusResponse>
+            TwitterAPIResponse<TwitterAPIClient.UploadMediaStatusResponse>
         ) -> Void
     ) {
 
@@ -209,11 +209,11 @@ extension TwitterAPIKit.TwitterAPIImplV1: MediaAPIv1 {
     public func waitMediaProcessing(
         mediaID: String,
         completionHandler: @escaping (
-            TwitterAPIResponse<TwitterAPIKit.UploadMediaStatusResponse>
+            TwitterAPIResponse<TwitterAPIClient.UploadMediaStatusResponse>
         ) -> Void
     ) {
         _ = getUploadMediaStatus(.init(mediaID: mediaID))
-            .responseDecodable(type: TwitterAPIKit.UploadMediaStatusResponse.self, queue: .processQueue) {
+            .responseDecodable(type: TwitterAPIClient.UploadMediaStatusResponse.self, queue: .processQueue) {
                 [weak self] response in
                 guard let self = self else { return }
 

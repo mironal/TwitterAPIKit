@@ -19,7 +19,7 @@ public protocol TimelineAPIv2 {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV2: TimelineAPIv2 {
+extension TwitterAPIClient.TwitterAPIImplV2: TimelineAPIv2 {
 
     public func getUserTweets(
         _ request: GetUsersTweetsRequestV2

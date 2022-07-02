@@ -53,7 +53,7 @@ public protocol CollectionAPIv1 {
     ) -> TwitterAPISessionJSONTask
 }
 
-extension TwitterAPIKit.TwitterAPIImplV1: CollectionAPIv1 {
+extension TwitterAPIClient.TwitterAPIImplV1: CollectionAPIv1 {
 
     func getCollectionEntries(
         _ request: GetCollectionsEntriesRequestV1
