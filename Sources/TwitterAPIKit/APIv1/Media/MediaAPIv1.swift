@@ -1,106 +1,33 @@
 import Foundation
 
-public protocol MediaAPIv1 {
+open class MediaAPIv1: TwitterAPIBase {
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/get-media-upload-status
-    func getUploadMediaStatus(
-        _ request: GetUploadMediaStatusRequestV1
-    ) -> TwitterAPISessionJSONTask
-
-    /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload-init
-    func uploadMediaInit(
-        _ request: UploadMediaInitRequestV1
-    ) -> TwitterAPISessionJSONTask
-
-    /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload-append
-    func uploadMediaAppend(
-        _ request: UploadMediaAppendRequestV1
-    ) -> TwitterAPISessionJSONTask
-
-    /// Utility method for split uploading of large files.
-    func uploadMediaAppendSplitChunks(
-        _ request: UploadMediaAppendRequestV1,
-        maxBytes: Int
-    ) -> [TwitterAPISessionSpecializedTask<String /* mediaID */>]
-
-    func uploadMediaAppendSplitChunks(
-        _ request: UploadMediaAppendRequestV1
-    ) -> [TwitterAPISessionSpecializedTask<String /* mediaID */>]
-
-    /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload-finalize
-    func uploadMediaFinalize(
-        _ request: UploadMediaFinalizeRequestV1
-    ) -> TwitterAPISessionJSONTask
-
-    /// Upload media utility method.
-    /// INIT -> APPEND x n -> FINALIZE -> STATUS x n (If needed)
-    func uploadMedia(
-        _ parameters: UploadMediaRequestParameters,
-        completionHandler: @escaping (
-            TwitterAPIResponse<String>
-        ) -> Void
-    )
-
-    func waitMediaProcessing(
-        mediaID: String,
-        initialWaitSec: Int,
-        completionHandler: @escaping (
-            TwitterAPIResponse<TwitterAPIClient.UploadMediaStatusResponse>
-        ) -> Void
-    )
-
-    func waitMediaProcessing(
-        mediaID: String,
-        completionHandler: @escaping (
-            TwitterAPIResponse<TwitterAPIClient.UploadMediaStatusResponse>
-        ) -> Void
-    )
-
-    /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-metadata-create
-    func createMediaMetadata(
-        _ request: PostMediaMetadataCreateRequestV1
-    ) -> TwitterAPISessionDataTask
-
-    /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-subtitles-create
-    func createSubtitle(
-        _ request: PostMediaSubtitlesCreateRequestV1
-    ) -> TwitterAPISessionDataTask
-
-    /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-subtitles-delete
-    func deleteSubtitle(
-        _ request: PostMediaSubtitlesDeleteRequestV1
-    ) -> TwitterAPISessionDataTask
-}
-
-extension TwitterAPIClient.TwitterAPIImplV1: MediaAPIv1 {
-
     public func getUploadMediaStatus(
         _ request: GetUploadMediaStatusRequestV1
     ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload-init
     public func uploadMediaInit(
         _ request: UploadMediaInitRequestV1
     ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload-append
     public func uploadMediaAppend(
         _ request: UploadMediaAppendRequestV1
     ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 
-    func uploadMediaAppendSplitChunks(
-        _ request: UploadMediaAppendRequestV1
-    ) -> [TwitterAPISessionSpecializedTask<String>] {
-        return uploadMediaAppendSplitChunks(request, maxBytes: 5_242_880 /* 5MB */)
-    }
-
-    func uploadMediaAppendSplitChunks(
-        _ request: UploadMediaAppendRequestV1, maxBytes: Int
-    ) -> [TwitterAPISessionSpecializedTask<String>] {
+    /// Utility method for split uploading of large files.
+    public func uploadMediaAppendSplitChunks(
+        _ request: UploadMediaAppendRequestV1,
+        maxBytes: Int = 5_242_880 /* 5MB */
+    ) -> [TwitterAPISessionSpecializedTask<String /* mediaID */>] {
 
         let tasks = request.segments(maxBytes: maxBytes)
             .map { req in
@@ -108,16 +35,18 @@ extension TwitterAPIClient.TwitterAPIImplV1: MediaAPIv1 {
                     req.mediaID
                 }
             }
-
         return tasks
     }
 
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload-finalize
     public func uploadMediaFinalize(
         _ request: UploadMediaFinalizeRequestV1
     ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 
+    /// Upload media utility method.
+    /// INIT -> APPEND x n -> FINALIZE -> STATUS x n (If needed)
     public func uploadMedia(
         _ parameters: UploadMediaRequestParameters,
         completionHandler: @escaping (
@@ -252,15 +181,24 @@ extension TwitterAPIClient.TwitterAPIImplV1: MediaAPIv1 {
             }
     }
 
-    func createMediaMetadata(_ request: PostMediaMetadataCreateRequestV1) -> TwitterAPISessionDataTask {
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-metadata-create
+    public func createMediaMetadata(
+        _ request: PostMediaMetadataCreateRequestV1
+    ) -> TwitterAPISessionDataTask {
         return session.send(request)
     }
 
-    func createSubtitle(_ request: PostMediaSubtitlesCreateRequestV1) -> TwitterAPISessionDataTask {
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-subtitles-create
+    public func createSubtitle(
+        _ request: PostMediaSubtitlesCreateRequestV1
+    ) -> TwitterAPISessionDataTask {
         return session.send(request)
     }
 
-    func deleteSubtitle(_ request: PostMediaSubtitlesDeleteRequestV1) -> TwitterAPISessionDataTask {
+    /// https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-subtitles-delete
+    public func deleteSubtitle(
+        _ request: PostMediaSubtitlesDeleteRequestV1
+    ) -> TwitterAPISessionDataTask {
         return session.send(request)
     }
 }
