@@ -1,4 +1,4 @@
-open class TwitterAPIv1: TwitterAPIBase {
+open class TwitterAPIv1 {
     public let account: AccountAPIv1
     public let application: ApplicationAPIv1
     public let blockAndMute: BlockAndMuteAPIv1
@@ -17,7 +17,7 @@ open class TwitterAPIv1: TwitterAPIBase {
     public let tweet: TweetAPIv1
     public let user: UserAPIv1
 
-    public override init(session: TwitterAPISession) {
+    public init(session: TwitterAPISession) {
         account = .init(session: session)
         application = .init(session: session)
         blockAndMute = .init(session: session)
@@ -35,6 +35,5 @@ open class TwitterAPIv1: TwitterAPIBase {
         trend = .init(session: session)
         tweet = .init(session: session)
         user = .init(session: session)
-        super.init(session: session)
     }
 }
