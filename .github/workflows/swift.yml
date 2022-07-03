@@ -21,6 +21,10 @@ jobs:
       - uses: fwal/setup-swift@v1
         with:
           swift-version: "5.6"
+      - name: Install Sourcery
+        run: brew update && brew install sourcery
+      - name: Check Flat API
+        run: ./flat-api.sh -c
       - name: Build tools & Lint
         if: steps.cache-spm.outputs.cache-hit != 'true'
         run: swift run -c release --package-path BuildTools swift-format lint -p --strict --recursive ./Sources ./Tests ./scripts

@@ -1,15 +1,9 @@
 import Foundation
 
-public protocol HelpAPIv1 {
+open class HelpAPIv1: TwitterAPIBase {
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/developer-utilities/supported-languages/api-reference/get-help-languages
-    func getSupportedLanguages(
-        _ request: GetHelpLanguagesRequestV1
-    ) -> TwitterAPISessionJSONTask
-}
-
-extension TwitterAPIClient.TwitterAPIImplV1: HelpAPIv1 {
-    func getSupportedLanguages(
+    public func getSupportedLanguages(
         _ request: GetHelpLanguagesRequestV1
     ) -> TwitterAPISessionJSONTask {
         return session.send(request)

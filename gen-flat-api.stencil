@@ -1,0 +1,21 @@
+// swift-format-ignore-file
+import Foundation
+{% set Classes "TwitterAuthAPI,TwitterAPIv1,TwitterAPIv2"|split:"," %}
+{% for apiClass in Classes %}
+
+extension {{apiClass}} {
+{% for property in type[apiClass].variables %}
+
+    // MARK: - {{property.typeName}}
+
+    {% for method in property.type.methods where method.accessLevel == "public" %}
+    public func {{ method.name }}{{ ' async' if method.isAsync }}{{ ' throws' if method.throws }}{% if not method.returnTypeName.isVoid %} -> {{ method.returnTypeName }}{% endif %} {
+        {% if not method.returnTypeName.isVoid %}return {%endif%}{{property.name}}.{{method.callName}}({% for argument in method.parameters %}{%if argument.argumentLabel != nil%}{{argument.argumentLabel}}: {%endif%}{% if variable.name == argument.name %}{{variable.name}}{% else %}{{type.name|lowercase}}{{argument.name}}{% endif %}{{ ', ' if not forloop.last }}{% endfor %})
+    }
+    {% endfor %}
+{% endfor %}
+}
+{% endfor %}
+{# Run
+sourcery --sources Sources/TwitterAPIKit --templates gen-flat-api.stencil --output Sources/TwitterAPIKit/TwitterAPI+Flat.generated.swift
+#}

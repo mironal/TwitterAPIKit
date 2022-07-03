@@ -1,16 +1,11 @@
 import Foundation
 
-public protocol ApplicationAPIv1 {
+open class ApplicationAPIv1: TwitterAPIBase {
 
     /// https://developer.twitter.com/en/docs/twitter-api/v1/developer-utilities/rate-limit-status/api-reference/get-application-rate_limit_status
-    func getRateLimit(
+    public func getRateLimit(
         _ request: GetApplicationRateLimitStatusRequestV1
-    ) -> TwitterAPISessionJSONTask
-
-}
-
-extension TwitterAPIClient.TwitterAPIImplV1: ApplicationAPIv1 {
-    func getRateLimit(_ request: GetApplicationRateLimitStatusRequestV1) -> TwitterAPISessionJSONTask {
+    ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }

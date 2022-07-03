@@ -1,61 +1,39 @@
-public typealias TwitterAPIv1 =
-    TwitterAPIResourceV1
-    // sorted
-    & AccountAPIv1
-    & ApplicationAPIv1
-    & BlockAndMuteAPIv1
-    & CollectionAPIv1
-    & DirectMessageAPIv1
-    & FavoriteAPIv1
-    & FriendshipsAPIv1
-    & GeoAPIv1
-    & HelpAPIv1
-    & ListAPIv1
-    & MediaAPIv1
-    & RetweetAPIv1
-    & SearchAPIv1
-    & TimelineAPIv1
-    & TrendAPIv1
-    & TweetAPIv1
-    & UserAPIv1
+open class TwitterAPIv1 {
+    public let account: AccountAPIv1
+    public let application: ApplicationAPIv1
+    public let blockAndMute: BlockAndMuteAPIv1
+    public let collection: CollectionAPIv1
+    public let directMessage: DirectMessageAPIv1
+    public let favorite: FavoriteAPIv1
+    public let friendships: FriendshipsAPIv1
+    public let geo: GeoAPIv1
+    public let help: HelpAPIv1
+    public let list: ListAPIv1
+    public let media: MediaAPIv1
+    public let retweet: RetweetAPIv1
+    public let search: SearchAPIv1
+    public let timeline: TimelineAPIv1
+    public let trend: TrendAPIv1
+    public let tweet: TweetAPIv1
+    public let user: UserAPIv1
 
-public protocol TwitterAPIResourceV1 {
-    var account: AccountAPIv1 { get }
-    var application: ApplicationAPIv1 { get }
-    var blockAndMute: BlockAndMuteAPIv1 { get }
-    var collection: CollectionAPIv1 { get }
-    var directMessage: DirectMessageAPIv1 { get }
-    var favorite: FavoriteAPIv1 { get }
-    var friendships: FriendshipsAPIv1 { get }
-    var geo: GeoAPIv1 { get }
-    var help: HelpAPIv1 { get }
-    var list: ListAPIv1 { get }
-    var media: MediaAPIv1 { get }
-    var retweet: RetweetAPIv1 { get }
-    var search: SearchAPIv1 { get }
-    var timeline: TimelineAPIv1 { get }
-    var trend: TrendAPIv1 { get }
-    var tweet: TweetAPIv1 { get }
-    var user: UserAPIv1 { get }
-
-}
-
-extension TwitterAPIClient.TwitterAPIImplV1: TwitterAPIResourceV1 {
-    var account: AccountAPIv1 { return self }
-    var application: ApplicationAPIv1 { return self }
-    var blockAndMute: BlockAndMuteAPIv1 { return self }
-    var collection: CollectionAPIv1 { return self }
-    var directMessage: DirectMessageAPIv1 { return self }
-    var favorite: FavoriteAPIv1 { return self }
-    var friendships: FriendshipsAPIv1 { return self }
-    var geo: GeoAPIv1 { return self }
-    var help: HelpAPIv1 { return self }
-    var list: ListAPIv1 { return self }
-    var media: MediaAPIv1 { return self }
-    var retweet: RetweetAPIv1 { return self }
-    var search: SearchAPIv1 { return self }
-    var timeline: TimelineAPIv1 { return self }
-    var trend: TrendAPIv1 { return self }
-    var tweet: TweetAPIv1 { return self }
-    var user: UserAPIv1 { return self }
+    public init(session: TwitterAPISession) {
+        account = .init(session: session)
+        application = .init(session: session)
+        blockAndMute = .init(session: session)
+        collection = .init(session: session)
+        directMessage = .init(session: session)
+        favorite = .init(session: session)
+        friendships = .init(session: session)
+        geo = .init(session: session)
+        help = .init(session: session)
+        list = .init(session: session)
+        media = .init(session: session)
+        retweet = .init(session: session)
+        search = .init(session: session)
+        timeline = .init(session: session)
+        trend = .init(session: session)
+        tweet = .init(session: session)
+        user = .init(session: session)
+    }
 }
