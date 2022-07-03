@@ -56,13 +56,3 @@ open class TwitterAPIBase {
         self.session = session
     }
 }
-
-extension TwitterAPIClient {
-
-    class TwitterAPIImplV2 {
-        let session: TwitterAPISession
-        init(session: TwitterAPISession) {
-            self.session = session
-        }
-    }
-}
