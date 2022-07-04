@@ -1,5 +1,9 @@
 import Foundation
 
+#if canImport(FoundationNetworking)
+    @_exported import FoundationNetworking
+#endif
+
 public enum TwitterAuthenticationMethod {
     case none
     case oauth(

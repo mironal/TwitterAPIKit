@@ -143,8 +143,12 @@ extension String {
     }
 
     fileprivate var unescapingUnicodeCharacters: String {
-        let mutableString = NSMutableString(string: self)
-        CFStringTransform(mutableString, nil, "Any-Hex/Java" as NSString, true)
-        return mutableString as String
+        #if os(Linux)
+            return self
+        #else
+            let mutableString = NSMutableString(string: self)
+            CFStringTransform(mutableString, nil, "Any-Hex/Java" as NSString, true)
+            return mutableString as String
+        #endif
     }
 }

@@ -1,4 +1,3 @@
-import CommonCrypto
 import Foundation
 
 private let oauthVersion = "1.0"
@@ -69,6 +68,6 @@ private func oauthSignature(
 
     let key = signingKey.data(using: .utf8)!
     let msg = signatureBaseString.data(using: .utf8)!
-    let sha1 = msg.hmac(key: key)
+    let sha1 = createHMACSHA1(key: key, message: msg)
     return sha1.base64EncodedString(options: [])
 }
