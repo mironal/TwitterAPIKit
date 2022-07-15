@@ -86,6 +86,7 @@ public enum TwitterSpaceExpansionsV2: TwitterExpansionsParameterV2, Hashable {
     case speakerIDs
     case creatorID
     case hostIDs
+    case topicIDs
     case other(String)
 
     public var stringValue: String {
@@ -94,6 +95,7 @@ public enum TwitterSpaceExpansionsV2: TwitterExpansionsParameterV2, Hashable {
         case .speakerIDs: return "speaker_ids"
         case .creatorID: return "creator_id"
         case .hostIDs: return "host_ids"
+        case .topicIDs: return "topic_ids"
         case .other(let string): return string
         }
     }
@@ -102,6 +104,7 @@ public enum TwitterSpaceExpansionsV2: TwitterExpansionsParameterV2, Hashable {
         .invitedUserIDs,
         .speakerIDs,
         .creatorID,
+        .topicIDs,
         .hostIDs,
     ]
 }

@@ -75,16 +75,19 @@ class ExpansionsV2Tests: XCTestCase {
             .speakerIDs,
             .creatorID,
             .hostIDs,
+            .topicIDs,
             .other("~~~"),
         ]
 
         // curl https://api.twitter.com/2/openapi.json | jq '.components.parameters.SpaceExpansionsParameter.schema.items.enum | sort | join(",")'
         XCTAssertEqual(
             allCases.commaSeparatedString,
-            "creator_id,host_ids,invited_user_ids,speaker_ids,~~~"
+            "creator_id,host_ids,invited_user_ids,speaker_ids,topic_ids,~~~"
         )
+    }
 
-        XCTAssertEqual(TwitterSpaceExpansionsV2.all.count, 4)
+    func testTwitterSpaceExpansionsV2All() throws {
+        XCTAssertEqual(TwitterSpaceExpansionsV2.all.count, 5)
     }
 
 }
