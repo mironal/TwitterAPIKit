@@ -134,8 +134,8 @@ class FieldsV2Tests: XCTestCase {
             .organicMetrics,
             .promotedMetrics,
             .altText,
+            .variants,
             .other("~~~"),
-
         ].shuffled()
 
         // curl https://api.twitter.com/2/openapi.json | jq '.components.parameters.MediaFieldsParameter.schema.items.enum | sort | join(",")'
@@ -144,12 +144,12 @@ class FieldsV2Tests: XCTestCase {
         // https://twittercommunity.com/t/documentation-for-media-object-missing-url-field/163062
         XCTAssertEqual(
             allCases.commaSeparatedString,
-            "alt_text,duration_ms,height,media_key,non_public_metrics,organic_metrics,preview_image_url,promoted_metrics,public_metrics,type,url,width,~~~"
+            "alt_text,duration_ms,height,media_key,non_public_metrics,organic_metrics,preview_image_url,promoted_metrics,public_metrics,type,url,variants,width,~~~"
         )
     }
 
     func testTwitterMediaFieldsV2All() throws {
-        XCTAssertEqual(TwitterMediaFieldsV2.all.count, 12)
+        XCTAssertEqual(TwitterMediaFieldsV2.all.count, 13)
     }
 
     func testTwitterListFieldsV2() throws {
@@ -166,7 +166,6 @@ class FieldsV2Tests: XCTestCase {
         ].shuffled()
 
         // curl https://api.twitter.com/2/openapi.json | jq '.components.parameters.ListFieldsParameter.schema.items.enum | sort | join(",")'
-
         XCTAssertEqual(
             allCases.commaSeparatedString,
             "created_at,description,follower_count,id,member_count,name,owner_id,private,~"
@@ -178,6 +177,8 @@ class FieldsV2Tests: XCTestCase {
 
     func testTwitterSpaceFieldsV2() throws {
         let allCases: [TwitterSpaceFieldsV2] = [
+            .id,
+            .state,
             .hostIDs,
             .createdAt,
             .creatorID,
@@ -197,15 +198,14 @@ class FieldsV2Tests: XCTestCase {
         ].shuffled()
 
         // curl https://api.twitter.com/2/openapi.json | jq '.components.parameters.SpaceFieldsParameter.schema.items.enum | sort | join(",")'
-        // Note: missing ended_at,subscriber_count,topic_ids in ↑
         XCTAssertEqual(
             allCases.commaSeparatedString,
-            "created_at,creator_id,ended_at,host_ids,invited_user_ids,is_ticketed,lang,participant_count,scheduled_start,speaker_ids,started_at,subscriber_count,title,topic_ids,updated_at,~~"
+            "created_at,creator_id,ended_at,host_ids,id,invited_user_ids,is_ticketed,lang,participant_count,scheduled_start,speaker_ids,started_at,state,subscriber_count,title,topic_ids,updated_at,~~"
         )
     }
 
     func testTwitterSpaceFieldsV2All() throws {
-        XCTAssertEqual(TwitterSpaceFieldsV2.all.count, 15)
+        XCTAssertEqual(TwitterSpaceFieldsV2.all.count, 17)
     }
 
     func testTwitterTopicFieldsV2() throws {
@@ -216,8 +216,7 @@ class FieldsV2Tests: XCTestCase {
             .other("~"),
         ].shuffled()
 
-        // Not found in https://api.twitter.com/2/openapi.json
-
+        // curl https://api.twitter.com/2/openapi.json | jq '.components.parameters.TopicFieldsParameter.schema.items.enum | sort | join(",")'
         XCTAssertEqual(
             allCases.commaSeparatedString,
             "description,id,name,~"

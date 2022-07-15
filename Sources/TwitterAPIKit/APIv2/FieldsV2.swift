@@ -291,6 +291,7 @@ public enum TwitterMediaFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     case organicMetrics
     case promotedMetrics
     case altText
+    case variants
     case other(String)
 
     public var stringValue: String {
@@ -307,6 +308,7 @@ public enum TwitterMediaFieldsV2: TwitterAPIv2RequestParameter, Hashable {
         case .organicMetrics: return "organic_metrics"
         case .promotedMetrics: return "promoted_metrics"
         case .altText: return "alt_text"
+        case .variants: return "variants"
         case .other(let string): return string
         }
     }
@@ -324,6 +326,7 @@ public enum TwitterMediaFieldsV2: TwitterAPIv2RequestParameter, Hashable {
         .organicMetrics,
         .promotedMetrics,
         .altText,
+        .variants,
     ]
 }
 
@@ -381,6 +384,8 @@ extension Set where Element == TwitterListFieldsV2 {
 /// space.fields
 public enum TwitterSpaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
 
+    case id
+    case state
     case hostIDs
     case createdAt
     case creatorID
@@ -400,6 +405,8 @@ public enum TwitterSpaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
 
     public var stringValue: String {
         switch self {
+        case .id: return "id"
+        case .state: return "state"
         case .hostIDs: return "host_ids"
         case .createdAt: return "created_at"
         case .creatorID: return "creator_id"
@@ -420,6 +427,8 @@ public enum TwitterSpaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
     }
 
     public static let all: Set<Self> = [
+        .id,
+        .state,
         .hostIDs,
         .createdAt,
         .creatorID,
