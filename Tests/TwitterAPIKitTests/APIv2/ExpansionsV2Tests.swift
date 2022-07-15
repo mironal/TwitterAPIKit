@@ -30,6 +30,10 @@ class ExpansionsV2Tests: XCTestCase {
         )
     }
 
+    func testTwitterTweetExpansionsV2All() throws {
+        XCTAssertEqual(TwitterTweetExpansionsV2.all.count, 8)
+    }
+
     func testTwitterUserExpansionsV2() throws {
 
         let allCases: [TwitterUserExpansionsV2] = [
@@ -42,6 +46,10 @@ class ExpansionsV2Tests: XCTestCase {
             allCases.commaSeparatedString,
             "pinned_tweet_id,~~~"
         )
+    }
+
+    func testTwitterUserExpansionsV2All() throws {
+        XCTAssertEqual(TwitterUserExpansionsV2.all.count, 1)
     }
 
     func testTwitterListExpansionsV2() throws {
@@ -57,20 +65,29 @@ class ExpansionsV2Tests: XCTestCase {
         )
     }
 
+    func testTwitterListExpansionsV2All() throws {
+        XCTAssertEqual(TwitterListExpansionsV2.all.count, 1)
+    }
+
     func testTwitterSpaceExpansionsV2() throws {
         let allCases: [TwitterSpaceExpansionsV2] = [
             .invitedUserIDs,
             .speakerIDs,
             .creatorID,
             .hostIDs,
+            .topicIDs,
             .other("~~~"),
         ]
 
         // curl https://api.twitter.com/2/openapi.json | jq '.components.parameters.SpaceExpansionsParameter.schema.items.enum | sort | join(",")'
         XCTAssertEqual(
             allCases.commaSeparatedString,
-            "creator_id,host_ids,invited_user_ids,speaker_ids,~~~"
+            "creator_id,host_ids,invited_user_ids,speaker_ids,topic_ids,~~~"
         )
+    }
+
+    func testTwitterSpaceExpansionsV2All() throws {
+        XCTAssertEqual(TwitterSpaceExpansionsV2.all.count, 5)
     }
 
 }
