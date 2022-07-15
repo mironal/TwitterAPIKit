@@ -74,6 +74,29 @@ public enum TwitterTweetFieldsV2: TwitterAPIv2RequestParameter, Hashable {
             return other
         }
     }
+
+    public static let all: Set<Self> = [
+        .attachments,
+        .authorID,
+        .contextAnnotations,
+        .conversationID,
+        .createdAt,
+        .entities,
+        .geo,
+        .id,
+        .inReplyToUserID,
+        .lang,
+        .nonPublicMetrics,
+        .publicMetrics,
+        .organicMetrics,
+        .promotedMetrics,
+        .possiblySensitive,
+        .referencedTweets,
+        .replySettings,
+        .source,
+        .text,
+        .withheld,
+    ]
 }
 
 extension Set where Element == TwitterTweetFieldsV2 {
@@ -134,6 +157,23 @@ public enum TwitterUserFieldsV2: TwitterAPIv2RequestParameter, Hashable {
             return other
         }
     }
+
+    public static let all: Set<Self> = [
+        .createdAt,
+        .description,
+        .entities,
+        .id,
+        .location,
+        .name,
+        .pinnedTweetID,
+        .profileImageUrl,
+        .protected,
+        .publicMetrics,
+        .url,
+        .username,
+        .verified,
+        .withheld,
+    ]
 }
 
 extension Set where Element == TwitterUserFieldsV2 {
@@ -177,6 +217,17 @@ public enum TwitterPlaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
             return other
         }
     }
+
+    public static let all: Set<Self> = [
+        .containedWithin,
+        .country,
+        .countryCode,
+        .fullName,
+        .geo,
+        .id,
+        .name,
+        .placeType,
+    ]
 }
 
 extension Set where Element == TwitterPlaceFieldsV2 {
@@ -210,6 +261,14 @@ public enum TwitterPollFieldsV2: TwitterAPIv2RequestParameter, Hashable {
             return other
         }
     }
+
+    public static let all: Set<Self> = [
+        .durationMinutes,
+        .endDatetime,
+        .id,
+        .options,
+        .votingStatus,
+    ]
 }
 
 extension Set where Element == TwitterPollFieldsV2 {
@@ -251,6 +310,21 @@ public enum TwitterMediaFieldsV2: TwitterAPIv2RequestParameter, Hashable {
         case .other(let string): return string
         }
     }
+
+    public static let all: Set<Self> = [
+        .durationMs,
+        .height,
+        .mediaKey,
+        .previewImageUrl,
+        .type,
+        .url,
+        .width,
+        .publicMetrics,
+        .nonPublicMetrics,
+        .organicMetrics,
+        .promotedMetrics,
+        .altText,
+    ]
 }
 
 extension Set where Element == TwitterMediaFieldsV2 {
@@ -285,6 +359,17 @@ public enum TwitterListFieldsV2: TwitterAPIv2RequestParameter, Hashable {
         case .other(let string): return string
         }
     }
+
+    public static let all: Set<Self> = [
+        .createdAt,
+        .followerCount,
+        .memberCount,
+        .private,
+        .description,
+        .id,
+        .name,
+        .ownerID,
+    ]
 }
 
 extension Set where Element == TwitterListFieldsV2 {
@@ -333,6 +418,24 @@ public enum TwitterSpaceFieldsV2: TwitterAPIv2RequestParameter, Hashable {
         case .other(let string): return string
         }
     }
+
+    public static let all: Set<Self> = [
+        .hostIDs,
+        .createdAt,
+        .creatorID,
+        .lang,
+        .invitedUserIDs,
+        .participantCount,
+        .speakerIDs,
+        .startedAt,
+        .endedAt,
+        .subscriberCount,
+        .topicIDs,
+        .title,
+        .updatedAt,
+        .scheduledStart,
+        .isTicketed,
+    ]
 }
 
 extension Set where Element == TwitterSpaceFieldsV2 {
@@ -357,6 +460,12 @@ public enum TwitterTopicFieldsV2: TwitterAPIv2RequestParameter, Hashable {
         case .other(let string): return string
         }
     }
+
+    public static let all: Set<Self> = [
+        .id,
+        .name,
+        .description,
+    ]
 }
 
 extension Set where Element == TwitterTopicFieldsV2 {
