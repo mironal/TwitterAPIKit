@@ -35,6 +35,17 @@ public enum TwitterTweetExpansionsV2: TwitterExpansionsParameterV2, Hashable {
         case .other(let string): return string
         }
     }
+
+    public static let all: Set<Self> = [
+        .attachmentsPollIDs,
+        .attachmentsMediaKeys,
+        .authorID,
+        .entitiesMentionsUsername,
+        .geoPlaceID,
+        .inReplyToUserID,
+        .referencedTweetsID,
+        .referencedTweetsIDAuthorID,
+    ]
 }
 
 public enum TwitterUserExpansionsV2: TwitterExpansionsParameterV2, Hashable {
@@ -47,6 +58,10 @@ public enum TwitterUserExpansionsV2: TwitterExpansionsParameterV2, Hashable {
         case .other(let string): return string
         }
     }
+
+    public static let all: Set<Self> = [
+        .pinnedTweetID
+    ]
 }
 
 public enum TwitterListExpansionsV2: TwitterExpansionsParameterV2, Hashable {
@@ -59,6 +74,10 @@ public enum TwitterListExpansionsV2: TwitterExpansionsParameterV2, Hashable {
         case .other(let string): return string
         }
     }
+
+    public static let all: Set<Self> = [
+        .ownerID
+    ]
 }
 
 public enum TwitterSpaceExpansionsV2: TwitterExpansionsParameterV2, Hashable {
@@ -78,4 +97,11 @@ public enum TwitterSpaceExpansionsV2: TwitterExpansionsParameterV2, Hashable {
         case .other(let string): return string
         }
     }
+
+    public static let all: Set<Self> = [
+        .invitedUserIDs,
+        .speakerIDs,
+        .creatorID,
+        .hostIDs,
+    ]
 }
