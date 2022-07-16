@@ -5,6 +5,32 @@ open class TwitterAPIClient {
     public static var defaultJSONDecoder: JSONDecoder = {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
+
+        // for v1
+        let dateFormatterV1 = DateFormatter()
+        dateFormatterV1.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatterV1.dateFormat = "EEE MMM dd HH:mm:ss Z yyyy"
+
+        // for v2
+        let dateFormatterV2 = DateFormatter()
+        dateFormatterV2.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatterV2.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+
+        decoder.dateDecodingStrategy = .custom { decoder -> Date in
+            let container = try decoder.singleValueContainer()
+            let dateStr = try container.decode(String.self)
+
+            if let date = dateFormatterV1.date(from: dateStr) {
+                return date
+            }
+
+            if let date = dateFormatterV2.date(from: dateStr) {
+                return date
+            }
+            throw DecodingError.dataCorrupted(
+                .init(codingPath: decoder.codingPath, debugDescription: "Unexpected date format: \(dateStr)"))
+        }
+
         return decoder
     }()
 

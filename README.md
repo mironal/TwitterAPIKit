@@ -62,6 +62,10 @@ let client.v1.tweet.someTweetAPIs()
 let client.v1.directMessage.someDM_APIs()
 ```
 
+## How to decode response
+
+[Please see "HowToDecodeResponse.md"](./HowToDecodeResponse.md)
+
 ## Example
 
 ### Projects

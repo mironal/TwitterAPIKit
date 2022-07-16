@@ -45,7 +45,7 @@ extension TwitterAPISessionJSONTask {
         }
     }
 
-    public func responseDecodable<T: Decodable>(type: T.Type) async -> TwitterAPIResponse<T> {
+    public func responseDecodable<T: Decodable>(type: T.Type, decoder: JSONDecoder = TwitterAPIClient.defaultJSONDecoder) async -> TwitterAPIResponse<T> {
         return await withTaskCancellationHandler(
             operation: {
                 return await withCheckedContinuation { c in
