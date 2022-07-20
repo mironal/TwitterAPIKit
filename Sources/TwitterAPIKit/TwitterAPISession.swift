@@ -63,6 +63,20 @@ open class TwitterAPISession {
                 oauthTokenSecret: oauthTokenSecret
             )
             urlRequest.setValue(authHeader, forHTTPHeaderField: "Authorization")
+        case let .oauth10a(oauth10a):
+            let authHeader = authorizationHeader(
+                for: request.method,
+                url: request.requestURL(for: environment),
+                parameters: request.parameterForOAuth,
+                consumerKey: oauth10a.consumerKey,
+                consumerSecret: oauth10a.consumerSecret,
+                oauthToken: oauth10a.oauthToken,
+                oauthTokenSecret: oauth10a.oauthTokenSecret
+            )
+            urlRequest.setValue(authHeader, forHTTPHeaderField: "Authorization")
+
+        case let .oauth20(oauth20):
+            urlRequest.setValue("Bearer \(oauth20.accessToken)", forHTTPHeaderField: "Authorization")
         case let .basic(apiKey: apiKey, apiSecretKey: apiSecretKey):
             let credential = "\(apiKey):\(apiSecretKey)"
             guard let credentialData = credential.data(using: .utf8) else {

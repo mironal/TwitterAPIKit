@@ -35,7 +35,7 @@ class TwitterAPISessionTests: XCTestCase {
             config.protocolClasses = [MockURLProtocol.self]
 
             return TwitterAPISession(
-                auth: .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+                auth: .oauth10a(.init(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: "")),
                 configuration: config,
                 environment: .init(
                     apiURL: URL(string: "https://api.example.com")!,

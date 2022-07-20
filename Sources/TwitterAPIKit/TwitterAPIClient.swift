@@ -65,12 +65,13 @@ open class TwitterAPIClient {
         oauthTokenSecret: String
     ) {
         self.init(
-            .oauth(
-                consumerKey: consumerKey,
-                consumerSecret: consumerSecret,
-                oauthToken: oauthToken,
-                oauthTokenSecret: oauthTokenSecret
-            ),
+            .oauth10a(
+                .init(
+                    consumerKey: consumerKey,
+                    consumerSecret: consumerSecret,
+                    oauthToken: oauthToken,
+                    oauthTokenSecret: oauthTokenSecret
+                )),
             environment: .init()
         )
     }
