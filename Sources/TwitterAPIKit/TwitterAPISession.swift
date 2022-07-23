@@ -2,7 +2,7 @@ import Foundation
 
 open class TwitterAPISession {
 
-    public let auth: TwitterAuthenticationMethod
+    public private (set) var auth: TwitterAuthenticationMethod
     public let session: URLSession
     public let environment: TwitterAPIEnvironment
     let sessionDelegate = TwitterAPISessionDelegate()
@@ -52,7 +52,6 @@ open class TwitterAPISession {
             oauthToken: oauthToken,
             oauthTokenSecret: oauthTokenSecret
         ):
-
             let authHeader = authorizationHeader(
                 for: request.method,
                 url: request.requestURL(for: environment),
@@ -63,6 +62,7 @@ open class TwitterAPISession {
                 oauthTokenSecret: oauthTokenSecret
             )
             urlRequest.setValue(authHeader, forHTTPHeaderField: "Authorization")
+
         case let .oauth10a(oauth10a):
             let authHeader = authorizationHeader(
                 for: request.method,
@@ -77,7 +77,10 @@ open class TwitterAPISession {
 
         case let .oauth20(oauth20):
             urlRequest.setValue("Bearer \(oauth20.accessToken)", forHTTPHeaderField: "Authorization")
-        case let .basic(apiKey: apiKey, apiSecretKey: apiSecretKey):
+
+        case let .requestOAuth20WithPKCE(.confidentialClient(clientID: apiKey, clientSecret: apiSecretKey)),
+            let .basic(apiKey: apiKey, apiSecretKey: apiSecretKey):
+
             let credential = "\(apiKey):\(apiSecretKey)"
             guard let credentialData = credential.data(using: .utf8) else {
                 throw TwitterAPIKitError.requestFailed(reason: .cannotEncodeStringToData(string: credential))
@@ -85,11 +88,21 @@ open class TwitterAPISession {
             let credentialBase64 = credentialData.base64EncodedString(options: [])
             let basicAuth = "Basic \(credentialBase64)"
             urlRequest.setValue(basicAuth, forHTTPHeaderField: "Authorization")
+
         case let .bearer(token):
             urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        case .none: break
+
+        case .none, .requestOAuth20WithPKCE(.publicClient):
+            break
         }
 
         return urlRequest
+    }
+
+    func refreshOAuth20Token(_ refreshedToken: TwitterAuthenticationMethod.OAuth20) {
+        guard case .oauth20 = auth else {
+            return
+        }
+        auth = .oauth20(refreshedToken)
     }
 }

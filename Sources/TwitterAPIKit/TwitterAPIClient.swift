@@ -75,6 +75,34 @@ open class TwitterAPIClient {
             environment: .init()
         )
     }
+
+    private var refreshOAuth20TokenClient: TwitterAPIClient?
+    /// Refresh OAuth2.0 token
+    open func refreshOAuth20Token(
+        type: TwitterAuthenticationMethod.OAuth20WithPKCEClientType,
+        _ block: @escaping (Result<TwitterAuthenticationMethod.OAuth20, TwitterAPIKitError>) -> Void
+    ) {
+
+        guard case .oauth20(let token) = apiAuth, let refreshToken =  token.refreshToken else {
+            return
+        }
+        let refreshOAuth20TokenClient = TwitterAPIClient(.requestOAuth20WithPKCE(type))
+        refreshOAuth20TokenClient.auth.oauth20.postOAuth2RefreshToken(.init(refreshToken: refreshToken, clientID: token.clientID))
+            .responseObject { [weak self] response in
+                guard let self = self else { return }
+                switch response.result {
+                case .success(let refreshedToken):
+                    var token = token
+                    token.refresh(token: refreshedToken)
+                    self.session.refreshOAuth20Token(token)
+                    block(.success(token))
+                case .failure(let error):
+                    block(.failure(error))
+                }
+                self.refreshOAuth20TokenClient = nil
+            }
+        self.refreshOAuth20TokenClient = refreshOAuth20TokenClient
+    }
 }
 
 open class TwitterAPIBase {

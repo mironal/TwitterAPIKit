@@ -10,11 +10,14 @@ public enum TwitterAuthenticationMethod {
         oauthToken: String?,
         oauthTokenSecret: String?
     )
-
+    /// Use the token created by "3-legged OAuth flow".
     case oauth10a(OAuth10a)
 
-    /// For OAuth 2.0 Authorization Code Flow with PKCE.
+    /// Use the token created by "OAuth 2.0 Authorization Code Flow with PKCE".
     case oauth20(OAuth20)
+
+    // Used to execute the "OAuth 2.0 Authorization Code Flow with PKCE" authentication flow.
+    case requestOAuth20WithPKCE(OAuth20WithPKCEClientType)
 
     case basic(apiKey: String, apiSecretKey: String)
 
@@ -68,5 +71,31 @@ extension TwitterAuthenticationMethod {
             self.accessToken = accessToken
             self.refreshToken = refreshToken
         }
+
+        public init(clientID: String, token: TwitterOAuth2AccessToken) {
+            self.init(
+                clientID: clientID,
+                scope: token.scope,
+                tokenType: token.tokenType,
+                expiresIn: token.expiresIn,
+                accessToken: token.accessToken,
+                refreshToken: token.refreshToken
+            )
+        }
+
+        mutating public func refresh(token: TwitterOAuth2AccessToken) {
+            self.scope = token.scope
+            self.tokenType = token.tokenType
+            self.expiresIn = token.expiresIn
+            self.accessToken = token.accessToken
+            self.refreshToken = token.refreshToken
+        }
+    }
+
+
+    public enum OAuth20WithPKCEClientType {
+        case confidentialClient(clientID: String, clientSecret: String)
+        case publicClient
+
     }
 }
