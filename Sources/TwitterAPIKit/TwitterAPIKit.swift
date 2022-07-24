@@ -1,19 +1,5 @@
 import Foundation
 
-public enum TwitterAuthenticationMethod {
-    case none
-    case oauth(
-        consumerKey: String,
-        consumerSecret: String,
-        oauthToken: String?,
-        oauthTokenSecret: String?
-    )
-
-    case basic(apiKey: String, apiSecretKey: String)
-
-    case bearer(String)
-}
-
 public enum TwitterBaseURLType {
     case twitter
     case api

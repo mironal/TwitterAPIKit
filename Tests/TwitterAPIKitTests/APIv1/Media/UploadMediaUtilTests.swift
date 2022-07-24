@@ -16,7 +16,7 @@ class UploadMediaUtilTests: XCTestCase {
         config.protocolClasses = [MockURLProtocol.self]
 
         let client = TwitterAPIClient(
-            .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+            .oauth10a(.init(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: "")),
             configuration: config
         )
 
@@ -125,7 +125,7 @@ class UploadMediaUtilTests: XCTestCase {
         config.protocolClasses = [MockURLProtocol.self]
 
         let client = TwitterAPIClient(
-            .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+            .oauth10a(.init(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: "")),
             configuration: config
         )
 
@@ -185,7 +185,7 @@ class UploadMediaUtilTests: XCTestCase {
         config.protocolClasses = [MockURLProtocol.self]
 
         let client = TwitterAPIClient(
-            .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+            .oauth10a(.init(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: "")),
             configuration: config
         )
 
@@ -257,7 +257,7 @@ class UploadMediaUtilTests: XCTestCase {
         config.protocolClasses = [MockURLProtocol.self]
 
         let client = TwitterAPIClient(
-            .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+            .oauth10a(.init(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: "")),
             configuration: config
         )
 
@@ -330,7 +330,7 @@ class UploadMediaUtilTests: XCTestCase {
         config.protocolClasses = [MockURLProtocol.self]
 
         let client = TwitterAPIClient(
-            .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+            .oauth10a(.init(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: "")),
             configuration: config
         )
 
@@ -440,7 +440,7 @@ class UploadMediaUtilTests: XCTestCase {
         config.protocolClasses = [MockURLProtocol.self]
 
         let client = TwitterAPIClient(
-            .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+            .oauth10a(.init(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: "")),
             configuration: config
         )
 
