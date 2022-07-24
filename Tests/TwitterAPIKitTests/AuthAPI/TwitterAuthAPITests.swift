@@ -12,7 +12,7 @@ class TwitterAuthAPITests: XCTestCase {
 
         client =
             TwitterAPIClient(
-                .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+                .oauth10a(.init(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: "")),
                 configuration: config
             ).auth
     }
