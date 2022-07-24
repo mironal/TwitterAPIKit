@@ -80,12 +80,18 @@ open class TwitterAPIClient {
     /// Refresh OAuth2.0 token
     open func refreshOAuth20Token(
         type: TwitterAuthenticationMethod.OAuth20WithPKCEClientType,
+        forceRefresh: Bool = false,
         _ block: @escaping (Result<TwitterAuthenticationMethod.OAuth20, TwitterAPIKitError>) -> Void
     ) {
-
         guard case .oauth20(let token) = apiAuth, let refreshToken =  token.refreshToken else {
             return
         }
+
+        if !forceRefresh, token.expired {
+            block(.success(token))
+            return
+        }
+
         let refreshOAuth20TokenClient = TwitterAPIClient(.requestOAuth20WithPKCE(type))
         refreshOAuth20TokenClient.auth.oauth20.postOAuth2RefreshToken(.init(refreshToken: refreshToken, clientID: token.clientID))
             .responseObject { [weak self] response in
