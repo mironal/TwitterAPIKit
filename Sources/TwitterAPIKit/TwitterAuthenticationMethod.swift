@@ -105,7 +105,6 @@ extension TwitterAuthenticationMethod {
         }
     }
 
-
     public enum OAuth20WithPKCEClientType {
         case confidentialClient(clientID: String, clientSecret: String)
         case publicClient

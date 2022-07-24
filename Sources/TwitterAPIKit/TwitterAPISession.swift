@@ -2,7 +2,7 @@ import Foundation
 
 open class TwitterAPISession {
 
-    public private (set) var auth: TwitterAuthenticationMethod
+    public private(set) var auth: TwitterAuthenticationMethod
     public let session: URLSession
     public let environment: TwitterAPIEnvironment
     let sessionDelegate = TwitterAPISessionDelegate()
