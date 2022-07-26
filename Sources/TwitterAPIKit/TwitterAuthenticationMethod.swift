@@ -55,11 +55,13 @@ extension TwitterAuthenticationMethod {
         /// Only Public Client
         public var refreshToken: String?
 
-        public let createdAt: Date
+        public var createdAt: Date
 
         /// Estimates the expiration time of a token based on "expiresIn" and "createdAt".
         /// Since the server response does not include the creation time of the token, it contains a margin of error of a few seconds.
-        public let expiresAt: Date
+        public var expiresAt: Date {
+            return createdAt.addingTimeInterval(TimeInterval(expiresIn))
+        }
 
         public var expired: Bool {
             return expiresAt <= Date()
@@ -81,26 +83,27 @@ extension TwitterAuthenticationMethod {
             self.accessToken = accessToken
             self.refreshToken = refreshToken
             self.createdAt = createdAt
-            self.expiresAt = createdAt.addingTimeInterval(TimeInterval(expiresIn))
         }
 
-        public init(clientID: String, token: TwitterOAuth2AccessToken) {
+        public init(clientID: String, token: TwitterOAuth2AccessToken, createdAt: Date = Date()) {
             self.init(
                 clientID: clientID,
                 scope: token.scope,
                 tokenType: token.tokenType,
                 expiresIn: token.expiresIn,
                 accessToken: token.accessToken,
-                refreshToken: token.refreshToken
+                refreshToken: token.refreshToken,
+                createdAt: createdAt
             )
         }
 
-        mutating public func refresh(token: TwitterOAuth2AccessToken) {
+        mutating public func refresh(token: TwitterOAuth2AccessToken, refreshedAt: Date = Date()) {
             self.scope = token.scope
             self.tokenType = token.tokenType
             self.expiresIn = token.expiresIn
             self.accessToken = token.accessToken
             self.refreshToken = token.refreshToken
+            self.createdAt = refreshedAt
         }
     }
 
