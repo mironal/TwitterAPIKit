@@ -43,6 +43,9 @@ open class TwitterAPIClient {
         return session.auth
     }
 
+    /// for refresh token
+    private var refreshOAuth20TokenClient: TwitterAPIClient?
+
     public init(
         _ auth: TwitterAuthenticationMethod,
         configuration: URLSessionConfiguration = .default,
@@ -75,6 +78,51 @@ open class TwitterAPIClient {
                 )),
             environment: .init()
         )
+    }
+}
+
+// MARK: - Refresh OAuth2.0 token
+
+extension TwitterAPIClient {
+    /// Refresh OAuth2.0 token
+    open func refreshOAuth20Token(
+        type: TwitterAuthenticationMethod.OAuth20WithPKCEClientType,
+        forceRefresh: Bool = false,
+        _ block: @escaping (Result<TwitterAuthenticationMethod.OAuth20, TwitterAPIKitError>) -> Void
+    ) {
+        guard case .oauth20(let token) = apiAuth else {
+            block(.failure(.refreshOAuth20TokenFailed(reason: .invalidAuthenticationMethod(apiAuth))))
+            return
+        }
+
+        guard let refreshToken = token.refreshToken else {
+            block(.failure(.refreshOAuth20TokenFailed(reason: .refreshTokenIsMissing)))
+            return
+        }
+
+        if !forceRefresh, token.expired {
+            block(.success(token))
+            return
+        }
+
+        let refreshOAuth20TokenClient = TwitterAPIClient(.requestOAuth20WithPKCE(type))
+        refreshOAuth20TokenClient.auth.oauth20.postOAuth2RefreshToken(
+            .init(refreshToken: refreshToken, clientID: token.clientID)
+        )
+        .responseObject { [weak self] response in
+            guard let self = self else { return }
+            switch response.result {
+            case .success(let refreshedToken):
+                var token = token
+                token.refresh(token: refreshedToken)
+                self.session.refreshOAuth20Token(token)
+                block(.success(token))
+            case .failure(let error):
+                block(.failure(error))
+            }
+            self.refreshOAuth20TokenClient = nil
+        }
+        self.refreshOAuth20TokenClient = refreshOAuth20TokenClient
     }
 }
 

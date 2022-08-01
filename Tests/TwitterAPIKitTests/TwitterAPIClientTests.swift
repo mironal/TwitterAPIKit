@@ -18,4 +18,34 @@ class TwitterAPIClientTests: XCTestCase {
         XCTAssertEqual(dateV1, dateV2)
     }
 
+    func testRefreshInvalidAuthMethod() throws {
+        let client = TwitterAPIClient(.none)
+        let exp = expectation(description: "")
+        client.refreshOAuth20Token(type: .publicClient) { result in
+            switch result {
+            case .failure(let error):
+                XCTAssertTrue(error.isRefreshOAuth20TokenFailed)
+            default:
+                XCTFail()
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 10)
+    }
+
+    func testRefreshTokenMissingRefreshToken() throws {
+        let client = TwitterAPIClient(
+            .oauth20(.init(clientID: "", scope: [], tokenType: "", expiresIn: 0, accessToken: "", refreshToken: nil)))
+        let exp = expectation(description: "")
+        client.refreshOAuth20Token(type: .publicClient) { result in
+            switch result {
+            case .failure(let error):
+                XCTAssertTrue(error.isRefreshOAuth20TokenFailed)
+            default:
+                XCTFail()
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 10)
+    }
 }

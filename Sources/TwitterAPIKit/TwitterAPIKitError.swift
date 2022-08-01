@@ -29,6 +29,12 @@ public enum TwitterAPIKitError: Error {
         case processingFailed(error: UploadMediaError)
     }
 
+    case refreshOAuth20TokenFailed(reason: RefreshOAuth20TokenFailureReason)
+    public enum RefreshOAuth20TokenFailureReason {
+        case invalidAuthenticationMethod(TwitterAuthenticationMethod)
+        case refreshTokenIsMissing
+    }
+
     case unkonwn(error: Error)
 
     public init(error: Error) {
@@ -61,6 +67,11 @@ extension TwitterAPIKitError {
         return false
     }
 
+    public var isRefreshOAuth20TokenFailed: Bool {
+        if case .refreshOAuth20TokenFailed = self { return true }
+        return false
+    }
+
     public var isUnkonwn: Bool {
         if case .unkonwn = self { return true }
         return false
@@ -75,6 +86,8 @@ extension TwitterAPIKitError {
         case .responseSerializeFailed(let reason):
             return reason.underlyingError
         case .uploadMediaFailed(let reason):
+            return reason.underlyingError
+        case .refreshOAuth20TokenFailed(let reason):
             return reason.underlyingError
         case .unkonwn(let error):
             return error
@@ -114,6 +127,8 @@ extension TwitterAPIKitError: LocalizedError {
         case .responseSerializeFailed(let reason):
             return reason.localizedDescription
         case .uploadMediaFailed(let reason):
+            return reason.localizedDescription
+        case .refreshOAuth20TokenFailed(let reason):
             return reason.localizedDescription
         case .unkonwn(let error):
             return error.localizedDescription
@@ -230,6 +245,24 @@ extension TwitterAPIKitError.UploadMediaFailureReason {
     }
 }
 
+extension TwitterAPIKitError.RefreshOAuth20TokenFailureReason {
+    public var localizedDescription: String {
+        switch self {
+        case .invalidAuthenticationMethod(let method):
+            return
+                "Token refresh is possible only when TwitterAuthenticationMethod is .oauth20. You are currently \(method)."
+        case .refreshTokenIsMissing:
+            return "Refresh token is missing."
+        }
+    }
+    public var underlyingError: Error? {
+        switch self {
+        case .invalidAuthenticationMethod, .refreshTokenIsMissing:
+            return nil
+        }
+    }
+}
+
 extension TwitterAPIKitError {
 
     public var requestFailureReason: RequestFailureReason? {
@@ -244,6 +277,11 @@ extension TwitterAPIKitError {
 
     public var responseSerializationFailureReason: ResponseSerializationFailureReason? {
         guard case .responseSerializeFailed(let reason) = self else { return nil }
+        return reason
+    }
+
+    public var refreshOAuth20TokenFailureReason: RefreshOAuth20TokenFailureReason? {
+        guard case .refreshOAuth20TokenFailed(let reason) = self else { return nil }
         return reason
     }
 }
