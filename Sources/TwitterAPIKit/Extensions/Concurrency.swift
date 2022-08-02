@@ -97,4 +97,16 @@ extension TwitterAPISessionStreamTask {
     }
 }
 
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension TwitterAPIClient {
+    public func refreshOAuth20Token(type: TwitterAuthenticationMethod.OAuth20WithPKCEClientType, forceRefresh: Bool = false) async throws -> TwitterAuthenticationMethod.OAuth20 {
+        return try await withCheckedThrowingContinuation { c in
+            refreshOAuth20Token(type: type, forceRefresh: forceRefresh) { result in
+                c.resume(with: result)
+            }
+        }
+    }
+}
+
 #endif

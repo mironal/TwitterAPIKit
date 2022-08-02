@@ -189,4 +189,64 @@ class TwitterAPIClientTests: XCTestCase {
         }
         wait(for: [exp], timeout: 10)
     }
+
+    #if compiler(>=5.5.2) && canImport(_Concurrency)
+
+        @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+        func testRefreshTokenAsync() async throws {
+            let config = URLSessionConfiguration.default
+            config.protocolClasses = [MockURLProtocol.self]
+
+            let client = TwitterAPIClient(
+                .oauth20(
+                    .init(clientID: "c", scope: [], tokenType: "t", expiresIn: 0, accessToken: "a", refreshToken: "r")),
+                configuration: config
+            )
+
+            MockURLProtocol.requestHandler = { request in
+                let data = Data(
+                    #"""
+                    {
+                    "scope" : "tweet.write",
+                    "token_type" : "bearer",
+                    "expires_in" : 7200,
+                    "access_token" : "<token>",
+                    "refresh_token" : "<refresh token>"
+                    }
+                    """#.utf8)
+                return (
+                    HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: "2.0", headerFields: nil)!, data
+                )
+            }
+
+            let newToken = try await client.refreshOAuth20Token(type: .publicClient)
+            XCTAssertEqual(newToken.accessToken, "<token>")
+            XCTAssertEqual(newToken.refreshToken, "<refresh token>")
+
+            // check refresh
+            if case let .oauth20(token) = client.apiAuth {
+                XCTAssertEqual(token.accessToken, "<token>")
+                XCTAssertEqual(token.refreshToken, "<refresh token>")
+            } else {
+                XCTFail()
+            }
+        }
+
+        @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+        func testRefreshTokenInvalidAuthenticationMethodAsync() async throws {
+            let client = TwitterAPIClient(.none)
+
+            do {
+                _ = try await client.refreshOAuth20Token(type: .publicClient)
+                XCTFail()
+            } catch {
+                switch error {
+                case TwitterAPIKitError.refreshOAuth20TokenFailed(reason: .invalidAuthenticationMethod(.none)):
+                    break
+                default:
+                    XCTFail()
+                }
+            }
+        }
+    #endif
 }
