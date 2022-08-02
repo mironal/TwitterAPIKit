@@ -56,8 +56,9 @@ class TwitterAPIClientTests: XCTestCase {
         client.refreshOAuth20Token(type: .publicClient) { result in
             do {
                 let newToken = try result.get()
-                XCTAssertEqual(newToken.accessToken, "<token>")
-                XCTAssertEqual(newToken.refreshToken, "<refresh token>")
+                XCTAssertTrue(newToken.refreshed)
+                XCTAssertEqual(newToken.token.accessToken, "<token>")
+                XCTAssertEqual(newToken.token.refreshToken, "<refresh token>")
             } catch {
                 XCTFail("Error: \(error)")
             }
@@ -105,8 +106,9 @@ class TwitterAPIClientTests: XCTestCase {
         client.refreshOAuth20Token(type: .publicClient, forceRefresh: true) { result in
             do {
                 let newToken = try result.get()
-                XCTAssertEqual(newToken.accessToken, "<token>")
-                XCTAssertEqual(newToken.refreshToken, "<refresh token>")
+                XCTAssertTrue(newToken.refreshed)
+                XCTAssertEqual(newToken.token.accessToken, "<token>")
+                XCTAssertEqual(newToken.token.refreshToken, "<refresh token>")
             } catch {
                 XCTFail("Error: \(error)")
             }
@@ -178,10 +180,11 @@ class TwitterAPIClientTests: XCTestCase {
         let exp = expectation(description: "")
         client.refreshOAuth20Token(type: .publicClient) { result in
             switch result {
-            case .success(let token):
-                XCTAssertEqual(token.clientID, "c")
-                XCTAssertEqual(token.refreshToken, "r")
-                XCTAssertEqual(token.createdAt, now)
+            case .success(let newToken):
+                XCTAssertFalse(newToken.refreshed)
+                XCTAssertEqual(newToken.token.clientID, "c")
+                XCTAssertEqual(newToken.token.refreshToken, "r")
+                XCTAssertEqual(newToken.token.createdAt, now)
             default:
                 XCTFail()
             }
@@ -220,8 +223,9 @@ class TwitterAPIClientTests: XCTestCase {
             }
 
             let newToken = try await client.refreshOAuth20Token(type: .publicClient)
-            XCTAssertEqual(newToken.accessToken, "<token>")
-            XCTAssertEqual(newToken.refreshToken, "<refresh token>")
+            XCTAssertTrue(newToken.refreshed)
+            XCTAssertEqual(newToken.token.accessToken, "<token>")
+            XCTAssertEqual(newToken.token.refreshToken, "<refresh token>")
 
             // check refresh
             if case let .oauth20(token) = client.apiAuth {

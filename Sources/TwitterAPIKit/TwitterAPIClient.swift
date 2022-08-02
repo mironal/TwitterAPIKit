@@ -84,11 +84,12 @@ open class TwitterAPIClient {
 // MARK: - Refresh OAuth2.0 token
 
 extension TwitterAPIClient {
+    public typealias RefreshOAuth20TokenResultValue = (token: TwitterAuthenticationMethod.OAuth20, refreshed: Bool)
     /// Refresh OAuth2.0 token
     open func refreshOAuth20Token(
         type: TwitterAuthenticationMethod.OAuth20WithPKCEClientType,
         forceRefresh: Bool = false,
-        _ block: @escaping (Result<TwitterAuthenticationMethod.OAuth20, TwitterAPIKitError>) -> Void
+        _ block: @escaping (Result<RefreshOAuth20TokenResultValue, TwitterAPIKitError>) -> Void
     ) {
         guard case .oauth20(let token) = apiAuth else {
             block(.failure(.refreshOAuth20TokenFailed(reason: .invalidAuthenticationMethod(apiAuth))))
@@ -101,7 +102,7 @@ extension TwitterAPIClient {
         }
 
         if !forceRefresh, !token.expired {
-            block(.success(token))
+            block(.success((token: token, refreshed: false)))
             return
         }
 
@@ -121,7 +122,7 @@ extension TwitterAPIClient {
                 var token = token
                 token.refresh(token: refreshedToken)
                 self.session.refreshOAuth20Token(token)
-                block(.success(token))
+                block(.success((token: token, refreshed: true)))
             case .failure(let error):
                 block(.failure(error))
             }
