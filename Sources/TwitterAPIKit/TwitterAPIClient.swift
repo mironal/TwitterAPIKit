@@ -100,12 +100,17 @@ extension TwitterAPIClient {
             return
         }
 
-        if !forceRefresh, token.expired {
+        if !forceRefresh, !token.expired {
             block(.success(token))
             return
         }
 
-        let refreshOAuth20TokenClient = TwitterAPIClient(.requestOAuth20WithPKCE(type))
+        let refreshOAuth20TokenClient = TwitterAPIClient(
+            .requestOAuth20WithPKCE(type),
+            configuration: session.session.configuration,
+            environment: session.environment
+        )
+        self.refreshOAuth20TokenClient = refreshOAuth20TokenClient
         refreshOAuth20TokenClient.auth.oauth20.postOAuth2RefreshToken(
             .init(refreshToken: refreshToken, clientID: token.clientID)
         )
@@ -122,7 +127,6 @@ extension TwitterAPIClient {
             }
             self.refreshOAuth20TokenClient = nil
         }
-        self.refreshOAuth20TokenClient = refreshOAuth20TokenClient
     }
 }
 

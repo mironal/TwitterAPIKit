@@ -7,6 +7,7 @@ class TwitterAPIClientTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
+        MockURLProtocol.cleanup()
     }
 
     func testJSONDecoder() throws {
@@ -18,13 +19,116 @@ class TwitterAPIClientTests: XCTestCase {
         XCTAssertEqual(dateV1, dateV2)
     }
 
-    func testRefreshInvalidAuthMethod() throws {
+    func testRefreshToken() throws {
+        let config = URLSessionConfiguration.default
+        config.protocolClasses = [MockURLProtocol.self]
+
+        let client = TwitterAPIClient(
+            .oauth20(
+                .init(clientID: "c", scope: [], tokenType: "t", expiresIn: 0, accessToken: "a", refreshToken: "r")),
+            configuration: config
+        )
+
+        MockURLProtocol.requestHandler = { request in
+            let data = Data(
+                #"""
+                {
+                "scope" : "tweet.write",
+                "token_type" : "bearer",
+                "expires_in" : 7200,
+                "access_token" : "<token>",
+                "refresh_token" : "<refresh token>"
+                }
+                """#.utf8)
+            return (
+                HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: "2.0", headerFields: nil)!, data
+            )
+        }
+
+        if case let .oauth20(token) = client.apiAuth {
+            XCTAssertEqual(token.accessToken, "a")
+            XCTAssertEqual(token.refreshToken, "r")
+        } else {
+            XCTFail()
+        }
+
+        let exp = expectation(description: "")
+        client.refreshOAuth20Token(type: .publicClient) { result in
+            do {
+                let newToken = try result.get()
+                XCTAssertEqual(newToken.accessToken, "<token>")
+                XCTAssertEqual(newToken.refreshToken, "<refresh token>")
+            } catch {
+                XCTFail("Error: \(error)")
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 10)
+
+        // check refresh
+        if case let .oauth20(token) = client.apiAuth {
+            XCTAssertEqual(token.accessToken, "<token>")
+            XCTAssertEqual(token.refreshToken, "<refresh token>")
+        } else {
+            XCTFail()
+        }
+    }
+
+    func testRefreshTokenForceRefresh() throws {
+        let config = URLSessionConfiguration.default
+        config.protocolClasses = [MockURLProtocol.self]
+
+        let client = TwitterAPIClient(
+            .oauth20(
+                .init(clientID: "c", scope: [], tokenType: "t", expiresIn: 1000, accessToken: "a", refreshToken: "r")
+            ),
+            configuration: config
+        )
+
+        MockURLProtocol.requestHandler = { request in
+            let data = Data(
+                #"""
+                {
+                "scope" : "tweet.write",
+                "token_type" : "bearer",
+                "expires_in" : 7200,
+                "access_token" : "<token>",
+                "refresh_token" : "<refresh token>"
+                }
+                """#.utf8)
+            return (
+                HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: "2.0", headerFields: nil)!, data
+            )
+        }
+
+        let exp = expectation(description: "")
+        client.refreshOAuth20Token(type: .publicClient, forceRefresh: true) { result in
+            do {
+                let newToken = try result.get()
+                XCTAssertEqual(newToken.accessToken, "<token>")
+                XCTAssertEqual(newToken.refreshToken, "<refresh token>")
+            } catch {
+                XCTFail("Error: \(error)")
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 10)
+
+        // check refresh
+        if case let .oauth20(token) = client.apiAuth {
+            XCTAssertEqual(token.accessToken, "<token>")
+            XCTAssertEqual(token.refreshToken, "<refresh token>")
+        } else {
+            XCTFail()
+        }
+    }
+    func testRefreshToken_invalidAuthenticationMethod() throws {
         let client = TwitterAPIClient(.none)
         let exp = expectation(description: "")
         client.refreshOAuth20Token(type: .publicClient) { result in
             switch result {
-            case .failure(let error):
-                XCTAssertTrue(error.isRefreshOAuth20TokenFailed)
+            case .failure(.refreshOAuth20TokenFailed(reason: .invalidAuthenticationMethod(.none))):
+                break
             default:
                 XCTFail()
             }
@@ -33,14 +137,51 @@ class TwitterAPIClientTests: XCTestCase {
         wait(for: [exp], timeout: 10)
     }
 
-    func testRefreshTokenMissingRefreshToken() throws {
+    func testRefreshToken_refreshTokenIsMissing() throws {
         let client = TwitterAPIClient(
-            .oauth20(.init(clientID: "", scope: [], tokenType: "", expiresIn: 0, accessToken: "", refreshToken: nil)))
+            .oauth20(
+                .init(
+                    clientID: "",
+                    scope: [],
+                    tokenType: "",
+                    expiresIn: 0,
+                    accessToken: "",
+                    refreshToken: nil
+                )))
         let exp = expectation(description: "")
         client.refreshOAuth20Token(type: .publicClient) { result in
             switch result {
-            case .failure(let error):
-                XCTAssertTrue(error.isRefreshOAuth20TokenFailed)
+            case .failure(.refreshOAuth20TokenFailed(reason: .refreshTokenIsMissing)):
+                break
+            default:
+                XCTFail()
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 10)
+    }
+
+    func testRefreshTokenNotExpired() throws {
+        let now = Date()
+        let client = TwitterAPIClient(
+            .oauth20(
+                .init(
+                    clientID: "c",
+                    scope: [],
+                    tokenType: "t",
+                    expiresIn: 100,
+                    accessToken: "a",
+                    refreshToken: "r",
+                    createdAt: now
+                )))
+
+        let exp = expectation(description: "")
+        client.refreshOAuth20Token(type: .publicClient) { result in
+            switch result {
+            case .success(let token):
+                XCTAssertEqual(token.clientID, "c")
+                XCTAssertEqual(token.refreshToken, "r")
+                XCTAssertEqual(token.createdAt, now)
             default:
                 XCTFail()
             }
