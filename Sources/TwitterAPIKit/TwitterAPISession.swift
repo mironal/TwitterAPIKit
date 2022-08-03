@@ -2,7 +2,7 @@ import Foundation
 
 open class TwitterAPISession {
 
-    public let auth: TwitterAuthenticationMethod
+    public private(set) var auth: TwitterAuthenticationMethod
     public let session: URLSession
     public let environment: TwitterAPIEnvironment
     let sessionDelegate = TwitterAPISessionDelegate()
@@ -96,5 +96,12 @@ open class TwitterAPISession {
         }
 
         return urlRequest
+    }
+
+    func refreshOAuth20Token(_ refreshedToken: TwitterAuthenticationMethod.OAuth20) {
+        guard case .oauth20 = auth else {
+            return
+        }
+        auth = .oauth20(refreshedToken)
     }
 }

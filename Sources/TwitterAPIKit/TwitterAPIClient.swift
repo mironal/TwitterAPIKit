@@ -43,6 +43,9 @@ open class TwitterAPIClient {
         return session.auth
     }
 
+    /// for refresh token
+    private var refreshOAuth20TokenClient: TwitterAPIClient?
+
     public init(
         _ auth: TwitterAuthenticationMethod,
         configuration: URLSessionConfiguration = .default,
@@ -78,9 +81,70 @@ open class TwitterAPIClient {
     }
 }
 
+// MARK: - Refresh OAuth2.0 token
+
+extension TwitterAPIClient {
+    public typealias RefreshOAuth20TokenResultValue = (token: TwitterAuthenticationMethod.OAuth20, refreshed: Bool)
+    /// Refresh OAuth2.0 token
+    open func refreshOAuth20Token(
+        type: TwitterAuthenticationMethod.OAuth20WithPKCEClientType,
+        forceRefresh: Bool = false,
+        _ block: @escaping (Result<RefreshOAuth20TokenResultValue, TwitterAPIKitError>) -> Void
+    ) {
+        guard case .oauth20(let token) = apiAuth else {
+            block(.failure(.refreshOAuth20TokenFailed(reason: .invalidAuthenticationMethod(apiAuth))))
+            return
+        }
+
+        guard let refreshToken = token.refreshToken else {
+            block(.failure(.refreshOAuth20TokenFailed(reason: .refreshTokenIsMissing)))
+            return
+        }
+
+        if !forceRefresh, !token.expired {
+            block(.success((token: token, refreshed: false)))
+            return
+        }
+
+        let refreshOAuth20TokenClient = TwitterAPIClient(
+            .requestOAuth20WithPKCE(type),
+            configuration: session.session.configuration,
+            environment: session.environment
+        )
+        self.refreshOAuth20TokenClient = refreshOAuth20TokenClient
+        refreshOAuth20TokenClient.auth.oauth20.postOAuth2RefreshToken(
+            .init(refreshToken: refreshToken, clientID: token.clientID)
+        )
+        .responseObject { [weak self] response in
+            guard let self = self else { return }
+            switch response.result {
+            case .success(let refreshedToken):
+                var token = token
+                token.refresh(token: refreshedToken)
+                self.session.refreshOAuth20Token(token)
+                block(.success((token: token, refreshed: true)))
+                NotificationCenter.default.post(
+                    name: TwitterAPIClient.didRefreshOAuth20Token,
+                    object: self,
+                    userInfo: [TwitterAPIClient.tokenUserInfoKey: token]
+                )
+            case .failure(let error):
+                block(.failure(error))
+            }
+            self.refreshOAuth20TokenClient = nil
+        }
+    }
+}
+
 open class TwitterAPIBase {
     public let session: TwitterAPISession
     public init(session: TwitterAPISession) {
         self.session = session
     }
+}
+
+extension TwitterAPIClient {
+    // swift-format-ignore
+    public static let didRefreshOAuth20Token = Notification.Name(rawValue: "TwitterAPIKit.TwitterAPIClient.Notification.didRefreshOAuth20Token")
+    public static let tokenUserInfoKey = "TwitterAPIKit.TwitterAPIClient.UserInfoKey.tokenUser"
 }
