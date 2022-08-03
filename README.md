@@ -35,7 +35,23 @@ Currently, scoping according to Twitter's App permissions is not yet implemented
 ```swift
 
 // The most common usage.
-let client = TwitterAPIClient(/* auth */)
+
+// For OAuth 1.0a
+let client = TwitterAPIClient(.oauth10a(.init(
+            consumerKey: "",
+            consumerSecret: "",
+            oauthToken: "",
+            oauthTokenSecret: ""
+        )))
+// For OAuth 2.0 client
+let client = TwitterAPIClient(.oauth20(.init(
+            clientID: "",
+            scope: [],
+            tokenType: "",
+            expiresIn: 0,
+            accessToken: "",
+            refreshToken: ""
+        )))
 
 client.v1.someV1API()
 client.v2.someV2API()
@@ -61,6 +77,14 @@ let client.v1.allV1_APIs()
 let client.v1.tweet.someTweetAPIs()
 let client.v1.directMessage.someDM_APIs()
 ```
+
+## How do I authenticate?
+
+[Please see "HowDoIAuthenticate.md"](./HowDoIAuthenticate.md)
+
+And the following sample project includes a sample authentication.
+
+> https://github.com/mironal/TwitterAPIKit-iOS-sample
 
 ## How to decode response
 
@@ -186,85 +210,6 @@ This method is intended to be used when the library does not yet support Twitter
     let request = YourCustomRequest()
     client.session.send(request)
 }
-```
-
-### OAuth
-
-#### PIN based
-
-> https://developer.twitter.com/en/docs/authentication/oauth-1-0a/pin-based-oauth
-
-```swift
-// for CLI tool
-func runOAuthV1() {
-    client.auth.postOAuthRequestToken(.init(oauthCallback: "oob")).responseObject(queue: .main) { response in
-        do {
-            let success = try response.result.get()
-            print("Token:", success)
-
-            let url = client.auth.makeOAuthAuthorizeURL(.init(oauthToken: success.oauthToken, forceLogin: true))!
-            print("Enter this URL into your browser and enter the PIN code that will be displayed after authentication.")
-            print(url)
-
-            let pinCode = readLine()!
-
-            client.auth.postOAuthAccessToken(.init(oauthToken: success.oauthToken, oauthVerifier: pinCode))
-                responseObject(queue: .main) { response in
-                do {
-                    let success = try response.result.get()
-                    print("AccessToken:", success)
-
-                } catch let error {
-                    print("Error")
-                    print(error)
-                }
-            }
-        } catch let error {
-            print("Error")
-            print(error)
-        }
-    }
-}
-
-// Output of runOAuthV1
-
-/*
- Token: TwitterOAuthTokenV1(oauthToken: "your-token", oauthTokenSecret: "your-secret", oauthCallbackConfirmed: Optional(true))
- Enter this URL into your browser and enter the PIN code that will be displayed after authentication.
- https://api.twitter.com/oauth/authorize?force_login=true&oauth_token=your-token
- > your pin
- AccessToken: TwitterOAuthAccessTokenV1(oauthToken: "", oauthTokenSecret: "", userID: Optional(""), screenName: Optional(""))
-*/
-```
-
-### App-only authentication and OAuth 2.0 Bearer Token
-
-> https://developer.twitter.com/en/docs/authentication/oauth-2-0/application-only
-
-```swift
-func runOAuth2V1() {
-    let client = TwitterAPIClient(
-        .basic(apiKey: "your consumer key", apiSecretKey: "your consumer secret")
-    )
-
-    client.auth.postOAuth2BearerToken(.init()).responseObject(queue: .main) { response in
-        do {
-            let success = try response.result.get()
-            print("Token:", success)
-        } catch let error {
-            print("Error")
-            print(error)
-        }
-    }
-}
-
-func useBearerTokenV1() {
-    let client = TwitterAPIClient(.bearer("AAAAAAAAAAAAAAAAAAAAA"))
-    client.v1.getUserTimeline(.init(target: .screenName("twitterapi"))).responseData { response in
-        print(response.prettyString)
-    }
-}
-
 ```
 
 ### Swift Concurrency (experimental)
