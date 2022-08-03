@@ -146,6 +146,49 @@ This sample project contains examples of how to authenticate with `OAuth 1.0a Us
     }
 ```
 
+### Refresh OAuth 2.0 Token
+
+```swift
+let refresh = try await client.refreshOAuth20Token(type: .confidentialClient(clientID: "", clientSecret: ""), forceRefresh: true)
+// let refresh = try await client.refreshOAuth20Token(type: .publicClient, forceRefresh: true)
+
+// The authentication information in the Client is also updated, so there is no need to recreate a new instance of the Client.
+
+if refresh.refreshed {
+    storeToken(refresh.token)
+}
+
+// Or
+
+client.refreshOAuth20Token(type: .publicClient, forceRefresh: true) { result in
+    do {
+        let refresh = try result.get()
+        if refresh.refreshed {
+            storeToken(refresh.token)
+        }
+    } catch {
+
+    }
+}
+
+// Notification
+
+NotificationCenter.default.addObserver(
+    self,
+    selector: #selector(didRefreshOAuth20Token(_:)),
+    name: TwitterAPIClient.didRefreshOAuth20Token,
+    object: nil
+)
+
+@objc func didRefreshOAuth20Token(_ notification: Notification) {
+    guard let token = notification.userInfo?[TwitterAPIClient.tokenUserInfoKey] as? TwitterAuthenticationMethod.OAuth20 else {
+        fatalError()
+    }
+    print("didRefreshOAuth20Token", didRefreshOAuth20Token, token)
+    store(token)
+}
+```
+
 ### Custom Request class
 
 The class of each request can be inherited to create subclasses. This is why it is declared as an open class instead of a struct.
