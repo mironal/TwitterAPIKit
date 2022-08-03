@@ -123,6 +123,11 @@ extension TwitterAPIClient {
                 token.refresh(token: refreshedToken)
                 self.session.refreshOAuth20Token(token)
                 block(.success((token: token, refreshed: true)))
+                NotificationCenter.default.post(
+                    name: TwitterAPIClient.didRefreshOAuth20Token,
+                    object: self,
+                    userInfo: [TwitterAPIClient.tokenUserInfoKey: token]
+                )
             case .failure(let error):
                 block(.failure(error))
             }
@@ -136,4 +141,10 @@ open class TwitterAPIBase {
     public init(session: TwitterAPISession) {
         self.session = session
     }
+}
+
+extension TwitterAPIClient {
+    // swift-format-ignore
+    public static let didRefreshOAuth20Token = Notification.Name(rawValue: "TwitterAPIKit.TwitterAPIClient.Notification.didRefreshOAuth20Token")
+    public static let tokenUserInfoKey = "TwitterAPIKit.TwitterAPIClient.UserInfoKey.tokenUser"
 }
