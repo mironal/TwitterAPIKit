@@ -27,6 +27,8 @@ Turn on the OAuth 1.0a switch.
 
 See the code in the sample project.
 
+> https://github.com/mironal/TwitterAPIKit-iOS-sample/blob/main/TwitterAPIKit-iOS-sample/OAuth/OAuth1ThreeLeggedOAuthFlowViewController.swift
+
 ### PIN based
 
 > https://developer.twitter.com/en/docs/authentication/oauth-1-0a/pin-based-oauth
@@ -100,9 +102,11 @@ Most iOS applications are Public Client (Native App).
 
 See the code in the sample project.
 
+> https://github.com/mironal/TwitterAPIKit-iOS-sample/blob/main/TwitterAPIKit-iOS-sample/OAuth/OAuth2CodeFlowPKCEViewController.swift
+
 ## OAuth 2.0 Bearer Token (app-only)
 
-> > https://developer.twitter.com/en/docs/authentication/oauth-2-0/application-only
+> https://developer.twitter.com/en/docs/authentication/oauth-2-0/application-only
 
 ```swift
 
