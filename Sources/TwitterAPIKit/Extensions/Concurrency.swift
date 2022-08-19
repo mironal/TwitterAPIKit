@@ -45,7 +45,7 @@ extension TwitterAPISessionJSONTask {
         }
     }
 
-    public func responseDecodable<T: Decodable>(type: T.Type) async -> TwitterAPIResponse<T> {
+    public func responseDecodable<T: Decodable>(type: T.Type, decoder: JSONDecoder = TwitterAPIClient.defaultJSONDecoder) async -> TwitterAPIResponse<T> {
         return await withTaskCancellationHandler(
             operation: {
                 return await withCheckedContinuation { c in
@@ -92,6 +92,18 @@ extension TwitterAPISessionStreamTask {
             }
             continuation.onTermination = { @Sendable _ in
                 cancel()
+            }
+        }
+    }
+}
+
+
+@available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
+extension TwitterAPIClient {
+    public func refreshOAuth20Token(type: TwitterAuthenticationMethod.OAuth20WithPKCEClientType, forceRefresh: Bool = false) async throws -> RefreshOAuth20TokenResultValue {
+        return try await withCheckedThrowingContinuation { c in
+            refreshOAuth20Token(type: type, forceRefresh: forceRefresh) { result in
+                c.resume(with: result)
             }
         }
     }

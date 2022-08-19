@@ -106,7 +106,7 @@ public struct TwitterAPIFailedTask: TwitterAPISessionJSONTask, TwitterAPISession
     ) -> TwitterAPIFailedTask where T: Decodable {
         return responseDecodable(
             type: type,
-            decoder: TwitterAPIKit.defaultJSONDecoder,
+            decoder: TwitterAPIClient.defaultJSONDecoder,
             queue: queue,
             block
         )
@@ -119,7 +119,7 @@ public struct TwitterAPIFailedTask: TwitterAPISessionJSONTask, TwitterAPISession
     ) -> TwitterAPIFailedTask where T: Decodable {
         return responseDecodable(
             type: type,
-            decoder: TwitterAPIKit.defaultJSONDecoder,
+            decoder: TwitterAPIClient.defaultJSONDecoder,
             queue: .main,
             block
         )

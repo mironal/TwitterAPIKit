@@ -1,14 +1,10 @@
-public typealias TwitterAuthAPI =
-    TwitterAuthAPIResource
-    & OAuth10aAPI
-    & OAuth20API
+open class TwitterAuthAPI {
 
-public protocol TwitterAuthAPIResource {
-    var oauth10a: OAuth10aAPI { get }
-    var oauth20: OAuth20API { get }
-}
+    public let oauth10a: OAuth10aAPI
+    public let oauth20: OAuth20API
 
-extension TwitterAPIKit.TwitterAuthAPIImpl: TwitterAuthAPIResource {
-    var oauth10a: OAuth10aAPI { return self }
-    var oauth20: OAuth20API { return self }
+    public init(session: TwitterAPISession) {
+        oauth10a = .init(session: session)
+        oauth20 = .init(session: session)
+    }
 }

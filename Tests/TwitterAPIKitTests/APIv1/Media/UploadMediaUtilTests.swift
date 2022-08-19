@@ -15,8 +15,8 @@ class UploadMediaUtilTests: XCTestCase {
         let config = URLSessionConfiguration.default
         config.protocolClasses = [MockURLProtocol.self]
 
-        let client = TwitterAPIKit(
-            .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+        let client = TwitterAPIClient(
+            .oauth10a(.init(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: "")),
             configuration: config
         )
 
@@ -124,8 +124,8 @@ class UploadMediaUtilTests: XCTestCase {
         let config = URLSessionConfiguration.default
         config.protocolClasses = [MockURLProtocol.self]
 
-        let client = TwitterAPIKit(
-            .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+        let client = TwitterAPIClient(
+            .oauth10a(.init(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: "")),
             configuration: config
         )
 
@@ -184,8 +184,8 @@ class UploadMediaUtilTests: XCTestCase {
         let config = URLSessionConfiguration.default
         config.protocolClasses = [MockURLProtocol.self]
 
-        let client = TwitterAPIKit(
-            .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+        let client = TwitterAPIClient(
+            .oauth10a(.init(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: "")),
             configuration: config
         )
 
@@ -256,8 +256,8 @@ class UploadMediaUtilTests: XCTestCase {
         let config = URLSessionConfiguration.default
         config.protocolClasses = [MockURLProtocol.self]
 
-        let client = TwitterAPIKit(
-            .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+        let client = TwitterAPIClient(
+            .oauth10a(.init(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: "")),
             configuration: config
         )
 
@@ -329,8 +329,8 @@ class UploadMediaUtilTests: XCTestCase {
         let config = URLSessionConfiguration.default
         config.protocolClasses = [MockURLProtocol.self]
 
-        let client = TwitterAPIKit(
-            .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+        let client = TwitterAPIClient(
+            .oauth10a(.init(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: "")),
             configuration: config
         )
 
@@ -439,8 +439,8 @@ class UploadMediaUtilTests: XCTestCase {
         let config = URLSessionConfiguration.default
         config.protocolClasses = [MockURLProtocol.self]
 
-        let client = TwitterAPIKit(
-            .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+        let client = TwitterAPIClient(
+            .oauth10a(.init(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: "")),
             configuration: config
         )
 

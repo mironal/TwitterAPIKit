@@ -11,8 +11,8 @@ class TwitterAuthAPITests: XCTestCase {
         config.protocolClasses = [MockURLProtocol.self]
 
         client =
-            TwitterAPIKit(
-                .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+            TwitterAPIClient(
+                .oauth10a(.init(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: "")),
                 configuration: config
             ).auth
     }

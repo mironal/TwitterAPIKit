@@ -1,46 +1,16 @@
 import Foundation
 
-public protocol OAuth10aAPI {
-    /// https://developer.twitter.com/en/docs/authentication/api-reference/request_token
-    func postOAuthRequestTokenData(
-        _ request: PostOAuthRequestTokenRequestV1
-    ) -> TwitterAPISessionDataTask
+open class OAuth10aAPI: TwitterAPIBase {
 
     /// https://developer.twitter.com/en/docs/authentication/api-reference/request_token
-    func postOAuthRequestToken(
-        _ request: PostOAuthRequestTokenRequestV1
-    ) -> TwitterAPISessionSpecializedTask<TwitterOAuthTokenV1>
-
-    /// Create https://developer.twitter.com/en/docs/authentication/api-reference/authorize URL.
-    func makeOAuthAuthorizeURL(_ request: GetOAuthAuthorizeRequestV1) -> URL?
-
-    /// Create https://developer.twitter.com/en/docs/authentication/api-reference/authenticate URL.
-    func makeOAuthAuthenticateURL(_ request: GetOAuthAuthenticateRequestV1) -> URL?
-
-    /// https://developer.twitter.com/en/docs/authentication/api-reference/access_token
-    func postOAuthAccessTokenData(
-        _ request: PostOAuthAccessTokenRequestV1
-    ) -> TwitterAPISessionDataTask
-
-    /// https://developer.twitter.com/en/docs/authentication/api-reference/access_token
-    func postOAuthAccessToken(
-        _ request: PostOAuthAccessTokenRequestV1
-    ) -> TwitterAPISessionSpecializedTask<TwitterOAuthAccessTokenV1>
-
-    /// https://developer.twitter.com/en/docs/authentication/api-reference/invalidate_access_token
-    func postInvalidateAccessToken(
-        _ request: PostOAuthInvalidateTokenRequestV1
-    ) -> TwitterAPISessionJSONTask
-}
-
-extension TwitterAPIKit.TwitterAuthAPIImpl: OAuth10aAPI {
     public func postOAuthRequestTokenData(
         _ request: PostOAuthRequestTokenRequestV1
     ) -> TwitterAPISessionDataTask {
         return session.send(request)
     }
 
-    func postOAuthRequestToken(
+    /// https://developer.twitter.com/en/docs/authentication/api-reference/request_token
+    public func postOAuthRequestToken(
         _ request: PostOAuthRequestTokenRequestV1
     ) -> TwitterAPISessionSpecializedTask<TwitterOAuthTokenV1> {
         return session.send(request)
@@ -54,23 +24,27 @@ extension TwitterAPIKit.TwitterAuthAPIImpl: OAuth10aAPI {
             }
     }
 
+    /// Create https://developer.twitter.com/en/docs/authentication/api-reference/authorize URL.
     public func makeOAuthAuthorizeURL(_ request: GetOAuthAuthorizeRequestV1) -> URL? {
         // ignore exception
         return try? request.buildRequest(environment: session.environment).url
     }
 
+    /// Create https://developer.twitter.com/en/docs/authentication/api-reference/authenticate URL.
     public func makeOAuthAuthenticateURL(_ request: GetOAuthAuthenticateRequestV1) -> URL? {
         // ignore exception
         return try? request.buildRequest(environment: session.environment).url
     }
 
+    /// https://developer.twitter.com/en/docs/authentication/api-reference/access_token
     public func postOAuthAccessTokenData(
         _ request: PostOAuthAccessTokenRequestV1
     ) -> TwitterAPISessionDataTask {
         return session.send(request)
     }
 
-    func postOAuthAccessToken(
+    /// https://developer.twitter.com/en/docs/authentication/api-reference/access_token
+    public func postOAuthAccessToken(
         _ request: PostOAuthAccessTokenRequestV1
     ) -> TwitterAPISessionSpecializedTask<TwitterOAuthAccessTokenV1> {
         return session.send(request)
@@ -84,6 +58,7 @@ extension TwitterAPIKit.TwitterAuthAPIImpl: OAuth10aAPI {
             }
     }
 
+    /// https://developer.twitter.com/en/docs/authentication/api-reference/invalidate_access_token
     public func postInvalidateAccessToken(
         _ request: PostOAuthInvalidateTokenRequestV1
     ) -> TwitterAPISessionJSONTask {

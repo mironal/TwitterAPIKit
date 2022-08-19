@@ -1,42 +1,31 @@
 import Foundation
 
-public protocol FriendshipsAPIv2 {
+open class FriendshipsAPIv2: TwitterAPIBase {
     /// https://developer.twitter.com/en/docs/twitter-api/users/follows/api-reference/get-users-id-following
-    func getFollowing(
+    public func getFollowing(
         _ request: GetUsersFollowingRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/users/follows/api-reference/get-users-id-followers
-    func getFollowers(
+    public func getFollowers(
         _ request: GetUsersFollowersRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/users/follows/api-reference/post-users-source_user_id-following
-    func follow(
+    public func follow(
         _ request: PostUsersFollowingRequestV2
-    ) -> TwitterAPISessionJSONTask
+    ) -> TwitterAPISessionJSONTask {
+        return session.send(request)
+    }
 
     /// https://developer.twitter.com/en/docs/twitter-api/users/follows/api-reference/delete-users-source_id-following
-    func unfollow(
+    public func unfollow(
         _ request: DeleteUsersFollowingRequestV2
-    ) -> TwitterAPISessionJSONTask
-}
-
-extension TwitterAPIKit.TwitterAPIImplV2: FriendshipsAPIv2 {
-
-    func getFollowing(_ request: GetUsersFollowingRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func getFollowers(_ request: GetUsersFollowersRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func follow(_ request: PostUsersFollowingRequestV2) -> TwitterAPISessionJSONTask {
-        return session.send(request)
-    }
-
-    func unfollow(_ request: DeleteUsersFollowingRequestV2) -> TwitterAPISessionJSONTask {
+    ) -> TwitterAPISessionJSONTask {
         return session.send(request)
     }
 }

@@ -28,6 +28,12 @@ private class EmptyRequest: TwitterAPIRequest {
 
 class TwitterAPISessionTests: XCTestCase {
 
+    private let environment = TwitterAPIEnvironment(
+        twitterURL: URL(string: "https://twitter.example.com")!,
+        apiURL: URL(string: "https://api.example.com")!,
+        uploadURL: URL(string: "https://upload.example.com")!
+    )
+
     lazy var session: TwitterAPISession =
         ({
 
@@ -35,11 +41,9 @@ class TwitterAPISessionTests: XCTestCase {
             config.protocolClasses = [MockURLProtocol.self]
 
             return TwitterAPISession(
-                auth: .oauth(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: ""),
+                auth: .oauth10a(.init(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: "")),
                 configuration: config,
-                environment: .init(
-                    apiURL: URL(string: "https://api.example.com")!,
-                    uploadURL: URL(string: "https://upload.example.com")!)
+                environment: environment
             )
         })()
 
@@ -104,10 +108,7 @@ class TwitterAPISessionTests: XCTestCase {
         let session = TwitterAPISession(
             auth: .bearer("bearer_token"),
             configuration: config,
-            environment: .init(
-                apiURL: URL(string: "https://api.example.com")!,
-                uploadURL: URL(string: "https://upload.example.com")!
-            )
+            environment: environment
         )
 
         MockURLProtocol.requestHandler = { request in
@@ -144,10 +145,7 @@ class TwitterAPISessionTests: XCTestCase {
         let session = TwitterAPISession(
             auth: .basic(apiKey: "api_key", apiSecretKey: "api_secret_key"),
             configuration: config,
-            environment: .init(
-                apiURL: URL(string: "https://api.example.com")!,
-                uploadURL: URL(string: "https://upload.example.com")!
-            )
+            environment: environment
         )
 
         MockURLProtocol.requestAssert = { request in
@@ -168,10 +166,7 @@ class TwitterAPISessionTests: XCTestCase {
         let session = TwitterAPISession(
             auth: .bearer("bearer_token"),
             configuration: config,
-            environment: .init(
-                apiURL: URL(string: "https://api.example.com")!,
-                uploadURL: URL(string: "https://upload.example.com")!
-            )
+            environment: environment
         )
 
         MockURLProtocol.requestAssert = { request in
@@ -192,10 +187,96 @@ class TwitterAPISessionTests: XCTestCase {
         let session = TwitterAPISession(
             auth: .none,
             configuration: config,
-            environment: .init(
-                apiURL: URL(string: "https://api.example.com")!,
-                uploadURL: URL(string: "https://upload.example.com")!
-            )
+            environment: environment
+        )
+
+        MockURLProtocol.requestAssert = { request in
+            XCTAssertNil(request.allHTTPHeaderFields?["Authorization"])
+        }
+
+        let exp = expectation(description: "")
+        session.send(GetTwitterReqeust()).responseData(queue: .main) { _ in
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 10)
+    }
+
+    func testOAuth10aAuth() throws {
+        let config = URLSessionConfiguration.default
+        config.protocolClasses = [MockURLProtocol.self]
+        let session = TwitterAPISession(
+            auth: .oauth10a(.init(consumerKey: "", consumerSecret: "", oauthToken: "", oauthTokenSecret: "")),
+            configuration: config,
+            environment: environment
+        )
+
+        MockURLProtocol.requestAssert = { request in
+            XCTAssertNotNil(request.allHTTPHeaderFields?["Authorization"])
+        }
+
+        let exp = expectation(description: "")
+        session.send(GetTwitterReqeust()).responseData(queue: .main) { _ in
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 10)
+    }
+
+    func testOAuth20() throws {
+        let config = URLSessionConfiguration.default
+        config.protocolClasses = [MockURLProtocol.self]
+        let session = TwitterAPISession(
+            auth: .oauth20(
+                .init(
+                    clientID: "",
+                    scope: [],
+                    tokenType: "",
+                    expiresIn: 0,
+                    accessToken: "<access_token>",
+                    refreshToken: ""
+                )
+            ),
+            configuration: config,
+            environment: environment
+        )
+
+        MockURLProtocol.requestAssert = { request in
+            XCTAssertEqual(request.allHTTPHeaderFields?["Authorization"], "Bearer <access_token>")
+        }
+
+        let exp = expectation(description: "")
+        session.send(GetTwitterReqeust()).responseData(queue: .main) { _ in
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 10)
+    }
+
+    func testRequestOAuth20WithPKCEConfidentialClient() throws {
+        let config = URLSessionConfiguration.default
+        config.protocolClasses = [MockURLProtocol.self]
+        let session = TwitterAPISession(
+            auth: .requestOAuth20WithPKCE(.confidentialClient(clientID: "client_id", clientSecret: "client_secret")),
+            configuration: config,
+            environment: environment
+        )
+
+        MockURLProtocol.requestAssert = { request in
+            XCTAssertEqual(request.allHTTPHeaderFields?["Authorization"], "Basic Y2xpZW50X2lkOmNsaWVudF9zZWNyZXQ=")
+        }
+
+        let exp = expectation(description: "")
+        session.send(GetTwitterReqeust()).responseData(queue: .main) { _ in
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 10)
+    }
+
+    func testRequestOAuth20WithPKCEPublicClient() throws {
+        let config = URLSessionConfiguration.default
+        config.protocolClasses = [MockURLProtocol.self]
+        let session = TwitterAPISession(
+            auth: .requestOAuth20WithPKCE(.publicClient),
+            configuration: config,
+            environment: environment
         )
 
         MockURLProtocol.requestAssert = { request in
