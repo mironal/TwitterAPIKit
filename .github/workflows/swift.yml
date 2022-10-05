@@ -16,8 +16,6 @@ jobs:
         with:
           path: BuildTools/.build
           key: ${{ runner.os }}-spm-${{ hashFiles('**/BuildTools/Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-spm-
       - uses: fwal/setup-swift@v1
         with:
           swift-version: "5.7"
