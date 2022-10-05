@@ -20,7 +20,7 @@ jobs:
             ${{ runner.os }}-spm-
       - uses: fwal/setup-swift@v1
         with:
-          swift-version: "5.6"
+          swift-version: "5.7"
       - name: Install Sourcery
         run: brew update && brew install sourcery
       - name: Check Flat API
