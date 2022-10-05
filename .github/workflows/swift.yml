@@ -27,7 +27,7 @@ jobs:
         run: ./flat-api.sh -c
       - name: Build tools
         if: steps.cache-spm.outputs.cache-hit != 'true'
-        run: ./build_tools.hs
+        run: ./build_tools.sh
       - name: Lint
         run: ./lint.sh
       - name: Build
