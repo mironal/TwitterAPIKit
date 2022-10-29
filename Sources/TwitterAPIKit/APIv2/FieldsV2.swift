@@ -530,3 +530,27 @@ extension Set where Element == TwitterDmEventFieldsV2 {
         param["dm_event.fields"] = commaSeparatedString
     }
 }
+
+/// A comma separated list of DmConversation fields to display.
+/// dm_conversation.fields
+public enum TwitterDmConversationFieldsV2: TwitterAPIv2RequestParameter, Hashable {
+    case id
+    case other(String)
+
+    public var stringValue: String {
+        switch self {
+        case .id: return "id"
+        case .other(let string): return string
+        }
+    }
+
+    public static let all: Set<Self> = [
+        .id
+    ]
+}
+
+extension Set where Element == TwitterDmConversationFieldsV2 {
+    func bind(param: inout [String: Any]) {
+        param["dm_conversation.fields"] = commaSeparatedString
+    }
+}

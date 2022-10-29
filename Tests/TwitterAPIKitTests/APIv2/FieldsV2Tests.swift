@@ -250,4 +250,16 @@ class FieldsV2Tests: XCTestCase {
     func testTwitterDmEventFieldsV2All() throws {
         XCTAssertEqual(TwitterDmEventFieldsV2.all.count, 9)
     }
+
+    func testTwitterDmConversationFieldsV2() throws {
+        let allCases: [TwitterDmConversationFieldsV2] = [
+            .id,
+            .other("~"),
+        ].shuffled()
+        XCTAssertEqual(allCases.commaSeparatedString, "id,~")
+    }
+
+    func testTwitterDmConversationFieldsV2All() throws {
+        XCTAssertEqual(TwitterDmConversationFieldsV2.all.count, 1)
+    }
 }
