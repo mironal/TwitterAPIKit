@@ -3,19 +3,13 @@ import Foundation
 /// Returns recent DM Events across DM conversations
 /// Required OAuth 2.0 scopes: dm.read, tweet.read, users.read
 open class GetDmEventsRequestV2: TwitterAPIRequest {
-    /// The set of event_types to include in the results.
-    public enum EventType: String {
-        case messageCreate = "MessageCreate"
-        case participantsJoin = "ParticipantsJoin"
-        case participantsLeave = "ParticipantsLeave"
-    }
 
     /// The maximum number of results.
     public let maxResults: Int?
     /// This parameter is used to get a specified 'page' of results.
     public let paginationToken: String?
     /// The set of event_types to include in the results.
-    public let eventTypes: Set<EventType>?
+    public let eventTypes: Set<TwitterDirectMessageEventTypeV2>?
     /// A comma separated list of DmEvent fields to display.
     public let dmEventFields: Set<TwitterDmEventFieldsV2>?
     /// A comma separated list of fields to expand.
@@ -51,7 +45,7 @@ open class GetDmEventsRequestV2: TwitterAPIRequest {
     public init(
         maxResults: Int? = .none,
         paginationToken: String? = .none,
-        eventTypes: Set<EventType>? = .none,
+        eventTypes: Set<TwitterDirectMessageEventTypeV2>? = .none,
         dmEventFields: Set<TwitterDmEventFieldsV2>? = .none,
         expansions: Set<TwitterDmEventExpansionsV2>? = .none,
         mediaFields: Set<TwitterMediaFieldsV2>? = .none,
@@ -66,15 +60,5 @@ open class GetDmEventsRequestV2: TwitterAPIRequest {
         self.mediaFields = mediaFields
         self.userFields = userFields
         self.tweetFields = tweetFields
-    }
-}
-
-extension GetDmEventsRequestV2.EventType: TwitterAPIv2RequestParameter {
-    public var stringValue: String { return rawValue }
-}
-
-extension Set where Element == GetDmEventsRequestV2.EventType {
-    func bind(param: inout [String: Any]) {
-        param["event_types"] = commaSeparatedString
     }
 }
