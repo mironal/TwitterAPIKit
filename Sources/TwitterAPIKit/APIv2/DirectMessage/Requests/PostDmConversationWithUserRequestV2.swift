@@ -19,6 +19,10 @@ open class PostDmConversationWithUserRequestV2: TwitterAPIRequest {
         return "/2/dm_conversations/with/\(participantID)/messages"
     }
 
+    public var bodyContentType: BodyContentType {
+        return .json
+    }
+
     open var parameters: [String: Any] {
         var p = [String: Any]()
         p["attachments"] = attachments.map { ["media_id": $0] }
