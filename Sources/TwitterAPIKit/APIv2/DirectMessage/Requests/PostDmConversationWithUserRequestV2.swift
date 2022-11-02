@@ -25,7 +25,9 @@ open class PostDmConversationWithUserRequestV2: TwitterAPIRequest {
 
     open var parameters: [String: Any] {
         var p = [String: Any]()
-        p["attachments"] = attachments.map { ["media_id": $0] }
+        if let attachments = attachments {
+            p["attachments"] = attachments.map { ["media_id": $0] }
+        }
         text.map { p["text"] = $0 }
         return p
     }
