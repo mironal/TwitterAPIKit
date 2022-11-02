@@ -108,3 +108,30 @@ public enum TwitterSpaceExpansionsV2: TwitterExpansionsParameterV2, Hashable {
         .hostIDs,
     ]
 }
+
+/// A comma separated list of fields to expand.
+/// expansions
+public enum TwitterDmEventExpansionsV2: TwitterExpansionsParameterV2, Hashable {
+    case attachmentsMediaKeys
+    case participantIDs
+    case referencedTweetsID
+    case senderID
+    case other(String)
+
+    public var stringValue: String {
+        switch self {
+        case .attachmentsMediaKeys: return "attachments.media_keys"
+        case .participantIDs: return "participant_ids"
+        case .referencedTweetsID: return "referenced_tweets.id"
+        case .senderID: return "sender_id"
+        case .other(let string): return string
+        }
+    }
+
+    public static let all: Set<Self> = [
+        .attachmentsMediaKeys,
+        .participantIDs,
+        .referencedTweetsID,
+        .senderID,
+    ]
+}

@@ -17,6 +17,7 @@ open class TwitterAPIv2 {
     public let tweet: TweetAPIv2
     public let tweetCount: TweetCountAPIv2
     public let user: UserAPIv2
+    public let dm: DirectMessageAPIv2
 
     public init(session: TwitterAPISession) {
         blockAndMute = .init(session: session)
@@ -33,6 +34,7 @@ open class TwitterAPIv2 {
         tweet = .init(session: session)
         tweetCount = .init(session: session)
         user = .init(session: session)
+        dm = .init(session: session)
     }
 }
 
