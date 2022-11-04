@@ -226,4 +226,40 @@ class FieldsV2Tests: XCTestCase {
     func testTwitterTopicFieldsV2All() throws {
         XCTAssertEqual(TwitterTopicFieldsV2.all.count, 3)
     }
+
+    func testTwitterDmEventFieldsV2() throws {
+        let allCases: [TwitterDmEventFieldsV2] = [
+            .attachments,
+            .createdAt,
+            .dmConversationID,
+            .eventType,
+            .id,
+            .participantIDs,
+            .referencedTweets,
+            .senderID,
+            .text,
+            .other("~"),
+        ].shuffled()
+        // curl https://api.twitter.com/2/openapi.json | jq '.components.parameters.DmEventFieldsParameter.schema.items.enum | sort | join(",")'
+        XCTAssertEqual(
+            allCases.commaSeparatedString,
+            "attachments,created_at,dm_conversation_id,event_type,id,participant_ids,referenced_tweets,sender_id,text,~"
+        )
+    }
+
+    func testTwitterDmEventFieldsV2All() throws {
+        XCTAssertEqual(TwitterDmEventFieldsV2.all.count, 9)
+    }
+
+    func testTwitterDmConversationFieldsV2() throws {
+        let allCases: [TwitterDmConversationFieldsV2] = [
+            .id,
+            .other("~"),
+        ].shuffled()
+        XCTAssertEqual(allCases.commaSeparatedString, "id,~")
+    }
+
+    func testTwitterDmConversationFieldsV2All() throws {
+        XCTAssertEqual(TwitterDmConversationFieldsV2.all.count, 1)
+    }
 }

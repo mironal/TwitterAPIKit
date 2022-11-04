@@ -90,4 +90,23 @@ class ExpansionsV2Tests: XCTestCase {
         XCTAssertEqual(TwitterSpaceExpansionsV2.all.count, 5)
     }
 
+    func testTwitterDmEventExpansionsV2() throws {
+        let allCases: [TwitterDmEventExpansionsV2] = [
+            .attachmentsMediaKeys,
+            .participantIDs,
+            .referencedTweetsID,
+            .senderID,
+            .other("~~~"),
+        ].shuffled()
+
+        // curl https://api.twitter.com/2/openapi.json | jq '.components.parameters.DmEventExpansionsParameter.schema.items.enum | sort | join(",")'
+        XCTAssertEqual(
+            allCases.commaSeparatedString,
+            "attachments.media_keys,participant_ids,referenced_tweets.id,sender_id,~~~"
+        )
+    }
+
+    func testTwitterDmEventExpansionsV2All() throws {
+        XCTAssertEqual(TwitterDmEventExpansionsV2.all.count, 4)
+    }
 }

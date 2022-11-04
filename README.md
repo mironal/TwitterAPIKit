@@ -90,6 +90,12 @@ And the following sample project includes a sample authentication.
 
 [Please see "HowToDecodeResponse.md"](./HowToDecodeResponse.md)
 
+## Linux support (experimental)
+
+TwitterAPIKit can be used on Linux, but cannot be merged into the main branch because it cannot run tests.
+
+If you want to use it on Linux, use [THIS BRANCH](https://github.com/mironal/TwitterAPIKit/pull/121).
+
 ## Example
 
 ### Projects

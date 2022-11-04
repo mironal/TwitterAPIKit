@@ -86,7 +86,7 @@ open class TwitterAPIClient {
 extension TwitterAPIClient {
     public typealias RefreshOAuth20TokenResultValue = (token: TwitterAuthenticationMethod.OAuth20, refreshed: Bool)
     /// Refresh OAuth2.0 token
-    open func refreshOAuth20Token(
+    public func refreshOAuth20Token(
         type: TwitterAuthenticationMethod.OAuth20WithPKCEClientType,
         forceRefresh: Bool = false,
         _ block: @escaping (Result<RefreshOAuth20TokenResultValue, TwitterAPIKitError>) -> Void

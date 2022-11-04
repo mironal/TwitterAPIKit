@@ -1,4 +1,4 @@
-// Generated using Sourcery 1.8.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.9.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 // swift-format-ignore-file
@@ -676,5 +676,26 @@ extension TwitterAPIv2 {
     }
     public func getMe(_ request: GetUsersMeRequestV2) -> TwitterAPISessionJSONTask {
         return user.getMe(request)
+    }
+
+    // MARK: - DirectMessageAPIv2
+
+    public func getDmEvents(_ request: GetDmEventsRequestV2) -> TwitterAPISessionJSONTask {
+        return dm.getDmEvents(request)
+    }
+    public func getDmEventsWithParticipantId(_ request: GetDmConversationsWithParticipantIdDmEventsRequestV2) -> TwitterAPISessionJSONTask {
+        return dm.getDmEventsWithParticipantId(request)
+    }
+    public func getDmEventsByConversationsId(_ request: GetDmConversationsIdDmEventsRequestV2) -> TwitterAPISessionJSONTask {
+        return dm.getDmEventsByConversationsId(request)
+    }
+    public func postDmConversationById(_ request: PostDmConversationByIdRequestV2) -> TwitterAPISessionJSONTask {
+        return dm.postDmConversationById(request)
+    }
+    public func postDmConversationWithUser(_ request: PostDmConversationWithUserRequestV2) -> TwitterAPISessionJSONTask {
+        return dm.postDmConversationWithUser(request)
+    }
+    public func postDmConversation(_ request: PostDmConversationRequestV2) -> TwitterAPISessionJSONTask {
+        return dm.postDmConversation(request)
     }
 }

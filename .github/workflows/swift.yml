@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-12]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -20,23 +20,18 @@ jobs:
         with:
           path: BuildTools/.build
           key: ${{ runner.os }}-spm-${{ hashFiles('**/BuildTools/Package.resolved') }}
-          restore-keys: |
-            ${{ runner.os }}-spm-
       - uses: fwal/setup-swift@v1
         with:
-          swift-version: "5.6"
+          swift-version: "5.7"
       - name: Install Sourcery
         run: brew update && brew install sourcery
       - name: Check Flat API
         run: ./flat-api.sh -c
-      - name: Build tools & Lint
+      - name: Build tools
         if: steps.cache-spm.outputs.cache-hit != 'true'
-        run: swift run -c release --package-path BuildTools swift-format lint -p --strict --recursive ./Sources ./Tests ./scripts
+        run: ./build_tools.sh
       - name: Lint
-        if: steps.cache-spm.outputs.cache-hit == 'true'
-        run: |
-          swift run -c release --skip-build --package-path BuildTools swift-format --version
-          swift run -c release --skip-build --package-path BuildTools swift-format lint -p --strict --recursive ./Sources ./Tests ./scripts
+        run: ./lint.sh
       - name: Build
         run: swift build
 

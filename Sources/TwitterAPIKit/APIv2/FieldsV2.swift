@@ -482,3 +482,75 @@ extension Set where Element == TwitterTopicFieldsV2 {
         param["topic.fields"] = commaSeparatedString
     }
 }
+
+/// A comma separated list of DmEvent fields to display.
+/// dm_event.fields
+public enum TwitterDmEventFieldsV2: TwitterAPIv2RequestParameter, Hashable {
+    case attachments
+    case createdAt
+    case dmConversationID
+    case eventType
+    case id
+    case participantIDs
+    case referencedTweets
+    case senderID
+    case text
+    case other(String)
+
+    public var stringValue: String {
+        switch self {
+        case .attachments: return "attachments"
+        case .createdAt: return "created_at"
+        case .dmConversationID: return "dm_conversation_id"
+        case .eventType: return "event_type"
+        case .id: return "id"
+        case .participantIDs: return "participant_ids"
+        case .referencedTweets: return "referenced_tweets"
+        case .senderID: return "sender_id"
+        case .text: return "text"
+        case .other(let string): return string
+        }
+    }
+
+    public static let all: Set<Self> = [
+        .attachments,
+        .createdAt,
+        .dmConversationID,
+        .eventType,
+        .id,
+        .participantIDs,
+        .referencedTweets,
+        .senderID,
+        .text,
+    ]
+}
+
+extension Set where Element == TwitterDmEventFieldsV2 {
+    func bind(param: inout [String: Any]) {
+        param["dm_event.fields"] = commaSeparatedString
+    }
+}
+
+/// A comma separated list of DmConversation fields to display.
+/// dm_conversation.fields
+public enum TwitterDmConversationFieldsV2: TwitterAPIv2RequestParameter, Hashable {
+    case id
+    case other(String)
+
+    public var stringValue: String {
+        switch self {
+        case .id: return "id"
+        case .other(let string): return string
+        }
+    }
+
+    public static let all: Set<Self> = [
+        .id
+    ]
+}
+
+extension Set where Element == TwitterDmConversationFieldsV2 {
+    func bind(param: inout [String: Any]) {
+        param["dm_conversation.fields"] = commaSeparatedString
+    }
+}
